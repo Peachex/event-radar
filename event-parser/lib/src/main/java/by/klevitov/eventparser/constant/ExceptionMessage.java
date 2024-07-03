@@ -19,6 +19,8 @@ public final class ExceptionMessage {
 
     public static final String NULL_OR_EMPTY_PROPERTIES_FILE_NAME = "Properties file name cannot be null or empty: %s";
 
+    public static final String NULL_OR_EMPTY_PROPERTY_KEY = "Property key cannot be null or empty: %s";
+
     private ExceptionMessage() {
     }
 }
