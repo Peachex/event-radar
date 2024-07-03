@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) throws EventParserServiceException {
         EventParserService parserService = new EventParserServiceImpl();
         Map<EventSourceType, EventParser> parsers = parserService.retrieveAvailableParsers();
-        EventParser parser = parsers.get(EventSourceType.AFISHA_RELAX);
+        EventParser parser = parsers.get(EventSourceType.BYCARD);
         if (parser != null) {
             System.out.println(parserService.retrieveEvents(parser));
         }

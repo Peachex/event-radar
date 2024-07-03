@@ -76,9 +76,9 @@ public class ByCardEventParser implements EventParser {
         fields.put(SOURCE_TYPE, BYCARD_SOURCE_TYPE.name());
         fields.put(DATE_STR, element.getElementsByClass(BYCARD_DATE).text());
         fields.put(PRICE_STR, element.getElementsByClass(BYCARD_PRICE).text());
+        fields.put(EVENT_LINK, BYCARD_SITE_URL + element.attr(BYCARD_EVENT_LINK_HREF));
         fields.put(IMAGE_LINK, element.getElementsByClass(BYCARD_IMAGE_LINK).get(0)
                 .getElementsByAttribute(BYCARD_IMAGE_LINK_SRC).attr(BYCARD_IMAGE_LINK_SRC));
-        fields.put(EVENT_LINK, BYCARD_SITE_URL + element.attr(BYCARD_EVENT_LINK_HREF));
         return fields;
     }
 
