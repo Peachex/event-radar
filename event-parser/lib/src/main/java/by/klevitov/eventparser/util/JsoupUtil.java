@@ -7,8 +7,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static by.klevitov.eventparser.constant.ExceptionMessages.NULL_OR_EMPTY_URL;
-import static by.klevitov.eventparser.constant.ExceptionMessages.ERROR_DURING_HTML_DOCUMENT_RETRIEVING;
+import static by.klevitov.eventparser.constant.ExceptionMessage.NULL_OR_EMPTY_URL;
+import static by.klevitov.eventparser.constant.ExceptionMessage.ERROR_DURING_HTML_DOCUMENT_RETRIEVING;
 
 @Log
 public final class JsoupUtil {

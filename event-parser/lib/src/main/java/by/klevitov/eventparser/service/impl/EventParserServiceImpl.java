@@ -2,6 +2,7 @@ package by.klevitov.eventparser.service.impl;
 
 import by.klevitov.eventparser.configuration.EventParserConfiguration;
 import by.klevitov.eventparser.dto.AbstractEventDTO;
+import by.klevitov.eventparser.dto.EventSourceType;
 import by.klevitov.eventparser.exception.EventParserServiceException;
 import by.klevitov.eventparser.exception.HTMLDocumentRetrievingException;
 import by.klevitov.eventparser.exception.InvalidParserException;
@@ -12,18 +13,19 @@ import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
-import static by.klevitov.eventparser.constant.ExceptionMessages.NULL_PARSER;
-import static by.klevitov.eventparser.constant.ExceptionMessages.UNKNOWN_PARSER;
+import static by.klevitov.eventparser.constant.ExceptionMessage.NULL_PARSER;
+import static by.klevitov.eventparser.constant.ExceptionMessage.UNKNOWN_PARSER;
 import static by.klevitov.eventparser.util.JsoupUtil.retrieveDocumentByURL;
-import static by.klevitov.eventparser.constant.ExceptionMessages.ERROR_RETRIEVING_EVENTS_DTO;
+import static by.klevitov.eventparser.constant.ExceptionMessage.ERROR_RETRIEVING_EVENTS_DTO;
 import static by.klevitov.eventparser.configuration.EventParserConfiguration.parserIsUnknown;
 
 @Service
 @Log
 public class EventParserServiceImpl implements EventParserService {
     @Override
-    public List<EventParser> retrieveAvailableParsers() {
+    public Map<EventSourceType, EventParser> retrieveAvailableParsers() {
         return EventParserConfiguration.getAvailableParsers();
     }
 

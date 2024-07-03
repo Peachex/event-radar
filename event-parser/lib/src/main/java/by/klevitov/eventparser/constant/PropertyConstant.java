@@ -5,6 +5,8 @@ public final class PropertyConstant {
 
     public static final String AFISHA_RELAX_SITE_URL = "afisha-relax-event-parser-site-url";
 
+    public static final String BYCARD_SITE_URL = "bycard-event-parser-site-url";
+
     private PropertyConstant() {
     }
 }

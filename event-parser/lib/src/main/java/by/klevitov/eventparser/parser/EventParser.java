@@ -6,7 +6,7 @@ import org.jsoup.nodes.Document;
 import java.util.List;
 
 public interface EventParser {
-    List<AbstractEventDTO> parse(Document htmlDocument);
+    List<AbstractEventDTO> parse(final Document htmlDocument);
 
     String retrieveSiteURL();
 }

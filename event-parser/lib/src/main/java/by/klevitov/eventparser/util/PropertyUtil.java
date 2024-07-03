@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import static by.klevitov.eventparser.constant.ExceptionMessages.ERROR_READING_PROPERTIES_FROM_FILE;
-import static by.klevitov.eventparser.constant.ExceptionMessages.NULL_OR_EMPTY_PROPERTIES_FILE_NAME;
-import static by.klevitov.eventparser.constant.ExceptionMessages.PROPERTIES_FILE_NOT_FOUND;
+import static by.klevitov.eventparser.constant.ExceptionMessage.ERROR_READING_PROPERTIES_FROM_FILE;
+import static by.klevitov.eventparser.constant.ExceptionMessage.NULL_OR_EMPTY_PROPERTIES_FILE_NAME;
+import static by.klevitov.eventparser.constant.ExceptionMessage.PROPERTIES_FILE_NOT_FOUND;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 

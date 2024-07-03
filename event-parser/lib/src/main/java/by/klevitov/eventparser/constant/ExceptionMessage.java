@@ -1,6 +1,6 @@
 package by.klevitov.eventparser.constant;
 
-public final class ExceptionMessages {
+public final class ExceptionMessage {
     public static final String NULL_OR_EMPTY_URL = "URL cannot be null or empty: %s";
 
     public static final String ERROR_DURING_HTML_DOCUMENT_RETRIEVING = "There was an error during html document"
@@ -19,6 +19,6 @@ public final class ExceptionMessages {
 
     public static final String NULL_OR_EMPTY_PROPERTIES_FILE_NAME = "Properties file name cannot be null or empty: %s";
 
-    private ExceptionMessages() {
+    private ExceptionMessage() {
     }
 }
