@@ -10,7 +10,6 @@ import by.klevitov.eventparser.parser.EventParser;
 import by.klevitov.eventparser.service.EventParserService;
 import lombok.extern.java.Log;
 import org.jsoup.nodes.Document;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,6 @@ import static by.klevitov.eventparser.util.JsoupUtil.retrieveDocumentByURL;
 import static by.klevitov.eventparser.constant.ExceptionMessage.ERROR_RETRIEVING_EVENTS_DTO;
 import static by.klevitov.eventparser.configuration.EventParserConfiguration.parserIsUnknown;
 
-@Service
 @Log
 public class EventParserServiceImpl implements EventParserService {
     @Override

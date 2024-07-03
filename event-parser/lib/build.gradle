@@ -6,12 +6,10 @@
  */
 
 plugins {
-    // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
 }
 
 repositories {
-    // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
 
@@ -20,9 +18,6 @@ ext {
 }
 
 dependencies {
-    implementation "org.springframework:spring-core:${springVersion}"
-    implementation "org.springframework:spring-context:${springVersion}"
-
     implementation 'org.jsoup:jsoup:1.17.2'
 
     implementation 'org.apache.commons:commons-lang3:3.14.0'
@@ -30,23 +25,15 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
-    // Use JUnit Jupiter for testing.
+    implementation 'org.apache.commons:commons-collections4:4.4'
+
     testImplementation libs.junit.jupiter
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     testImplementation 'org.mockito:mockito-junit-jupiter:5.12.0'
-
-    implementation 'org.apache.commons:commons-collections4:4.4'
-
-    // This dependency is exported to consumers, that is to say found on their compile classpath.
-    api libs.commons.math3
-
-    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-    implementation libs.guava
 }
 
-// Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
@@ -54,11 +41,10 @@ java {
 }
 
 tasks.named('test') {
-    // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
 
 //todo delete later if there are no problems with encoding.
-tasks.withType(JavaExec) {
+tasks.withType(JavaExec).configureEach {
     jvmArgs = ['-Dfile.encoding=UTF-8']
 }
