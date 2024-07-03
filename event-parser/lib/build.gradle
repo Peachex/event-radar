@@ -54,6 +54,7 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+//todo delete later if there are no problems with encoding.
 tasks.withType(JavaExec) {
     jvmArgs = ['-Dfile.encoding=UTF-8']
 }
