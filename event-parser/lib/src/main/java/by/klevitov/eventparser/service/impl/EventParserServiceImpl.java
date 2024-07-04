@@ -47,8 +47,9 @@ public class EventParserServiceImpl implements EventParserService {
         }
 
         if (parserIsUnknown(parser)) {
-            log.severe(UNKNOWN_PARSER);
-            throw new InvalidParserException(UNKNOWN_PARSER);
+            String errorMessage = String.format(UNKNOWN_PARSER, parser.retrieveSiteURL());
+            log.severe(errorMessage);
+            throw new InvalidParserException(errorMessage);
         }
     }
 }

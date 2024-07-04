@@ -2,6 +2,8 @@ package by.klevitov.eventparser.util;
 
 import by.klevitov.eventparser.exception.HTMLDocumentRetrievingException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static by.klevitov.eventparser.util.JsoupUtil.retrieveDocumentByURL;
 
@@ -10,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JsoupUtilTest {
-    @Test
-    public void test_retrieveDocumentByURL_withValidURL() {
-        String url = "https://afisha.relax.by";
+    @ParameterizedTest
+    @ValueSource(strings = {"https://afisha.relax.by", "https://bycard.by"})
+    public void test_retrieveDocumentByURL_withValidURL(String url) {
         assertDoesNotThrow(() -> {
             retrieveDocumentByURL(url);
         });

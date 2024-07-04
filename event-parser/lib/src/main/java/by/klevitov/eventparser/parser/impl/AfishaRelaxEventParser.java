@@ -61,7 +61,7 @@ public class AfishaRelaxEventParser implements EventParser {
         return events;
     }
 
-    private static Map<String, String> createFieldsMap(final Element element) {
+    private Map<String, String> createFieldsMap(final Element element) {
         Map<String, String> fields = new HashMap<>();
         Elements itemElements = element.getElementsByAttribute(AFISHA_RELAX_DATA_SCHEMA);
         fields.put(TITLE, itemElements.attr(AFISHA_RELAX_TITLE));

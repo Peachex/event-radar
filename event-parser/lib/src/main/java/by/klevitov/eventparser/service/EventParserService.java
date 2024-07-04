@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface EventParserService {
-    Map<EventSourceType, EventParser> retrieveAvailableParsers() throws EventParserServiceException;
+    Map<EventSourceType, EventParser> retrieveAvailableParsers();
 
     List<AbstractEventDTO> retrieveEvents(final EventParser parser) throws EventParserServiceException;
 }
