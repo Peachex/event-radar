@@ -6,7 +6,6 @@ import by.klevitov.eventparser.parser.EventParser;
 import by.klevitov.eventparser.util.PropertyUtil;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
-import lombok.extern.java.Log;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -38,7 +37,6 @@ import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_PRICE;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_TITLE;
 import static by.klevitov.eventparser.constant.PropertyConstant.PROPERTY_FILE_WITH_SITES_FOR_PARSING;
 
-@Log
 public class ByCardEventParser implements EventParser {
     private static final String BYCARD_SITE_URL = PropertyUtil.retrieveProperty(PropertyConstant.BYCARD_SITE_URL,
             PROPERTY_FILE_WITH_SITES_FOR_PARSING);

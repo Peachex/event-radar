@@ -79,3 +79,5 @@ nb-configuration.xml
 ## OS X
 ##############################
 .DS_Store
+
+event_parser_logs/
