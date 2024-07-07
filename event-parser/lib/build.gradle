@@ -7,11 +7,25 @@
 
 plugins {
     id 'java-library'
+    id 'maven-publish'
 }
+
+version = '1.0'
 
 repositories {
     mavenLocal()
     mavenCentral()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
 }
 
 dependencies {
@@ -37,6 +51,13 @@ dependencies {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+jar {
+    manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version)
     }
 }
 
