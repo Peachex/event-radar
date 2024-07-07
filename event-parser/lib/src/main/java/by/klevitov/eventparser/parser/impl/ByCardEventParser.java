@@ -56,11 +56,17 @@ public class ByCardEventParser implements EventParser {
         for (Element element : elements) {
             String category = element.getElementsByClass(BYCARD_CATEGORY).text();
             Elements innerElements = element.getElementsByClass(BYCARD_CAPSULE_MAIN_ELEMENT);
-            for (Element innerElement : innerElements) {
-                Map<String, String> fields = createFieldsMap(innerElement, category);
-                AbstractEventDTO event = eventCreator.create(fields);
-                events.add(event);
-            }
+            events.addAll(createEventsFromInnerElements(innerElements, category));
+        }
+        return events;
+    }
+
+    private List<AbstractEventDTO> createEventsFromInnerElements(final Elements innerElements, final String category) {
+        List<AbstractEventDTO> events = new ArrayList<>();
+        for (Element innerElement : innerElements) {
+            Map<String, String> fields = createFieldsMap(innerElement, category);
+            AbstractEventDTO event = eventCreator.create(fields);
+            events.add(event);
         }
         return events;
     }
