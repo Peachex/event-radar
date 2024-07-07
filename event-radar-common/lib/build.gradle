@@ -7,12 +7,24 @@
 
 plugins {
     id 'java-library'
+    id 'maven-publish'
 }
 
 version = '1.0'
 
 repositories {
     mavenCentral()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
 }
 
 dependencies {
@@ -31,10 +43,6 @@ java {
 }
 
 jar {
-    archiveBaseName.set('event-radar-common')
-    archiveVersion.set('1.0')
-    destinationDirectory.set(file("../common-libraries"))
-
     manifest {
         attributes('Implementation-Title': project.name,
                 'Implementation-Version': project.version)
