@@ -1,10 +1,10 @@
 package by.klevitov.eventparser.parser;
 
 import by.klevitov.eventparser.creator.EventCreator;
-import by.klevitov.eventparser.dto.AbstractEventDTO;
-import by.klevitov.eventparser.dto.ByCardEventDTO;
 import by.klevitov.eventparser.parser.impl.ByCardEventParser;
 import by.klevitov.eventparser.util.PropertyUtil;
+import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
+import by.klevitov.eventradarcommon.dto.ByCardEventDTO;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -30,7 +30,7 @@ import static by.klevitov.eventparser.constant.EventField.SOURCE_TYPE;
 import static by.klevitov.eventparser.constant.EventField.TITLE;
 import static by.klevitov.eventparser.constant.EventLocation.BELARUS;
 import static by.klevitov.eventparser.constant.EventLocation.MINSK;
-import static by.klevitov.eventparser.dto.EventSourceType.BYCARD;
+import static by.klevitov.eventradarcommon.dto.EventSourceType.BYCARD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ByCardEventParserTest {

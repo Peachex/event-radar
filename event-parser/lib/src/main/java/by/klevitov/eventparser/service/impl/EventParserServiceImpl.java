@@ -1,13 +1,13 @@
 package by.klevitov.eventparser.service.impl;
 
 import by.klevitov.eventparser.configuration.EventParserConfiguration;
-import by.klevitov.eventparser.dto.AbstractEventDTO;
-import by.klevitov.eventparser.dto.EventSourceType;
 import by.klevitov.eventparser.exception.EventParserServiceException;
 import by.klevitov.eventparser.exception.HTMLDocumentRetrievingException;
 import by.klevitov.eventparser.exception.InvalidParserException;
 import by.klevitov.eventparser.parser.EventParser;
 import by.klevitov.eventparser.service.EventParserService;
+import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
+import by.klevitov.eventradarcommon.dto.EventSourceType;
 import lombok.extern.java.Log;
 import org.jsoup.nodes.Document;
 

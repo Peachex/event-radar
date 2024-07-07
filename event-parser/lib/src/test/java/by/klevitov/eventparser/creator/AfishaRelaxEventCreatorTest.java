@@ -1,10 +1,10 @@
 package by.klevitov.eventparser.creator;
 
 import by.klevitov.eventparser.creator.impl.AfishaRelaxEventCreator;
-import by.klevitov.eventparser.dto.AbstractEventDTO;
-import by.klevitov.eventparser.dto.AfishaRelaxEventDTO;
-import by.klevitov.eventparser.dto.EventSourceType;
-import by.klevitov.eventparser.dto.Location;
+import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
+import by.klevitov.eventradarcommon.dto.AfishaRelaxEventDTO;
+import by.klevitov.eventradarcommon.dto.EventSourceType;
+import by.klevitov.eventradarcommon.dto.Location;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

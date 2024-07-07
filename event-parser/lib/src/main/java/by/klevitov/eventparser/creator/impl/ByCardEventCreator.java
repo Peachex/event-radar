@@ -1,10 +1,10 @@
 package by.klevitov.eventparser.creator.impl;
 
 import by.klevitov.eventparser.creator.EventCreator;
-import by.klevitov.eventparser.dto.AbstractEventDTO;
-import by.klevitov.eventparser.dto.ByCardEventDTO;
-import by.klevitov.eventparser.dto.EventSourceType;
-import by.klevitov.eventparser.dto.Location;
+import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
+import by.klevitov.eventradarcommon.dto.ByCardEventDTO;
+import by.klevitov.eventradarcommon.dto.EventSourceType;
+import by.klevitov.eventradarcommon.dto.Location;
 
 import java.util.Map;
 

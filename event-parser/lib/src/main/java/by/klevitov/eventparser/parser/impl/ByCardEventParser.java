@@ -2,10 +2,10 @@ package by.klevitov.eventparser.parser.impl;
 
 import by.klevitov.eventparser.constant.PropertyConstant;
 import by.klevitov.eventparser.creator.EventCreator;
-import by.klevitov.eventparser.dto.AbstractEventDTO;
-import by.klevitov.eventparser.dto.EventSourceType;
 import by.klevitov.eventparser.parser.EventParser;
 import by.klevitov.eventparser.util.PropertyUtil;
+import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
+import by.klevitov.eventradarcommon.dto.EventSourceType;
 import lombok.extern.java.Log;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

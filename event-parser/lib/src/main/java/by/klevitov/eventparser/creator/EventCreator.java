@@ -1,6 +1,6 @@
 package by.klevitov.eventparser.creator;
 
-import by.klevitov.eventparser.dto.AbstractEventDTO;
+import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 
 import java.util.Map;
 

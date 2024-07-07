@@ -1,16 +1,16 @@
 package by.klevitov.eventparser.service;
 
 import by.klevitov.eventparser.configuration.EventParserConfiguration;
-import by.klevitov.eventparser.dto.AbstractEventDTO;
-import by.klevitov.eventparser.dto.AfishaRelaxEventDTO;
-import by.klevitov.eventparser.dto.ByCardEventDTO;
-import by.klevitov.eventparser.dto.EventSourceType;
 import by.klevitov.eventparser.exception.EventParserServiceException;
 import by.klevitov.eventparser.exception.HTMLDocumentRetrievingException;
 import by.klevitov.eventparser.exception.InvalidParserException;
 import by.klevitov.eventparser.parser.EventParser;
 import by.klevitov.eventparser.service.impl.EventParserServiceImpl;
 import by.klevitov.eventparser.util.JsoupUtil;
+import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
+import by.klevitov.eventradarcommon.dto.AfishaRelaxEventDTO;
+import by.klevitov.eventradarcommon.dto.ByCardEventDTO;
+import by.klevitov.eventradarcommon.dto.EventSourceType;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

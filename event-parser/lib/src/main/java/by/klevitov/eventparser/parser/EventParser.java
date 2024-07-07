@@ -1,6 +1,6 @@
 package by.klevitov.eventparser.parser;
 
-import by.klevitov.eventparser.dto.AbstractEventDTO;
+import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import org.jsoup.nodes.Document;
 
 import java.util.List;

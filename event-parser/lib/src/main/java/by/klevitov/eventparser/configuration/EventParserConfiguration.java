@@ -2,10 +2,10 @@ package by.klevitov.eventparser.configuration;
 
 import by.klevitov.eventparser.creator.impl.AfishaRelaxEventCreator;
 import by.klevitov.eventparser.creator.impl.ByCardEventCreator;
-import by.klevitov.eventparser.dto.EventSourceType;
 import by.klevitov.eventparser.parser.EventParser;
 import by.klevitov.eventparser.parser.impl.AfishaRelaxEventParser;
 import by.klevitov.eventparser.parser.impl.ByCardEventParser;
+import by.klevitov.eventradarcommon.dto.EventSourceType;
 import lombok.Getter;
 
 import java.util.Map;
