@@ -1,7 +1,7 @@
 package by.klevitov.eventparser.util;
 
 import by.klevitov.eventparser.exception.ReadingPropertiesFromFileException;
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +14,7 @@ import static by.klevitov.eventparser.constant.ExceptionMessage.PROPERTIES_FILE_
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
-@Log
+@Log4j2
 public final class PropertyUtil {
 
     private PropertyUtil() {
@@ -34,7 +34,7 @@ public final class PropertyUtil {
     private static void throwExceptionInCaseOfEmptyFileName(final String fileName) {
         if (isEmpty(fileName)) {
             String exceptionMessage = String.format(NULL_OR_EMPTY_PROPERTIES_FILE_NAME, fileName);
-            log.severe(exceptionMessage);
+            log.error(exceptionMessage);
             throw new ReadingPropertiesFromFileException(exceptionMessage);
         }
     }
@@ -42,7 +42,7 @@ public final class PropertyUtil {
     private static void throwExceptionInCaseOfEmptyPropertyKey(final String propertyKey) {
         if (isEmpty(propertyKey)) {
             String exceptionMessage = String.format(NULL_OR_EMPTY_PROPERTY_KEY, propertyKey);
-            log.severe(exceptionMessage);
+            log.error(exceptionMessage);
             throw new ReadingPropertiesFromFileException(exceptionMessage);
         }
     }
@@ -61,14 +61,14 @@ public final class PropertyUtil {
     private static void throwExceptionInCaseOfFileNotFound(final InputStream input, final String fileName) {
         if (input == null) {
             final String exceptionMessage = String.format(PROPERTIES_FILE_NOT_FOUND, fileName);
-            log.severe(exceptionMessage);
+            log.error(exceptionMessage);
             throw new ReadingPropertiesFromFileException(exceptionMessage);
         }
     }
 
     private static void throwReadingPropertiesFromFileException(final IOException e) {
         final String exceptionMessage = String.format(ERROR_READING_PROPERTIES_FROM_FILE, e.getMessage());
-        log.severe(exceptionMessage);
+        log.error(exceptionMessage);
         throw new ReadingPropertiesFromFileException(exceptionMessage);
     }
 }

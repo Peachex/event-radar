@@ -5,7 +5,6 @@ import by.klevitov.eventparser.parser.EventParser;
 import by.klevitov.eventparser.util.PropertyUtil;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
-import lombok.extern.java.Log;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -36,7 +35,6 @@ import static by.klevitov.eventparser.constant.HTMLSiteElement.AFISHA_RELAX_TITL
 import static by.klevitov.eventparser.constant.PropertyConstant.AFISHA_RELAX_SITE_URL;
 import static by.klevitov.eventparser.constant.PropertyConstant.PROPERTY_FILE_WITH_SITES_FOR_PARSING;
 
-@Log
 public class AfishaRelaxEventParser implements EventParser {
     private static final String AFISHA_SITE_URL = PropertyUtil.retrieveProperty(AFISHA_RELAX_SITE_URL,
             PROPERTY_FILE_WITH_SITES_FOR_PARSING);
