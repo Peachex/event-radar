@@ -21,6 +21,8 @@ public final class ExceptionMessage {
 
     public static final String NULL_OR_EMPTY_PROPERTY_KEY = "Property key cannot be null or empty: %s";
 
+    public static final String NULL_OR_EMPTY_DATE = "Date cannot be null or empty: %s";
+
     private ExceptionMessage() {
     }
 }
