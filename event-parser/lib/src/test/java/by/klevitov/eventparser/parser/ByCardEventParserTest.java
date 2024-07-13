@@ -16,17 +16,20 @@ import org.mockito.Mockito;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static by.klevitov.eventparser.constant.EventField.CATEGORY;
 import static by.klevitov.eventparser.constant.EventField.DATE_STR;
+import static by.klevitov.eventparser.constant.EventField.END_DATE;
 import static by.klevitov.eventparser.constant.EventField.EVENT_LINK;
 import static by.klevitov.eventparser.constant.EventField.IMAGE_LINK;
 import static by.klevitov.eventparser.constant.EventField.LOCATION_CITY;
 import static by.klevitov.eventparser.constant.EventField.LOCATION_COUNTRY;
 import static by.klevitov.eventparser.constant.EventField.PRICE_STR;
 import static by.klevitov.eventparser.constant.EventField.SOURCE_TYPE;
+import static by.klevitov.eventparser.constant.EventField.START_DATE;
 import static by.klevitov.eventparser.constant.EventField.TITLE;
 import static by.klevitov.eventparser.constant.EventLocation.BELARUS;
 import static by.klevitov.eventparser.constant.EventLocation.MINSK;
@@ -88,17 +91,19 @@ public class ByCardEventParserTest {
     }
 
     private Map<String, String> createExpectedMap() {
-        return Map.of(
-                TITLE, "title",
-                LOCATION_COUNTRY, BELARUS,
-                LOCATION_CITY, MINSK,
-                CATEGORY, "category",
-                SOURCE_TYPE, BYCARD.name(),
-                DATE_STR, "dateStr",
-                PRICE_STR, "priceStr",
-                EVENT_LINK, "https://bycard.by",
-                IMAGE_LINK, "imageLink"
-        );
+        Map<String, String> map = new HashMap<>();
+        map.put(TITLE, "title");
+        map.put(LOCATION_COUNTRY, BELARUS);
+        map.put(LOCATION_CITY, MINSK);
+        map.put(CATEGORY, "category");
+        map.put(SOURCE_TYPE, BYCARD.name());
+        map.put(DATE_STR, "dateStr");
+        map.put(PRICE_STR, "priceStr");
+        map.put(EVENT_LINK, "https://bycard.by");
+        map.put(IMAGE_LINK, "imageLink");
+        map.put(START_DATE, null);
+        map.put(END_DATE, null);
+        return map;
     }
 
     private String createPageHTMLStr() {
