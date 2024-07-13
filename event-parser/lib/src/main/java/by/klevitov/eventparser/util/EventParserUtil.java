@@ -19,14 +19,16 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Log4j2
 public final class EventParserUtil {
-    private static final String DATE_SPLIT_REGEX = "-";
-    private static final String START_DATE_PREFIX = "c";
 
     public static final DateTimeFormatter DEFAULT_DATE_FORMATTER = new DateTimeFormatterBuilder()
             .append(DateTimeFormatter.ofPattern("[до d MMMM yyyy]"))
+            .append(DateTimeFormatter.ofPattern("[по d MMMM yyyy]"))
             .append(DateTimeFormatter.ofPattern("[с d MMMM yyyy]"))
             .append(DateTimeFormatter.ofPattern("[d MMMM yyyy]"))
             .toFormatter();
+    private static final String DATE_SPLIT_REGEX = "-";
+    private static final String START_DATE_PREFIX = "c";
+    private static final int EXPECTED_ARRAY_DATES_SIZE = 2;
 
     private EventParserUtil() {
     }
@@ -75,7 +77,7 @@ public final class EventParserUtil {
     }
 
     private static void throwExceptionInCaseOfInvalidSizeOfArrayWithDates(final String[] dates) {
-        if (dates.length != 2) {
+        if (dates.length != EXPECTED_ARRAY_DATES_SIZE) {
             final String exceptionMessage = String.format(INVALID_ARRAY_DATES_SIZE, dates.length);
             log.error(exceptionMessage);
             throw new DateConversionException(exceptionMessage);
@@ -91,15 +93,15 @@ public final class EventParserUtil {
                 localDate = LocalDate.parse(dateWithYear, formatter.withLocale(dateLocales[i].getLocale()));
             } catch (Exception e) {
                 if (i == dateLocales.length - 1) {
-                    throwExceptionInCaseOfDateCannotBeConvert(dateStr, e);
+                    throwExceptionInCaseOfDateCannotBeConvert(dateWithYear, e);
                 }
             }
         }
         return localDate;
     }
 
-    private static void throwExceptionInCaseOfDateCannotBeConvert(final String dateStr, final Exception e) {
-        final String exceptionMessage = String.format(ERROR_DURING_DATE_CONVERSION, dateStr);
+    private static void throwExceptionInCaseOfDateCannotBeConvert(final String date, final Exception e) {
+        final String exceptionMessage = String.format(ERROR_DURING_DATE_CONVERSION, date);
         log.error(exceptionMessage);
         throw new DateConversionException(exceptionMessage, e);
     }

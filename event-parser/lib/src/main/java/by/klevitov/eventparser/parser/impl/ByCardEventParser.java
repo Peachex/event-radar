@@ -2,14 +2,18 @@ package by.klevitov.eventparser.parser.impl;
 
 import by.klevitov.eventparser.constant.PropertyConstant;
 import by.klevitov.eventparser.creator.EventCreator;
+import by.klevitov.eventparser.exception.DateConversionException;
 import by.klevitov.eventparser.parser.EventParser;
 import by.klevitov.eventparser.util.PropertyUtil;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,17 +30,21 @@ import static by.klevitov.eventparser.constant.EventField.SOURCE_TYPE;
 import static by.klevitov.eventparser.constant.EventField.TITLE;
 import static by.klevitov.eventparser.constant.EventLocation.BELARUS;
 import static by.klevitov.eventparser.constant.EventLocation.MINSK;
+import static by.klevitov.eventparser.constant.ExceptionMessage.NULL_DATE_DUE_TO_ERROR_DURING_CONVERSION;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_CAPSULE_MAIN_ELEMENT;
+import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_CATEGORY;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_DATE;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_EVENTS_ROW;
-import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_CATEGORY;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_EVENT_LINK_HREF;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_IMAGE_LINK;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_IMAGE_LINK_SRC;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_PRICE;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_TITLE;
 import static by.klevitov.eventparser.constant.PropertyConstant.PROPERTY_FILE_WITH_SITES_FOR_PARSING;
+import static by.klevitov.eventparser.parser.EventParser.addDatesToMap;
+import static by.klevitov.eventparser.util.EventParserUtil.convertDateToLocalDate;
 
+@Log4j2
 public class ByCardEventParser implements EventParser {
     private static final String BYCARD_SITE_URL = PropertyUtil.retrieveProperty(PropertyConstant.BYCARD_SITE_URL,
             PROPERTY_FILE_WITH_SITES_FOR_PARSING);
@@ -83,7 +91,18 @@ public class ByCardEventParser implements EventParser {
         fields.put(EVENT_LINK, BYCARD_SITE_URL + element.attr(BYCARD_EVENT_LINK_HREF));
         fields.put(IMAGE_LINK, element.getElementsByClass(BYCARD_IMAGE_LINK).get(0)
                 .getElementsByAttribute(BYCARD_IMAGE_LINK_SRC).attr(BYCARD_IMAGE_LINK_SRC));
+        processDatesConvertingAndAddingToMap(fields.get(DATE_STR), fields);
         return fields;
+    }
+
+    private static void processDatesConvertingAndAddingToMap(final String dateStr, final Map<String, String> fields) {
+        Pair<LocalDate, LocalDate> dates = Pair.of(null, null);
+        try {
+            dates = convertDateToLocalDate(dateStr, null);
+        } catch (DateConversionException e) {
+            log.warn(String.format(NULL_DATE_DUE_TO_ERROR_DURING_CONVERSION, e));
+        }
+        addDatesToMap(fields, dates);
     }
 
     @Override
