@@ -10,9 +10,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.Locale;
+import java.util.Map;
 
+import static by.klevitov.eventparser.constant.EventField.DATE_STR;
+import static by.klevitov.eventparser.constant.EventField.END_DATE;
+import static by.klevitov.eventparser.constant.EventField.START_DATE;
 import static by.klevitov.eventparser.constant.ExceptionMessage.ERROR_DURING_DATE_CONVERSION;
 import static by.klevitov.eventparser.constant.ExceptionMessage.INVALID_ARRAY_DATES_SIZE;
+import static by.klevitov.eventparser.constant.ExceptionMessage.NULL_DATE_DUE_TO_ERROR_DURING_CONVERSION;
 import static by.klevitov.eventparser.constant.ExceptionMessage.NULL_OR_EMPTY_DATE;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -31,6 +36,18 @@ public final class EventParserUtil {
     private static final int EXPECTED_ARRAY_DATES_SIZE = 2;
 
     private EventParserUtil() {
+    }
+
+    public static void parseDateAndAddToMap(final Map<String, String> fields) {
+        Pair<LocalDate, LocalDate> dates = Pair.of(null, null);
+        try {
+            dates = convertDateToLocalDate(fields.get(DATE_STR), null);
+        } catch (DateConversionException e) {
+            log.warn(String.format(NULL_DATE_DUE_TO_ERROR_DURING_CONVERSION, e));
+        } finally {
+            fields.put(START_DATE, dates.getLeft() != null ? dates.getLeft().toString() : null);
+            fields.put(END_DATE, dates.getRight() != null ? dates.getRight().toString() : null);
+        }
     }
 
     public static Pair<LocalDate, LocalDate> convertDateToLocalDate(final String dateStr,

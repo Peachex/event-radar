@@ -19,7 +19,7 @@ import static by.klevitov.eventparser.constant.EventField.PRICE_STR;
 import static by.klevitov.eventparser.constant.EventField.SOURCE_TYPE;
 import static by.klevitov.eventparser.constant.EventField.START_DATE;
 import static by.klevitov.eventparser.constant.EventField.TITLE;
-import static by.klevitov.eventparser.creator.EventCreator.*;
+import static by.klevitov.eventparser.util.EventCreatorUtil.createEventDate;
 
 public class ByCardEventCreator implements EventCreator {
     @Override
