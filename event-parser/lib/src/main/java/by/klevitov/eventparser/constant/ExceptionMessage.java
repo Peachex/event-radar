@@ -23,6 +23,11 @@ public final class ExceptionMessage {
 
     public static final String NULL_OR_EMPTY_DATE = "Date cannot be null or empty: %s";
 
+    public static final String ERROR_DURING_DATE_CONVERSION = "Date cannot be parsed from string: %s";
+
+    public static final String INVALID_ARRAY_DATES_SIZE = "Array should contain only two dates, " +
+            "actual array size: %s";
+
     private ExceptionMessage() {
     }
 }
