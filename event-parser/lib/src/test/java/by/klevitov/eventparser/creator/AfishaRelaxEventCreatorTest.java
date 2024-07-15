@@ -1,6 +1,7 @@
 package by.klevitov.eventparser.creator;
 
 import by.klevitov.eventparser.creator.impl.AfishaRelaxEventCreator;
+import by.klevitov.eventparser.util.EventCreatorUtil;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import by.klevitov.eventradarcommon.dto.AfishaRelaxEventDTO;
 import by.klevitov.eventradarcommon.dto.EventDate;
@@ -8,6 +9,8 @@ import by.klevitov.eventradarcommon.dto.EventSourceType;
 import by.klevitov.eventradarcommon.dto.Location;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -38,8 +41,8 @@ public class AfishaRelaxEventCreatorTest {
                 CATEGORY, "category",
                 SOURCE_TYPE, "AFISHA_RELAX",
                 DATE_STR, "dateStr",
-                START_DATE, "2024-07-13",
-                END_DATE, "2024-07-16",
+                START_DATE, "startDate",
+                END_DATE, "endDate",
                 EVENT_LINK, "eventLink",
                 IMAGE_LINK, "imageLink"
         );
@@ -47,17 +50,23 @@ public class AfishaRelaxEventCreatorTest {
 
     @Test
     public void test_create() {
-        AbstractEventDTO expected = AfishaRelaxEventDTO.builder()
-                .title(fields.get(TITLE))
-                .location(new Location(fields.get(LOCATION_COUNTRY), fields.get(LOCATION_CITY)))
-                .category(fields.get(CATEGORY))
-                .sourceType(EventSourceType.valueOf(fields.get(SOURCE_TYPE)))
-                .dateStr(fields.get(DATE_STR))
-                .date(new EventDate(LocalDate.of(2024, 7, 13), LocalDate.of(2024, 7, 16)))
-                .eventLink(fields.get(EVENT_LINK))
-                .imageLink(fields.get(IMAGE_LINK))
-                .build();
-        AbstractEventDTO actual = eventCreator.create(fields);
-        assertEquals(expected, actual);
+        try (MockedStatic<EventCreatorUtil> creatorUtil = Mockito.mockStatic(EventCreatorUtil.class)) {
+            creatorUtil.when(() -> EventCreatorUtil.createEventDate(Mockito.anyString(), Mockito.anyString()))
+                    .thenReturn(new EventDate(LocalDate.of(2024, 7, 13),
+                            LocalDate.of(2024, 7, 16)));
+            AbstractEventDTO expected = AfishaRelaxEventDTO.builder()
+                    .title(fields.get(TITLE))
+                    .location(new Location(fields.get(LOCATION_COUNTRY), fields.get(LOCATION_CITY)))
+                    .category(fields.get(CATEGORY))
+                    .sourceType(EventSourceType.valueOf(fields.get(SOURCE_TYPE)))
+                    .dateStr(fields.get(DATE_STR))
+                    .date(new EventDate(LocalDate.of(2024, 7, 13), LocalDate.of(2024, 7, 16)))
+                    .eventLink(fields.get(EVENT_LINK))
+                    .imageLink(fields.get(IMAGE_LINK))
+                    .build();
+            AbstractEventDTO actual = eventCreator.create(fields);
+            creatorUtil.verify(() -> EventCreatorUtil.createEventDate(Mockito.anyString(), Mockito.anyString()));
+            assertEquals(expected, actual);
+        }
     }
 }

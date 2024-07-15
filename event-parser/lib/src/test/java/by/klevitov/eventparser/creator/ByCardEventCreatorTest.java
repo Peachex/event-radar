@@ -1,6 +1,7 @@
 package by.klevitov.eventparser.creator;
 
 import by.klevitov.eventparser.creator.impl.ByCardEventCreator;
+import by.klevitov.eventparser.util.EventCreatorUtil;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import by.klevitov.eventradarcommon.dto.ByCardEventDTO;
 import by.klevitov.eventradarcommon.dto.EventDate;
@@ -8,6 +9,8 @@ import by.klevitov.eventradarcommon.dto.EventSourceType;
 import by.klevitov.eventradarcommon.dto.Location;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -39,8 +42,8 @@ public class ByCardEventCreatorTest {
         fields.put(CATEGORY, "category");
         fields.put(SOURCE_TYPE, "BYCARD");
         fields.put(DATE_STR, "dateStr");
-        fields.put(START_DATE, "2024-07-13");
-        fields.put(END_DATE, "2024-07-16");
+        fields.put(START_DATE, "startDate");
+        fields.put(END_DATE, "endDate");
         fields.put(PRICE_STR, "priceStr");
         fields.put(EVENT_LINK, "eventLink");
         fields.put(IMAGE_LINK, "imageLink");
@@ -48,18 +51,24 @@ public class ByCardEventCreatorTest {
 
     @Test
     public void test_create() {
-        AbstractEventDTO expected = ByCardEventDTO.builder()
-                .title(fields.get(TITLE))
-                .location(new Location(fields.get(LOCATION_COUNTRY), fields.get(LOCATION_CITY)))
-                .category(fields.get(CATEGORY))
-                .sourceType(EventSourceType.valueOf(fields.get(SOURCE_TYPE)))
-                .dateStr(fields.get(DATE_STR))
-                .date(new EventDate(LocalDate.of(2024, 7, 13), LocalDate.of(2024, 7, 16)))
-                .priceStr(fields.get(PRICE_STR))
-                .eventLink(fields.get(EVENT_LINK))
-                .imageLink(fields.get(IMAGE_LINK))
-                .build();
-        AbstractEventDTO actual = eventCreator.create(fields);
-        assertEquals(expected, actual);
+        try (MockedStatic<EventCreatorUtil> eventCreatorUtil = Mockito.mockStatic(EventCreatorUtil.class)) {
+            eventCreatorUtil.when(() -> EventCreatorUtil.createEventDate(Mockito.anyString(), Mockito.anyString()))
+                    .thenReturn(new EventDate(LocalDate.of(2024, 7, 13),
+                            LocalDate.of(2024, 7, 16)));
+            AbstractEventDTO expected = ByCardEventDTO.builder()
+                    .title(fields.get(TITLE))
+                    .location(new Location(fields.get(LOCATION_COUNTRY), fields.get(LOCATION_CITY)))
+                    .category(fields.get(CATEGORY))
+                    .sourceType(EventSourceType.valueOf(fields.get(SOURCE_TYPE)))
+                    .dateStr(fields.get(DATE_STR))
+                    .date(new EventDate(LocalDate.of(2024, 7, 13), LocalDate.of(2024, 7, 16)))
+                    .priceStr(fields.get(PRICE_STR))
+                    .eventLink(fields.get(EVENT_LINK))
+                    .imageLink(fields.get(IMAGE_LINK))
+                    .build();
+            AbstractEventDTO actual = eventCreator.create(fields);
+            eventCreatorUtil.verify(() -> EventCreatorUtil.createEventDate(Mockito.anyString(), Mockito.anyString()));
+            assertEquals(expected, actual);
+        }
     }
 }

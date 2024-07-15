@@ -2,6 +2,7 @@ package by.klevitov.eventparser.parser;
 
 import by.klevitov.eventparser.creator.EventCreator;
 import by.klevitov.eventparser.parser.impl.AfishaRelaxEventParser;
+import by.klevitov.eventparser.util.EventParserUtil;
 import by.klevitov.eventparser.util.PropertyUtil;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import by.klevitov.eventradarcommon.dto.AfishaRelaxEventDTO;
@@ -58,12 +59,22 @@ public class AfishaRelaxEventParserTest {
 
     @Test
     public void test_createFieldsMap() throws Exception {
-        Method privateMethod = AfishaRelaxEventParser.class.getDeclaredMethod("createFieldsMap", Element.class);
-        privateMethod.setAccessible(true);
-        Element element = createElement();
-        Map<String, String> expected = createExpectedMap();
-        Object actual = privateMethod.invoke(parser, element);
-        assertEquals(expected, actual);
+        try (MockedStatic<EventParserUtil> parserUtil = Mockito.mockStatic(EventParserUtil.class)) {
+            parserUtil.when(() -> EventParserUtil.parseDateAndAddToMap(Mockito.anyMap()))
+                    .thenAnswer(invocationOnMock -> {
+                        Map<String, String> fields = invocationOnMock.getArgument(0);
+                        fields.put(START_DATE, "2024-06-11");
+                        fields.put(END_DATE, "2024-12-31");
+                        return null;
+                    });
+            Method privateMethod = AfishaRelaxEventParser.class.getDeclaredMethod("createFieldsMap",
+                    Element.class);
+            privateMethod.setAccessible(true);
+            Element element = createElement();
+            Map<String, String> expected = createExpectedMap();
+            Object actual = privateMethod.invoke(parser, element);
+            assertEquals(expected, actual);
+        }
     }
 
     @Test
@@ -85,12 +96,12 @@ public class AfishaRelaxEventParserTest {
                 "<a href=\"eventLink\" " + "data-id=\"11117297\" data-name=\"title\" data-schema-title=\"category\" " +
                 "data-index=\"1\" data-position=\"event_main_page\" class=\"b-afisha_blocks-strap_item_lnk\"><i " +
                 "class=\"b-afisha_blocks-movies_item_lnk_premier\">a</i><img height=\"200\" class=\"b-afisha_" +
-                "blocks-movies_item_img \" src=\"imageLink\" " + "alt=\"<? HtmlHelper::encode($event['title']) ?>\"> " +
-                "</a><a class=\"btn btn--xs btn--theme-2 " + "text-uppercase\" href=\"https://afisha.relax.by/kino/" +
-                "11117297-tri-bogatyrya-ni-dnya-bez-podviga/minsk/" + "\">a</a></div><span class=\"" +
-                "b-afisha-layout_maldives_strap_date\">dateStr</span><a href=\"" + "https://afisha.relax.by/kino/" +
-                "11117297-tri-bogatyrya-ni-dnya-bez-podviga/minsk/\" class=\"b-afisha_" + "blocks-strap_item_lnk_txt " +
-                "link\">a</a></div>");
+                "blocks-movies_item_img \" src=\"imageLink\"alt=\"<? HtmlHelper::encode($event['title']) ?>\"> " +
+                "</a><a class=\"btn btn--xs btn--theme-2 text-uppercase\" href=\"https://afisha.relax.by/kino/" +
+                "11117297-tri-bogatyrya-ni-dnya-bez-podviga/minsk/\">a</a></div><span class=\"" +
+                "b-afisha-layout_maldives_strap_date\">11 июня - 31 декабря</span><a href=\"" +
+                "https://afisha.relax.by/kino/11117297-tri-bogatyrya-ni-dnya-bez-podviga/minsk/\" " +
+                "class=\"b-afisha_blocks-strap_item_lnk_txt link\">a</a></div>");
         return element;
     }
 
@@ -101,11 +112,11 @@ public class AfishaRelaxEventParserTest {
         map.put(LOCATION_CITY, MINSK);
         map.put(CATEGORY, "category");
         map.put(SOURCE_TYPE, AFISHA_RELAX.name());
-        map.put(DATE_STR, "dateStr");
+        map.put(DATE_STR, "11 июня - 31 декабря");
         map.put(EVENT_LINK, "eventLink");
         map.put(IMAGE_LINK, "imageLink");
-        map.put(START_DATE, null);
-        map.put(END_DATE, null);
+        map.put(START_DATE, "2024-06-11");
+        map.put(END_DATE, "2024-12-31");
         return map;
     }
 
@@ -120,7 +131,7 @@ public class AfishaRelaxEventParserTest {
                 "4b21593f3f04b3b118e37d5e68927ff/thumb/w%3D400%2Ch%3D600%2Cq%3D90/afisha_event_photo/c5/\n" +
                 "f6/be/c5f6be893456d1b70f66d074d0a8f4db.jpg\"/></a><a class=\"btn btn--xs btn--theme-2 t\n" +
                 "ext-uppercase\" href=\"https://afisha.relax.by/kino/11117297-tri-bogatyrya-ni-dnya-bez-p\n" +
-                "odviga/minsk/\">Test</a><span class=\"b-afisha-layout_maldives_strap_date\">Test\n" +
+                "odviga/minsk/\">Test</a><span class=\"b-afisha-layout_maldives_strap_date\">11 июня - 31 декабря\n" +
                 "</span><a href=\"https://afisha.relax.by/kino/11117297-tri-bogatyrya-ni-dnya-bez-podviga\n" +
                 "/minsk/\" class=\"b-afisha_blocks-strap_item_lnk_txt link\">Test</a></div></div><div class=" +
                 "\"b-afisha-layout_strap--item\"><div class=\"b-afisha_bloc\n" +

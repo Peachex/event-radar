@@ -2,6 +2,7 @@ package by.klevitov.eventparser.parser;
 
 import by.klevitov.eventparser.creator.EventCreator;
 import by.klevitov.eventparser.parser.impl.ByCardEventParser;
+import by.klevitov.eventparser.util.EventParserUtil;
 import by.klevitov.eventparser.util.PropertyUtil;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import by.klevitov.eventradarcommon.dto.ByCardEventDTO;
@@ -59,13 +60,22 @@ public class ByCardEventParserTest {
 
     @Test
     public void test_createFieldsMap() throws Exception {
-        Method privateMethod = ByCardEventParser.class.getDeclaredMethod("createFieldsMap", Element.class,
-                String.class);
-        privateMethod.setAccessible(true);
-        Element element = createElement();
-        Map<String, String> expected = createExpectedMap();
-        Object actual = privateMethod.invoke(parser, element, "category");
-        assertEquals(expected, actual);
+        try (MockedStatic<EventParserUtil> parserUtil = Mockito.mockStatic(EventParserUtil.class)) {
+            parserUtil.when(() -> EventParserUtil.parseDateAndAddToMap(Mockito.anyMap()))
+                    .thenAnswer(invocationOnMock -> {
+                        Map<String, String> fields = invocationOnMock.getArgument(0);
+                        fields.put(START_DATE, "2024-06-11");
+                        fields.put(END_DATE, "2024-12-31");
+                        return null;
+                    });
+            Method privateMethod = ByCardEventParser.class.getDeclaredMethod("createFieldsMap", Element.class,
+                    String.class);
+            privateMethod.setAccessible(true);
+            Element element = createElement();
+            Map<String, String> expected = createExpectedMap();
+            Object actual = privateMethod.invoke(parser, element, "category");
+            assertEquals(expected, actual);
+        }
     }
 
     @Test
@@ -85,8 +95,8 @@ public class ByCardEventParserTest {
         Element element = new Element("tag");
         element.append("<a href=\"/afisha/minsk/top/968360\" class=\"capsule\"><div class=\"capsule__image\"><img " +
                 "src=\"imageLink\" srcset=\"srcset\"><p class=\"capsule__title\">title</p><p class=\"capsule__date\">" +
-                "<span/></p><p class=\"capsule__date\"><span>dateStr</span></p><p class=\"capsule__price\">" +
-                "<span>priceStr</span></p></a>");
+                "<span/></p><p class=\"capsule__date\"><span>11 июня - 31 декабря</span></p><p " +
+                "class=\"capsule__price\"><span>priceStr</span></p></a>");
         return element;
     }
 
@@ -97,28 +107,27 @@ public class ByCardEventParserTest {
         map.put(LOCATION_CITY, MINSK);
         map.put(CATEGORY, "category");
         map.put(SOURCE_TYPE, BYCARD.name());
-        map.put(DATE_STR, "dateStr");
+        map.put(DATE_STR, "11 июня - 31 декабря");
         map.put(PRICE_STR, "priceStr");
         map.put(EVENT_LINK, "https://bycard.by");
         map.put(IMAGE_LINK, "imageLink");
-        map.put(START_DATE, null);
-        map.put(END_DATE, null);
+        map.put(START_DATE, "2024-06-11");
+        map.put(END_DATE, "2024-12-31");
         return map;
     }
 
     private String createPageHTMLStr() {
         return "<html data-n-head-ssr lang=\"en\" data-n-head=\"lang\"><head><title>Test</title></head><body>" +
                 "<events-row class=\"events-row\"><div class=\"events-row__headline\">\n" +
-                "\t\t\tTest\n" +
-                "          \t</div><a href=\"/afisha/minsk/top/123\" class=\"capsule\"><p class=\"capsule__title\">" +
-                "Test</p><p class=\"capsule__date\"><span> Test</span></p><p class=\"capsule__price\"><span>Test" +
-                "</span></p><div class=\"capsule__image\"><img src=\"https://webgate.24guru.by/uploads/events/" +
-                "thumbs/170x240/7BdeRnLTg.png\"/></div></a></events-row><events-row class=\"events-row\"><div " +
-                "class=\"events-row__headline\">\n" +
-                "            Test\n" +
-                "\t\t\t</div><a href=\"/afisha/minsk/top/456\" class=\"capsule\"><p class=\"capsule__title\">" +
-                "Test</p><p class=\"capsule__date\"><span> Test</span></p><p class=\"capsule__price\"><span>Test" +
-                "</span></p><div class=\"capsule__image\"><img src=\"https://webgate.24guru.by/uploads/events/" +
-                "thumbs/170x240/75YPYZywa.jpg\"/></div></a></events-row></body></html>";
+                "\tTest\n\t</div><a href=\"/afisha/minsk/top/123\" class=\"capsule\"><p class=\"capsule__title\">" +
+                "Test</p><p class=\"capsule__date\"><span>11 июня - 31 декабря</span></p><p " +
+                "class=\"capsule__price\"><span>Test</span></p><div class=\"capsule__image\"><img " +
+                "src=\"https://webgate.24guru.by/uploads/events/thumbs/170x240/7BdeRnLTg.png\"/></div></a>" +
+                "</events-row><events-row class=\"events-row\"><div class=\"events-row__headline\">\n" +
+                "Test\n\t\t\t</div><a href=\"/afisha/minsk/top/456\" class=\"capsule\"><p class=\"capsule__title" +
+                "\">Test</p><p class=\"capsule__date\"><span> Test</span></p><p class=\"capsule__price\">" +
+                "<span>Test</span></p><div class=\"capsule__image\"><img src=\"" +
+                "https://webgate.24guru.by/uploads/events/thumbs/170x240/75YPYZywa.jpg\"/></div></a>" +
+                "</events-row></body></html>";
     }
 }
