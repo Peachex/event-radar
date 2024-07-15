@@ -19,6 +19,7 @@ import static by.klevitov.eventparser.constant.ExceptionMessage.ERROR_DURING_DAT
 import static by.klevitov.eventparser.constant.ExceptionMessage.INVALID_ARRAY_DATES_SIZE;
 import static by.klevitov.eventparser.constant.ExceptionMessage.NULL_DATE_DUE_TO_ERROR_DURING_CONVERSION;
 import static by.klevitov.eventparser.constant.ExceptionMessage.NULL_OR_EMPTY_DATE;
+import static by.klevitov.eventparser.constant.ExceptionMessage.NULL_OR_EMPTY_FIELDS_MAP;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
@@ -32,13 +33,14 @@ public final class EventParserUtil {
             .append(DateTimeFormatter.ofPattern("[d MMMM yyyy]"))
             .toFormatter();
     private static final String DATE_SPLIT_REGEX = "-";
-    private static final String START_DATE_PREFIX = "c";
+    private static final String START_DATE_PREFIX = "с";
     private static final int EXPECTED_ARRAY_DATES_SIZE = 2;
 
     private EventParserUtil() {
     }
 
     public static void parseDateAndAddToMap(final Map<String, String> fields) {
+        throwExceptionInCaseOfEmptyMap(fields);
         Pair<LocalDate, LocalDate> dates = Pair.of(null, null);
         try {
             dates = convertDateToLocalDate(fields.get(DATE_STR), null);
@@ -47,6 +49,13 @@ public final class EventParserUtil {
         } finally {
             fields.put(START_DATE, dates.getLeft() != null ? dates.getLeft().toString() : null);
             fields.put(END_DATE, dates.getRight() != null ? dates.getRight().toString() : null);
+        }
+    }
+
+    private static void throwExceptionInCaseOfEmptyMap(final Map<String, String> fields) {
+        if (fields == null) {
+            log.error(NULL_OR_EMPTY_FIELDS_MAP);
+            throw new DateConversionException(NULL_OR_EMPTY_FIELDS_MAP);
         }
     }
 
@@ -125,7 +134,7 @@ public final class EventParserUtil {
 
     @Getter
     @ToString
-    private enum EventDateLocale {
+    public enum EventDateLocale {
         ENGLISH(Locale.ENGLISH), RUSSIAN(new Locale("ru"));
 
         private final Locale locale;
