@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static by.klevitov.eventparser.util.EventParserUtil.EventDateLocale.RUSSIAN;
-import static by.klevitov.eventparser.util.EventParserUtil.convertDateToLocalDate;
+import static by.klevitov.eventparser.util.EventParserUtil.convertStringToLocalDate;
 import static by.klevitov.eventparser.util.EventParserUtil.parseDateAndAddToMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,24 +37,24 @@ public class EventParserUtilTest {
     }
 
     @Test
-    public void test_convertDateToLocalDate_withNullDateStrAndNullFormatter() {
-        Exception exception = assertThrows(DateConversionException.class, () -> convertDateToLocalDate(null, null));
+    public void test_convertDateToLocalString_withNullDateStrAndNullFormatter() {
+        Exception exception = assertThrows(DateConversionException.class, () -> convertStringToLocalDate(null, null));
         String expectedMessage = "Date cannot be null or empty: null";
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
     }
 
     @Test
-    public void test_convertDateToLocalDate_withEmptyDateStrAndNullFormatter() {
-        Exception exception = assertThrows(DateConversionException.class, () -> convertDateToLocalDate("", null));
+    public void test_convertDateToLocalString_withEmptyDateStrAndNullFormatter() {
+        Exception exception = assertThrows(DateConversionException.class, () -> convertStringToLocalDate("", null));
         String expectedMessage = "Date cannot be null or empty: ";
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
     }
 
     @Test
-    public void test_convertDateToLocalDate_withInvalidDateStrAndNullFormatter() {
-        Exception exception = assertThrows(DateConversionException.class, () -> convertDateToLocalDate("invalidDate",
+    public void test_convertDateToLocalString_withInvalidDateStrAndNullFormatter() {
+        Exception exception = assertThrows(DateConversionException.class, () -> convertStringToLocalDate("invalidDate",
                 null));
         String expectedMessage = "Date cannot be parsed from string: invalidDate 2024";
         String actualMessage = exception.getMessage();
@@ -62,17 +62,17 @@ public class EventParserUtilTest {
     }
 
     @Test
-    public void test_convertDateToLocalDate_withValidDateStrAndNullFormatter() {
+    public void test_convertDateToLocalString_withValidDateStrAndNullFormatter() {
         Pair<LocalDate, LocalDate> expected = Pair.of(LocalDate.of(LocalDate.now().getYear(), 6, 11), null);
-        Pair<LocalDate, LocalDate> actual = convertDateToLocalDate("с 11 июня", null);
+        Pair<LocalDate, LocalDate> actual = convertStringToLocalDate("с 11 июня", null);
         assertEquals(expected, actual);
     }
 
     @Test
-    public void test_convertDateToLocalDate_withValidDateStrAndValidFormatter() {
+    public void test_convertDateToLocalString_withValidDateStrAndValidFormatter() {
         Pair<LocalDate, LocalDate> expected = Pair.of(null,
                 LocalDate.of(LocalDate.now().getYear(), 6, 11));
-        Pair<LocalDate, LocalDate> actual = convertDateToLocalDate("только по 11 июня",
+        Pair<LocalDate, LocalDate> actual = convertStringToLocalDate("только по 11 июня",
                 DateTimeFormatter.ofPattern("только по d MMMM yyyy", RUSSIAN.getLocale()));
         assertEquals(expected, actual);
     }

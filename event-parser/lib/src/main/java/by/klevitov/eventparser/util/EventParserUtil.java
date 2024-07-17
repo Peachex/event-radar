@@ -43,7 +43,7 @@ public final class EventParserUtil {
         throwExceptionInCaseOfEmptyMap(fields);
         Pair<LocalDate, LocalDate> dates = Pair.of(null, null);
         try {
-            dates = convertDateToLocalDate(fields.get(DATE_STR), null);
+            dates = convertStringToLocalDate(fields.get(DATE_STR), null);
         } catch (DateConversionException e) {
             log.warn(String.format(NULL_DATE_DUE_TO_ERROR_DURING_CONVERSION, e));
         } finally {
@@ -59,8 +59,8 @@ public final class EventParserUtil {
         }
     }
 
-    public static Pair<LocalDate, LocalDate> convertDateToLocalDate(final String dateStr,
-                                                                    final DateTimeFormatter customFormatter) {
+    public static Pair<LocalDate, LocalDate> convertStringToLocalDate(final String dateStr,
+                                                                      final DateTimeFormatter customFormatter) {
         throwExceptionInCaseOfEmptyDate(dateStr);
         final DateTimeFormatter formatterToUse = defineFormatterToUse(customFormatter);
         return convertDate(dateStr, formatterToUse);
