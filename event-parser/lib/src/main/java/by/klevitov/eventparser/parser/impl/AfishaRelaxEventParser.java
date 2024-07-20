@@ -5,6 +5,7 @@ import by.klevitov.eventparser.parser.EventParser;
 import by.klevitov.eventparser.util.PropertyUtil;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
+import lombok.extern.log4j.Log4j2;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -34,7 +35,9 @@ import static by.klevitov.eventparser.constant.HTMLSiteElement.AFISHA_RELAX_MAIN
 import static by.klevitov.eventparser.constant.HTMLSiteElement.AFISHA_RELAX_TITLE;
 import static by.klevitov.eventparser.constant.PropertyConstant.AFISHA_RELAX_SITE_URL;
 import static by.klevitov.eventparser.constant.PropertyConstant.PROPERTY_FILE_WITH_SITES_FOR_PARSING;
+import static by.klevitov.eventparser.util.EventParserUtil.parseDateAndAddToMap;
 
+@Log4j2
 public class AfishaRelaxEventParser implements EventParser {
     private static final String AFISHA_SITE_URL = PropertyUtil.retrieveProperty(AFISHA_RELAX_SITE_URL,
             PROPERTY_FILE_WITH_SITES_FOR_PARSING);
@@ -59,7 +62,7 @@ public class AfishaRelaxEventParser implements EventParser {
         return events;
     }
 
-    private Map<String, String> createFieldsMap(final Element element) {
+    private static Map<String, String> createFieldsMap(final Element element) {
         Map<String, String> fields = new HashMap<>();
         Elements itemElements = element.getElementsByAttribute(AFISHA_RELAX_DATA_SCHEMA);
         fields.put(TITLE, itemElements.attr(AFISHA_RELAX_TITLE));
@@ -70,6 +73,7 @@ public class AfishaRelaxEventParser implements EventParser {
         fields.put(DATE_STR, element.getElementsByClass(AFISHA_RELAX_DATE).text());
         fields.put(EVENT_LINK, itemElements.attr(AFISHA_RELAX_EVENT_LINK));
         fields.put(IMAGE_LINK, element.getElementsByClass(AFISHA_RELAX_IMAGE_LINK).attr(AFISHA_RELAX_IMAGE_LINK_SRC));
+        parseDateAndAddToMap(fields);
         return fields;
     }
 

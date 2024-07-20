@@ -49,7 +49,7 @@ public class EventParserServiceImplTest {
     }
 
     @Test
-    public void test_retrieveEventsWithValidParser() throws EventParserServiceException {
+    public void test_retrieveEvents_withValidParser() throws EventParserServiceException {
         try (MockedStatic<JsoupUtil> jsoupUtil = Mockito.mockStatic(JsoupUtil.class);
              MockedStatic<EventParserConfiguration> parserConfiguration = Mockito.mockStatic(
                      EventParserConfiguration.class)) {
@@ -72,7 +72,7 @@ public class EventParserServiceImplTest {
     }
 
     @Test
-    public void test_retrieveEventsWithEmptyParser() {
+    public void test_retrieveEvents_withEmptyParser() {
         EventParser nullParser = null;
         Exception exception = assertThrows(InvalidParserException.class, () -> service.retrieveEvents(nullParser));
         String expectedMessage = "Parser cannot be null.";
@@ -81,7 +81,7 @@ public class EventParserServiceImplTest {
     }
 
     @Test
-    public void test_retrieveEventsWithUnknownParser() {
+    public void test_retrieveEvents_withUnknownParser() {
         try (MockedStatic<EventParserConfiguration> parserConfiguration = Mockito.mockStatic(
                 EventParserConfiguration.class)) {
             parserConfiguration.when(() -> EventParserConfiguration.parserIsUnknown(Mockito.any(EventParser.class)))
@@ -94,7 +94,7 @@ public class EventParserServiceImplTest {
     }
 
     @Test
-    public void test_retrieveEventsWithValidParserAndInvalidSite() {
+    public void test_retrieveEvents_withValidParserAndInvalidSite() {
         try (MockedStatic<JsoupUtil> jsoupUtil = Mockito.mockStatic(JsoupUtil.class);
              MockedStatic<EventParserConfiguration> parserConfiguration = Mockito.mockStatic(
                      EventParserConfiguration.class)) {
