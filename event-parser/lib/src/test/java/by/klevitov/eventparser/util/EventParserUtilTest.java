@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static by.klevitov.eventparser.util.EventParserUtil.DEFAULT_DATE_FORMATTER;
 import static by.klevitov.eventparser.util.EventParserUtil.EventDateLocale.RUSSIAN;
 import static by.klevitov.eventparser.util.EventParserUtil.convertStringToLocalDate;
 import static by.klevitov.eventparser.util.EventParserUtil.parseDateAndAddToMap;
@@ -75,7 +76,7 @@ public class EventParserUtilTest {
     }
 
     @Test
-    public void test_convertStringToLocalDate_withValidDateStrAndValidFormatter() {
+    public void test_convertStringToLocalDate_withValidDateStrAndNotNullFormatter() {
         Pair<LocalDate, LocalDate> expected = Pair.of(null,
                 LocalDate.of(LocalDate.now().getYear(), 6, 11));
         Pair<LocalDate, LocalDate> actual = convertStringToLocalDate("только по 11 июня",
@@ -107,7 +108,7 @@ public class EventParserUtilTest {
         privateMethod.setAccessible(true);
         LocalDate expected = arguments.getKey();
         LocalDate actual = (LocalDate) privateMethod.invoke(EventParserUtil.class, arguments.getValue(),
-                EventParserUtil.DEFAULT_DATE_FORMATTER);
+                DEFAULT_DATE_FORMATTER);
         assertEquals(expected, actual);
     }
 
