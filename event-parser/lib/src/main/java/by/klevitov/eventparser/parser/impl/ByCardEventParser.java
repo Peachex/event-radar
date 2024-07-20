@@ -37,6 +37,7 @@ import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_IMAGE_LINK
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_PRICE;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_TITLE;
 import static by.klevitov.eventparser.constant.PropertyConstant.PROPERTY_FILE_WITH_SITES_FOR_PARSING;
+import static by.klevitov.eventparser.util.ByCardEventParserUtil.parsePriceAndAddToMap;
 import static by.klevitov.eventparser.util.EventParserUtil.parseDateAndAddToMap;
 
 @Log4j2
@@ -87,6 +88,7 @@ public class ByCardEventParser implements EventParser {
         fields.put(IMAGE_LINK, element.getElementsByClass(BYCARD_IMAGE_LINK).get(0)
                 .getElementsByAttribute(BYCARD_IMAGE_LINK_SRC).attr(BYCARD_IMAGE_LINK_SRC));
         parseDateAndAddToMap(fields);
+        parsePriceAndAddToMap(fields);
         return fields;
     }
 

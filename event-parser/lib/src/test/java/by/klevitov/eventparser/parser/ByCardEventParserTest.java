@@ -2,6 +2,7 @@ package by.klevitov.eventparser.parser;
 
 import by.klevitov.eventparser.creator.EventCreator;
 import by.klevitov.eventparser.parser.impl.ByCardEventParser;
+import by.klevitov.eventparser.util.ByCardEventParserUtil;
 import by.klevitov.eventparser.util.EventParserUtil;
 import by.klevitov.eventparser.util.PropertyUtil;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
@@ -28,6 +29,8 @@ import static by.klevitov.eventparser.constant.EventField.EVENT_LINK;
 import static by.klevitov.eventparser.constant.EventField.IMAGE_LINK;
 import static by.klevitov.eventparser.constant.EventField.LOCATION_CITY;
 import static by.klevitov.eventparser.constant.EventField.LOCATION_COUNTRY;
+import static by.klevitov.eventparser.constant.EventField.MAX_PRICE;
+import static by.klevitov.eventparser.constant.EventField.MIN_PRICE;
 import static by.klevitov.eventparser.constant.EventField.PRICE_STR;
 import static by.klevitov.eventparser.constant.EventField.SOURCE_TYPE;
 import static by.klevitov.eventparser.constant.EventField.START_DATE;
@@ -60,7 +63,8 @@ public class ByCardEventParserTest {
 
     @Test
     public void test_createFieldsMap() throws Exception {
-        try (MockedStatic<EventParserUtil> parserUtil = Mockito.mockStatic(EventParserUtil.class)) {
+        try (MockedStatic<EventParserUtil> parserUtil = Mockito.mockStatic(EventParserUtil.class);
+             MockedStatic<ByCardEventParserUtil> byCardParserUtil = Mockito.mockStatic(ByCardEventParserUtil.class)) {
             parserUtil.when(() -> EventParserUtil.parseDateAndAddToMap(Mockito.anyMap()))
                     .thenAnswer(invocationOnMock -> {
                         Map<String, String> fields = invocationOnMock.getArgument(0);
@@ -68,6 +72,14 @@ public class ByCardEventParserTest {
                         fields.put(END_DATE, "2024-12-31");
                         return null;
                     });
+            byCardParserUtil.when(() -> ByCardEventParserUtil.parsePriceAndAddToMap(Mockito.anyMap()))
+                    .thenAnswer(invocationOnMock -> {
+                        Map<String, String> fields = invocationOnMock.getArgument(0);
+                        fields.put(MIN_PRICE, "40.00");
+                        fields.put(MAX_PRICE, "250.00");
+                        return null;
+                    });
+
             Method privateMethod = ByCardEventParser.class.getDeclaredMethod("createFieldsMap", Element.class,
                     String.class);
             privateMethod.setAccessible(true);
@@ -96,7 +108,7 @@ public class ByCardEventParserTest {
         element.append("<a href=\"/afisha/minsk/top/968360\" class=\"capsule\"><div class=\"capsule__image\"><img " +
                 "src=\"imageLink\" srcset=\"srcset\"><p class=\"capsule__title\">title</p><p class=\"capsule__date\">" +
                 "<span/></p><p class=\"capsule__date\"><span>11 июня - 31 декабря</span></p><p " +
-                "class=\"capsule__price\"><span>priceStr</span></p></a>");
+                "class=\"capsule__price\"><span>от 40.00 - до 250.00 руб.</span></p></a>");
         return element;
     }
 
@@ -108,11 +120,13 @@ public class ByCardEventParserTest {
         map.put(CATEGORY, "category");
         map.put(SOURCE_TYPE, BYCARD.name());
         map.put(DATE_STR, "11 июня - 31 декабря");
-        map.put(PRICE_STR, "priceStr");
+        map.put(PRICE_STR, "от 40.00 - до 250.00 руб.");
         map.put(EVENT_LINK, "https://bycard.by");
         map.put(IMAGE_LINK, "imageLink");
         map.put(START_DATE, "2024-06-11");
         map.put(END_DATE, "2024-12-31");
+        map.put(MIN_PRICE, "40.00");
+        map.put(MAX_PRICE, "250.00");
         return map;
     }
 

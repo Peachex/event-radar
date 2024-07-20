@@ -15,11 +15,14 @@ import static by.klevitov.eventparser.constant.EventField.EVENT_LINK;
 import static by.klevitov.eventparser.constant.EventField.IMAGE_LINK;
 import static by.klevitov.eventparser.constant.EventField.LOCATION_CITY;
 import static by.klevitov.eventparser.constant.EventField.LOCATION_COUNTRY;
+import static by.klevitov.eventparser.constant.EventField.MAX_PRICE;
+import static by.klevitov.eventparser.constant.EventField.MIN_PRICE;
 import static by.klevitov.eventparser.constant.EventField.PRICE_STR;
 import static by.klevitov.eventparser.constant.EventField.SOURCE_TYPE;
 import static by.klevitov.eventparser.constant.EventField.START_DATE;
 import static by.klevitov.eventparser.constant.EventField.TITLE;
 import static by.klevitov.eventparser.util.EventCreatorUtil.createEventDate;
+import static by.klevitov.eventparser.util.EventCreatorUtil.createEventPrice;
 
 public class ByCardEventCreator implements EventCreator {
     @Override
@@ -32,6 +35,7 @@ public class ByCardEventCreator implements EventCreator {
                 .dateStr(fields.get(DATE_STR))
                 .date(createEventDate(fields.get(START_DATE), fields.get(END_DATE)))
                 .priceStr(fields.get(PRICE_STR))
+                .price(createEventPrice(fields.get(MIN_PRICE), fields.get(MAX_PRICE)))
                 .eventLink(fields.get(EVENT_LINK))
                 .imageLink(fields.get(IMAGE_LINK))
                 .build();
