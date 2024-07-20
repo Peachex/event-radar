@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventPrice {
-    private static final int PRICE_PARTS_NUMBER = 2;
     private BigDecimal minPrice;
     private BigDecimal maxPrice;
 }
