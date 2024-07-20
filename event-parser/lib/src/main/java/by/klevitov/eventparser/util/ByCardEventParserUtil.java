@@ -7,7 +7,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static by.klevitov.eventparser.constant.EventField.MAX_PRICE;
 import static by.klevitov.eventparser.constant.EventField.MIN_PRICE;
@@ -21,11 +20,12 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Log4j2
 public final class ByCardEventParserUtil {
-    public static final Pattern DEFAULT_PRICE_PATTERN = Pattern.compile("[^\\d.]|.$");
+    public static final String DEFAULT_PRICE_CLEANING_PATTERN = "[^\\d.,]|\\.$|,$";
     private static final String PRICE_SPLIT_REGEX = "-";
     private static final String START_PRICE_PREFIX = "от";
-
     private static final int EXPECTED_ARRAY_PRICES_SIZE = 2;
+    private static final String PRICE_DELIMITER = ".";
+    private static final String NON_DIGIT_PATTERN = "\\D";
 
     private ByCardEventParserUtil() {
     }
@@ -50,10 +50,9 @@ public final class ByCardEventParserUtil {
         }
     }
 
-    public static Pair<BigDecimal, BigDecimal> convertStringToBigDecimal(final String price,
-                                                                         final Pattern customPattern) {
+    public static Pair<BigDecimal, BigDecimal> convertStringToBigDecimal(final String price, final String pattern) {
         throwExceptionInCaseOfEmptyPrice(price);
-        final Pattern patterToUse = definePatternToUse(customPattern);
+        final String patterToUse = definePatternToUse(pattern);
         return convertPrice(price, patterToUse);
     }
 
@@ -65,19 +64,21 @@ public final class ByCardEventParserUtil {
         }
     }
 
-    private static Pattern definePatternToUse(final Pattern customPattern) {
-        return (customPattern != null ? customPattern : DEFAULT_PRICE_PATTERN);
+    private static String definePatternToUse(final String pattern) {
+        return (pattern != null ? pattern : DEFAULT_PRICE_CLEANING_PATTERN);
     }
 
-    private static Pair<BigDecimal, BigDecimal> convertPrice(final String priceStr, final Pattern pattern) {
-        return (priceIsSingle(priceStr) ? convertSinglePrice(priceStr, pattern) : convertDualPrice(priceStr, pattern));
+    private static Pair<BigDecimal, BigDecimal> convertPrice(final String priceStr, final String pattern) {
+        return (priceIsSingle(priceStr)
+                ? convertSinglePrice(priceStr, pattern)
+                : convertDualPrice(priceStr, pattern));
     }
 
     private static boolean priceIsSingle(final String price) {
         return (price.split(PRICE_SPLIT_REGEX).length == 1);
     }
 
-    private static Pair<BigDecimal, BigDecimal> convertSinglePrice(final String priceStr, final Pattern pattern) {
+    private static Pair<BigDecimal, BigDecimal> convertSinglePrice(final String priceStr, final String pattern) {
         BigDecimal price = parseBigDecimalPrice(priceStr, pattern);
         if (Character.isDigit(priceStr.toLowerCase().charAt(0))) {
             return Pair.of(price, price);
@@ -87,7 +88,7 @@ public final class ByCardEventParserUtil {
                 : Pair.of(null, price));
     }
 
-    private static Pair<BigDecimal, BigDecimal> convertDualPrice(final String priceStr, final Pattern pattern) {
+    private static Pair<BigDecimal, BigDecimal> convertDualPrice(final String priceStr, final String pattern) {
         String[] prices = priceStr.split(PRICE_SPLIT_REGEX);
         throwExceptionInCaseOfInvalidSizeOfArrayWithPrices(prices);
         final String minPriceStr = prices[0].trim();
@@ -103,9 +104,11 @@ public final class ByCardEventParserUtil {
         }
     }
 
-    private static BigDecimal parseBigDecimalPrice(final String priceStr, final Pattern pattern) {
+    private static BigDecimal parseBigDecimalPrice(final String priceStr, final String pattern) {
         try {
-            String cleanPrice = priceStr.replaceAll(pattern.toString(), StringUtils.EMPTY);
+            String cleanPrice = priceStr
+                    .replaceAll(pattern, StringUtils.EMPTY)
+                    .replaceAll(NON_DIGIT_PATTERN, PRICE_DELIMITER);
             return new BigDecimal(cleanPrice);
         } catch (Exception e) {
             throwExceptionInCaseOfPriceCannotBeConvert(priceStr, e);
