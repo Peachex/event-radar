@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Duration;
 import java.time.LocalDate;
 
 @Data
@@ -13,8 +12,4 @@ import java.time.LocalDate;
 public class EventDate {
     private LocalDate startDate;
     private LocalDate endDate;
-
-    public Duration calculateDuration() {
-        return Duration.between(startDate.atStartOfDay(), endDate.atStartOfDay());
-    }
 }
