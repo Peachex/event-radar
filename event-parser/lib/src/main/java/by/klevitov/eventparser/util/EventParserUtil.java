@@ -89,6 +89,9 @@ public final class EventParserUtil {
     private static Pair<LocalDate, LocalDate> convertSingleDate(final String dateStr,
                                                                 final DateTimeFormatter formatter) {
         LocalDate localDate = parseLocalDate(dateStr, formatter);
+        if (Character.isDigit(dateStr.toLowerCase().charAt(0))) {
+            return Pair.of(localDate, localDate);
+        }
         return (dateStr.toLowerCase().startsWith(START_DATE_PREFIX)
                 ? Pair.of(localDate, null)
                 : Pair.of(null, localDate));

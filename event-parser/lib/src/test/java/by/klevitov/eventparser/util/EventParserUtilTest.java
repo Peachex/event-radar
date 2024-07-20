@@ -164,11 +164,20 @@ public class EventParserUtilTest {
         mapWithNullStartDateAndExclusiveEndDate.put("startDate", null);
         mapWithNullStartDateAndExclusiveEndDate.put("endDate", LocalDate.now().getYear() + "-12-31");
 
+        Map<String, String> expectedMapWithSingleDate = new HashMap<>();
+        expectedMapWithSingleDate.put("dateStr", "31 декабря");
+
+        Map<String, String> mapWithSingleDate = new HashMap<>();
+        mapWithSingleDate.put("dateStr", "31 декабря");
+        mapWithSingleDate.put("startDate", LocalDate.now().getYear() + "-12-31");
+        mapWithSingleDate.put("endDate", LocalDate.now().getYear() + "-12-31");
+
         return Stream.of(
                 Pair.of(expectedMapWithoutNullDates, mapWithoutNullDates),
                 Pair.of(expectedMapWithNullEndDate, mapWithNullEndDate),
                 Pair.of(expectedMapWithNullStartDate, mapWithNullStartDate),
-                Pair.of(expectedMapWithNullStartDateAndExclusiveEndDate, mapWithNullStartDateAndExclusiveEndDate)
+                Pair.of(expectedMapWithNullStartDateAndExclusiveEndDate, mapWithNullStartDateAndExclusiveEndDate),
+                Pair.of(expectedMapWithSingleDate, mapWithSingleDate)
         );
     }
 }
