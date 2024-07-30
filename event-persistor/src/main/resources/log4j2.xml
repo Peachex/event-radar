@@ -15,9 +15,13 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Root level="warn">
+        <Logger name="eventpersistor.logger" level="info" additivity="false">
             <AppenderRef ref="ConsoleLogger"/>
-            <AppenderRef ref="FileLogger"/>
+            <AppenderRef ref="FileLogger" level="warn"/>
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="ConsoleLogger"/>
+            <AppenderRef ref="FileLogger" level="warn"/>
         </Root>
     </Loggers>
 </Configuration>
