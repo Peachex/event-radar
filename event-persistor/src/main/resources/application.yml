@@ -2,3 +2,17 @@ server:
   servlet:
     context-path: '/EventPersistor'
   port: 8082
+
+spring:
+  data:
+    mongodb:
+      host: 'localhost'
+      port: 27018
+      database: 'testdatabase'
+      username: 'root'
+      password: 'root'
+      authentication-database: 'admin'
+      connection-timeout: 3000
+      socket-timeout: 3000
+      max-wait-time: 3000
+      server-selection-timeout: 3000
