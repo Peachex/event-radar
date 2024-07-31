@@ -1,5 +1,6 @@
 package by.klevitov.eventpersistor.persistor.entity;
 
+import by.klevitov.eventradarcommon.dto.EventPriceDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,7 +18,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @SuperBuilder
 public class ByCardEvent extends AbstractEvent {
     private String priceStr;
-    private EventPrice price;
+    private EventPriceDTO price;
     private String eventLink;
     private String imageLink;
 }

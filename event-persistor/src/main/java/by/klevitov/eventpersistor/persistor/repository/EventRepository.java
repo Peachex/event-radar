@@ -1,7 +1,7 @@
 package by.klevitov.eventpersistor.persistor.repository;
 
 import by.klevitov.eventpersistor.persistor.entity.AbstractEvent;
-import by.klevitov.eventpersistor.persistor.entity.EventSourceType;
+import by.klevitov.eventradarcommon.dto.EventSourceType;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
