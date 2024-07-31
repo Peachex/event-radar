@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class ByCardEventDTO extends AbstractEventDTO {
     private String priceStr;
-    private EventPriceDTO price;
+    private EventPrice price;
     private String eventLink;
     private String imageLink;
 }

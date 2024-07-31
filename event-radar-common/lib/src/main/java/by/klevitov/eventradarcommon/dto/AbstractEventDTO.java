@@ -13,7 +13,7 @@ public abstract class AbstractEventDTO {
     private String title;
     private LocationDTO location;
     private String dateStr;
-    private EventDateDTO date;
+    private EventDate date;
     private String category;
     private EventSourceType sourceType;
 }

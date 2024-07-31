@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventDateDTO {
+public class EventDate {
     private LocalDate startDate;
     private LocalDate endDate;
 }
