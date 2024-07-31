@@ -4,9 +4,9 @@ import by.klevitov.eventparser.creator.impl.AfishaRelaxEventCreator;
 import by.klevitov.eventparser.util.EventCreatorUtil;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import by.klevitov.eventradarcommon.dto.AfishaRelaxEventDTO;
-import by.klevitov.eventradarcommon.dto.EventDate;
+import by.klevitov.eventradarcommon.dto.EventDateDTO;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
-import by.klevitov.eventradarcommon.dto.Location;
+import by.klevitov.eventradarcommon.dto.LocationDTO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -52,15 +52,15 @@ public class AfishaRelaxEventCreatorTest {
     public void test_create() {
         try (MockedStatic<EventCreatorUtil> creatorUtil = Mockito.mockStatic(EventCreatorUtil.class)) {
             creatorUtil.when(() -> EventCreatorUtil.createEventDate(Mockito.anyString(), Mockito.anyString()))
-                    .thenReturn(new EventDate(LocalDate.of(2024, 7, 13),
+                    .thenReturn(new EventDateDTO(LocalDate.of(2024, 7, 13),
                             LocalDate.of(2024, 7, 16)));
             AbstractEventDTO expected = AfishaRelaxEventDTO.builder()
                     .title(fields.get(TITLE))
-                    .location(new Location(fields.get(LOCATION_COUNTRY), fields.get(LOCATION_CITY)))
+                    .location(new LocationDTO(fields.get(LOCATION_COUNTRY), fields.get(LOCATION_CITY)))
                     .category(fields.get(CATEGORY))
                     .sourceType(EventSourceType.valueOf(fields.get(SOURCE_TYPE)))
                     .dateStr(fields.get(DATE_STR))
-                    .date(new EventDate(LocalDate.of(2024, 7, 13), LocalDate.of(2024, 7, 16)))
+                    .date(new EventDateDTO(LocalDate.of(2024, 7, 13), LocalDate.of(2024, 7, 16)))
                     .eventLink(fields.get(EVENT_LINK))
                     .imageLink(fields.get(IMAGE_LINK))
                     .build();

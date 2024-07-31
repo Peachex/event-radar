@@ -4,10 +4,10 @@ import by.klevitov.eventparser.creator.impl.ByCardEventCreator;
 import by.klevitov.eventparser.util.EventCreatorUtil;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import by.klevitov.eventradarcommon.dto.ByCardEventDTO;
-import by.klevitov.eventradarcommon.dto.EventDate;
-import by.klevitov.eventradarcommon.dto.EventPrice;
+import by.klevitov.eventradarcommon.dto.EventDateDTO;
+import by.klevitov.eventradarcommon.dto.EventPriceDTO;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
-import by.klevitov.eventradarcommon.dto.Location;
+import by.klevitov.eventradarcommon.dto.LocationDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -61,20 +61,20 @@ public class ByCardEventCreatorTest {
     public void test_create() {
         try (MockedStatic<EventCreatorUtil> eventCreatorUtil = Mockito.mockStatic(EventCreatorUtil.class)) {
             eventCreatorUtil.when(() -> createEventDate(Mockito.anyString(), Mockito.anyString()))
-                    .thenReturn(new EventDate(LocalDate.of(2024, 7, 13),
+                    .thenReturn(new EventDateDTO(LocalDate.of(2024, 7, 13),
                             LocalDate.of(2024, 7, 16)));
             eventCreatorUtil.when(() -> createEventPrice(Mockito.anyString(), Mockito.anyString()))
-                    .thenReturn(new EventPrice(new BigDecimal("12.34"), new BigDecimal("567.89")));
+                    .thenReturn(new EventPriceDTO(new BigDecimal("12.34"), new BigDecimal("567.89")));
 
             AbstractEventDTO expected = ByCardEventDTO.builder()
                     .title(fields.get(TITLE))
-                    .location(new Location(fields.get(LOCATION_COUNTRY), fields.get(LOCATION_CITY)))
+                    .location(new LocationDTO(fields.get(LOCATION_COUNTRY), fields.get(LOCATION_CITY)))
                     .category(fields.get(CATEGORY))
                     .sourceType(EventSourceType.valueOf(fields.get(SOURCE_TYPE)))
                     .dateStr(fields.get(DATE_STR))
-                    .date(new EventDate(LocalDate.of(2024, 7, 13), LocalDate.of(2024, 7, 16)))
+                    .date(new EventDateDTO(LocalDate.of(2024, 7, 13), LocalDate.of(2024, 7, 16)))
                     .priceStr(fields.get(PRICE_STR))
-                    .price(new EventPrice(new BigDecimal("12.34"), new BigDecimal("567.89")))
+                    .price(new EventPriceDTO(new BigDecimal("12.34"), new BigDecimal("567.89")))
                     .eventLink(fields.get(EVENT_LINK))
                     .imageLink(fields.get(IMAGE_LINK))
                     .build();

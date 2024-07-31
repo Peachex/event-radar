@@ -4,7 +4,7 @@ import by.klevitov.eventparser.creator.EventCreator;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import by.klevitov.eventradarcommon.dto.ByCardEventDTO;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
-import by.klevitov.eventradarcommon.dto.Location;
+import by.klevitov.eventradarcommon.dto.LocationDTO;
 
 import java.util.Map;
 
@@ -29,7 +29,7 @@ public class ByCardEventCreator implements EventCreator {
     public AbstractEventDTO create(final Map<String, String> fields) {
         return ByCardEventDTO.builder()
                 .title(fields.get(TITLE))
-                .location(new Location(fields.get(LOCATION_COUNTRY), fields.get(LOCATION_CITY)))
+                .location(new LocationDTO(fields.get(LOCATION_COUNTRY), fields.get(LOCATION_CITY)))
                 .category(fields.get(CATEGORY))
                 .sourceType(EventSourceType.valueOf(fields.get(SOURCE_TYPE)))
                 .dateStr(fields.get(DATE_STR))
