@@ -13,8 +13,8 @@ import by.klevitov.eventpersistor.persistor.repository.LocationRepository;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import by.klevitov.eventradarcommon.dto.AfishaRelaxEventDTO;
 import by.klevitov.eventradarcommon.dto.ByCardEventDTO;
-import by.klevitov.eventradarcommon.dto.EventDateDTO;
-import by.klevitov.eventradarcommon.dto.EventPriceDTO;
+import by.klevitov.eventradarcommon.dto.EventDate;
+import by.klevitov.eventradarcommon.dto.EventPrice;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -85,7 +85,7 @@ public class TestController {
                         .location(new Location(afishaRelaxEventDTO.getLocation().getCountry(),
                                 afishaRelaxEventDTO.getLocation().getCity()))
                         .dateStr(afishaRelaxEventDTO.getDateStr())
-                        .date(new EventDateDTO(afishaRelaxEventDTO.getDate().getStartDate(),
+                        .date(new EventDate(afishaRelaxEventDTO.getDate().getStartDate(),
                                 afishaRelaxEventDTO.getDate().getEndDate()))
                         .category(afishaRelaxEventDTO.getCategory())
                         .sourceType(EventSourceType.valueOf(afishaRelaxEventDTO.getSourceType().name()))
@@ -100,12 +100,12 @@ public class TestController {
                         .location(new Location(byCardEventDTO.getLocation().getCountry(),
                                 byCardEventDTO.getLocation().getCity()))
                         .dateStr(byCardEventDTO.getDateStr())
-                        .date(new EventDateDTO(byCardEventDTO.getDate().getStartDate(),
+                        .date(new EventDate(byCardEventDTO.getDate().getStartDate(),
                                 byCardEventDTO.getDate().getEndDate()))
                         .category(byCardEventDTO.getCategory())
                         .sourceType(EventSourceType.valueOf(byCardEventDTO.getSourceType().name()))
                         .priceStr(byCardEventDTO.getPriceStr())
-                        .price(new EventPriceDTO(byCardEventDTO.getPrice().getMinPrice(),
+                        .price(new EventPrice(byCardEventDTO.getPrice().getMinPrice(),
                                 byCardEventDTO.getPrice().getMaxPrice()))
                         .eventLink(byCardEventDTO.getEventLink())
                         .imageLink(byCardEventDTO.getImageLink())

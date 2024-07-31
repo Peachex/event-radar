@@ -1,6 +1,6 @@
 package by.klevitov.eventpersistor.persistor.entity;
 
-import by.klevitov.eventradarcommon.dto.EventDateDTO;
+import by.klevitov.eventradarcommon.dto.EventDate;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +22,7 @@ public class AbstractEvent {
     @DBRef
     private Location location;
     private String dateStr;
-    private EventDateDTO date;
+    private EventDate date;
     private String category;
     private EventSourceType sourceType;
 }
