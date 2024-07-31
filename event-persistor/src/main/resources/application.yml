@@ -8,7 +8,7 @@ spring:
     mongodb:
       host: 'localhost'
       port: 27018
-      database: 'testdatabase'
+      database: 'event_radar'
       username: 'root'
       password: 'root'
       authentication-database: 'admin'
@@ -16,3 +16,7 @@ spring:
       socket-timeout: 3000
       max-wait-time: 3000
       server-selection-timeout: 3000
+
+logging:
+  level:
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
