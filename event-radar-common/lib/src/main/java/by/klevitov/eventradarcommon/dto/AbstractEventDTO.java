@@ -11,9 +11,9 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public abstract class AbstractEventDTO {
     private String title;
-    private Location location;
+    private LocationDTO location;
     private String dateStr;
-    private EventDate date;
+    private EventDateDTO date;
     private String category;
     private EventSourceType sourceType;
 }

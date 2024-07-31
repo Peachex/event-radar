@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventPrice {
+public class EventPriceDTO {
     private BigDecimal minPrice;
     private BigDecimal maxPrice;
 }
