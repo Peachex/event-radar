@@ -22,6 +22,7 @@ import static by.klevitov.eventparser.constant.ExceptionMessage.NULL_OR_EMPTY_DA
 import static by.klevitov.eventparser.constant.ExceptionMessage.NULL_OR_EMPTY_FIELDS_MAP;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Log4j2
 public final class EventParserUtil {
@@ -41,14 +42,16 @@ public final class EventParserUtil {
 
     public static void parseDateAndAddToMap(final Map<String, String> fields) {
         throwExceptionInCaseOfEmptyMap(fields);
-        Pair<LocalDate, LocalDate> dates = Pair.of(null, null);
-        try {
-            dates = convertStringToLocalDate(fields.get(DATE_STR), null);
-        } catch (DateConversionException e) {
-            log.warn(String.format(NULL_DATE_DUE_TO_ERROR_DURING_CONVERSION, e));
-        } finally {
-            fields.put(START_DATE, dates.getLeft() != null ? dates.getLeft().toString() : null);
-            fields.put(END_DATE, dates.getRight() != null ? dates.getRight().toString() : null);
+        if (isNotEmpty(fields.get(DATE_STR))) {
+            Pair<LocalDate, LocalDate> dates = Pair.of(null, null);
+            try {
+                dates = convertStringToLocalDate(fields.get(DATE_STR), null);
+            } catch (DateConversionException e) {
+                log.warn(String.format(NULL_DATE_DUE_TO_ERROR_DURING_CONVERSION, e));
+            } finally {
+                fields.put(START_DATE, dates.getLeft() != null ? dates.getLeft().toString() : null);
+                fields.put(END_DATE, dates.getRight() != null ? dates.getRight().toString() : null);
+            }
         }
     }
 
