@@ -17,6 +17,7 @@ import static by.klevitov.eventparser.constant.ExceptionMessage.NULL_OR_EMPTY_FI
 import static by.klevitov.eventparser.constant.ExceptionMessage.NULL_OR_EMPTY_PRICE;
 import static by.klevitov.eventparser.constant.ExceptionMessage.NULL_PRICE_DUE_TO_ERROR_DURING_CONVERSION;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Log4j2
 public final class ByCardEventParserUtil {
@@ -32,14 +33,16 @@ public final class ByCardEventParserUtil {
 
     public static void parsePriceAndAddToMap(final Map<String, String> fields) {
         throwExceptionInCaseOfEmptyMap(fields);
-        Pair<BigDecimal, BigDecimal> prices = Pair.of(null, null);
-        try {
-            prices = convertStringToBigDecimal(fields.get(PRICE_STR), null);
-        } catch (PriceConversionException e) {
-            log.warn(String.format(NULL_PRICE_DUE_TO_ERROR_DURING_CONVERSION, e));
-        } finally {
-            fields.put(MIN_PRICE, prices.getLeft() != null ? prices.getLeft().toString() : null);
-            fields.put(MAX_PRICE, prices.getRight() != null ? prices.getRight().toString() : null);
+        if (isNotEmpty(fields.get(PRICE_STR))) {
+            Pair<BigDecimal, BigDecimal> prices = Pair.of(null, null);
+            try {
+                prices = convertStringToBigDecimal(fields.get(PRICE_STR), null);
+            } catch (PriceConversionException e) {
+                log.warn(String.format(NULL_PRICE_DUE_TO_ERROR_DURING_CONVERSION, e));
+            } finally {
+                fields.put(MIN_PRICE, prices.getLeft() != null ? prices.getLeft().toString() : null);
+                fields.put(MAX_PRICE, prices.getRight() != null ? prices.getRight().toString() : null);
+            }
         }
     }
 
