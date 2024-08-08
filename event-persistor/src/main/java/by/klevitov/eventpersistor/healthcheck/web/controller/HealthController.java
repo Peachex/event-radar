@@ -31,6 +31,4 @@ public class HealthController {
         Pair<String, String> databaseAvailabilityResult = resourceCheckService.checkDatabaseAvailabilityAndGetResult();
         return List.of(databaseAvailabilityResult);
     }
-
-    //todo Select bean injection strategy.
 }

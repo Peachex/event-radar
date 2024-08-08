@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
-import static by.klevitov.eventpersistor.healthcheck.constant.ExceptionMessage.DATABASE_IS_NOT_AVAILABLE;
+import static by.klevitov.eventpersistor.healthcheck.constant.HealthCheckExceptionMessage.DATABASE_IS_NOT_AVAILABLE;
 import static by.klevitov.eventpersistor.healthcheck.constant.HealthCheckMessage.DATABASE_HEALTH_DOWN_VALUE;
 import static by.klevitov.eventpersistor.healthcheck.constant.HealthCheckMessage.DATABASE_HEALTH_KEY;
 import static by.klevitov.eventpersistor.healthcheck.constant.HealthCheckMessage.DATABASE_HEALTH_UP_VALUE;
 
-@Service
 @Log4j2
+@Service
 public class ResourceCheckServiceImpl implements ResourceCheckService {
     private final MongoClient mongoClient;
     @Value("${spring.data.mongodb.database}")
