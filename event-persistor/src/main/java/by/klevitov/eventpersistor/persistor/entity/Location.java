@@ -21,6 +21,11 @@ public class Location {
     public Location(String country, String city) {
         this.country = country;
         this.city = city;
+        this.id = createIdBasedOnCountryAndCity();
+    }
+
+    public String createIdBasedOnCountryAndCity() {
+        return String.format("%s:%s", country.toLowerCase(), city.toLowerCase());
     }
 
     //todo Instances of this class should be saved in MongoDB separately of Event instance.

@@ -6,5 +6,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 public interface LocationRepository extends MongoRepository<Location, String> {
-    Optional<Location> findByCountryAndCity(String country, String city);
+    Optional<Location> findByCountryAndCityIgnoreCase(String country, String city);
 }
