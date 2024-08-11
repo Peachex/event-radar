@@ -4,6 +4,7 @@ import by.klevitov.eventpersistor.persistor.entity.Location;
 import by.klevitov.eventpersistor.persistor.exception.LocationServiceException;
 import by.klevitov.eventpersistor.persistor.repository.LocationRepository;
 import by.klevitov.eventpersistor.persistor.service.LocationService;
+import by.klevitov.eventpersistor.persistor.util.LocationValidator;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,13 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.LOCATION_ALREADY_EXISTS;
 import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.LOCATION_NOT_FOUND;
-import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.NULL_LOCATION;
-import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.NULL_OR_EMPTY_LOCATION_CITY;
-import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.NULL_OR_EMPTY_LOCATION_COUNTRY;
-import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.NULL_OR_EMPTY_LOCATION_ID;
+import static by.klevitov.eventpersistor.persistor.util.LocationValidator.throwExceptionInCaseOfEmptyId;
+import static by.klevitov.eventpersistor.persistor.util.LocationValidator.validateLocationBeforeCreation;
+import static by.klevitov.eventpersistor.persistor.util.LocationValidator.validateLocationBeforeUpdating;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Log4j2
 @Service
@@ -34,40 +34,20 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public Location create(final Location location) {
-        boolean validateWithId = false;
-        validateLocation(location, validateWithId);
+        validateLocationBeforeCreation(location);
         return repository.findByCountryAndCityIgnoreCase(location.getCountry(), location.getCity())
                 .orElseGet(() -> repository.insert(location));
     }
 
-    private void validateLocation(final Location location, final boolean validateWithId) {
-        if (location == null) {
-            log.error(NULL_LOCATION);
-            throw new LocationServiceException(NULL_LOCATION);
-        }
-        if (isEmpty(location.getCountry())) {
-            log.error(NULL_OR_EMPTY_LOCATION_COUNTRY);
-            throw new LocationServiceException(NULL_OR_EMPTY_LOCATION_COUNTRY);
-        }
-        if (isEmpty(location.getCity())) {
-            log.error(NULL_OR_EMPTY_LOCATION_CITY);
-            throw new LocationServiceException(NULL_OR_EMPTY_LOCATION_CITY);
-        }
-        if (validateWithId) {
-            throwExceptionInCaseOfEmptyId(location.getId());
-        }
-    }
-
     @Override
     public List<Location> createMultiple(final List<Location> locations) {
-        boolean validateWithId = false;
-        locations.forEach(l -> validateLocation(l, validateWithId));
+        locations.forEach(LocationValidator::validateLocationBeforeCreation);
         List<Location> existentLocations = repository.findAll();
         List<Location> nonExistentLocations = createNonExistentLocationsList(locations, existentLocations);
         existentLocations.addAll(repository.saveAll(nonExistentLocations));
         Map<String, Location> existentLocationsWithKey = createLocationsMapWithCountryCityKey(existentLocations);
-        updateLocationsWithId(existentLocations, existentLocationsWithKey);
-        return existentLocations;
+        updateLocationsWithId(locations, existentLocationsWithKey);
+        return locations;
     }
 
     private List<Location> createNonExistentLocationsList(final List<Location> locations,
@@ -89,14 +69,9 @@ public class LocationServiceImpl implements LocationService {
         return locationsMap;
     }
 
-    private void updateLocationsWithId(final List<Location> existentLocations,
+    private void updateLocationsWithId(final List<Location> locations,
                                        final Map<String, Location> existentLocationsWithKey) {
-        existentLocations.forEach(l -> {
-            if (isEmpty(l.getId())) {
-                String id = existentLocationsWithKey.get(l.createIdBasedOnCountryAndCity()).getId();
-                l.setId(id);
-            }
-        });
+        locations.forEach(l -> l.setId(existentLocationsWithKey.get(l.createIdBasedOnCountryAndCity()).getId()));
     }
 
     @Override
@@ -104,13 +79,6 @@ public class LocationServiceImpl implements LocationService {
         throwExceptionInCaseOfEmptyId(id);
         Optional<Location> location = repository.findById(id);
         return location.orElseThrow(() -> createAndLogLocationNotFoundException(id));
-    }
-
-    private void throwExceptionInCaseOfEmptyId(final String id) {
-        if (isEmpty(id)) {
-            log.error(NULL_OR_EMPTY_LOCATION_ID);
-            throw new LocationServiceException(NULL_OR_EMPTY_LOCATION_ID);
-        }
     }
 
     private LocationServiceException createAndLogLocationNotFoundException(final String id) {
@@ -126,19 +94,30 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public Location update(final Location updatedLocation) {
-        boolean validateWithId = true;
-        validateLocation(updatedLocation, validateWithId); //todo User may want to update only one location field.
+        validateLocationBeforeUpdating(updatedLocation);
         Location existentLocation = findById(updatedLocation.getId());
-        updateExistentLocationFields(existentLocation, updatedLocation);
+        updateLocationWithExistentFields(updatedLocation, existentLocation);
+        throwExceptionInCaseOfLocationAlreadyExists(updatedLocation);
         return repository.save(updatedLocation);
     }
 
-    private void updateExistentLocationFields(final Location existingLocation, final Location updatedLocation) {
-        if (isNotEmpty(updatedLocation.getCountry())) {
-            existingLocation.setCountry(updatedLocation.getCountry());
+    private void updateLocationWithExistentFields(final Location updatedLocation, final Location existingLocation) {
+        if (isEmpty(updatedLocation.getCountry())) {
+            updatedLocation.setCountry(existingLocation.getCountry());
         }
-        if (isNotEmpty(updatedLocation.getCity())) {
-            existingLocation.setCity(updatedLocation.getCity());
+        if (isEmpty(updatedLocation.getCity())) {
+            updatedLocation.setCity(existingLocation.getCity());
+        }
+    }
+
+    private void throwExceptionInCaseOfLocationAlreadyExists(final Location location) {
+        final String country = location.getCountry();
+        final String city = location.getCity();
+        final String id = location.getId();
+        if (repository.findByCountryAndCityIgnoreCase(country, city).isPresent()) {
+            final String exceptionMessage = String.format(LOCATION_ALREADY_EXISTS, country, city, id);
+            log.error(exceptionMessage);
+            throw new LocationServiceException(exceptionMessage);
         }
     }
 
@@ -147,6 +126,4 @@ public class LocationServiceImpl implements LocationService {
         throwExceptionInCaseOfEmptyId(id);
         repository.deleteById(id);
     }
-
-    //todo Field validators might be needed.
 }
