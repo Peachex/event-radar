@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="by.klevitov.eventparser.creator.AfishaRelaxEventCreatorTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-08-01T17:08:23" hostname="PEACHEX-LAPTOP" time="0.859">
-  <properties/>
-  <testcase name="test_create()" classname="by.klevitov.eventparser.creator.AfishaRelaxEventCreatorTest" time="0.859"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
