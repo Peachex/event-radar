@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="by.klevitov.eventparser.util.JsoupUtilTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2024-08-01T17:08:26" hostname="PEACHEX-LAPTOP" time="0.997">
+  <properties/>
+  <testcase name="[1] https://afisha.relax.by" classname="by.klevitov.eventparser.util.JsoupUtilTest" time="0.727"/>
+  <testcase name="[2] https://bycard.by" classname="by.klevitov.eventparser.util.JsoupUtilTest" time="0.263"/>
+  <testcase name="test_retrieveDocumentByURL_withNullURL()" classname="by.klevitov.eventparser.util.JsoupUtilTest" time="0.002"/>
+  <testcase name="test_retrieveDocumentByURL_withInvalidURL()" classname="by.klevitov.eventparser.util.JsoupUtilTest" time="0.002"/>
+  <testcase name="test_retrieveDocumentByURL_withEmptyURL()" classname="by.klevitov.eventparser.util.JsoupUtilTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="by.klevitov.eventparser.util.EventParserUtilTest" tests="22" skipped="0" failures="0" errors="0" timestamp="2024-08-01T17:08:26" hostname="PEACHEX-LAPTOP" time="0.028">
+  <properties/>
+  <testcase name="test_convertStringToLocalDate_withValidDateStrAndNullFormatter()" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="[1] (2024-06-11,11 июня)" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="[2] (2024-08-23,с 23 августа)" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="[3] (2024-10-05,по 5 октября)" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="[4] (2024-05-30,до 30 мая)" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="test_convertStringToLocalDate_withEmptyDateStrAndNullFormatter()" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="[1] 11 июня" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.0"/>
+  <testcase name="[2] с 11 июня" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="[3] по 11 июня" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.0"/>
+  <testcase name="[4] до 11 июня" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="test_parseLocalDate_withValidDateWithCustomFormatter()" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="test_convertStringToLocalDate_withNullDateStrAndNullFormatter()" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="test_convertStringToLocalDate_withInvalidDateStrAndNullFormatter()" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="test_convertStringToLocalDate_withValidDateStrAndNotNullFormatter()" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="[1] 11 июня - 15 июля" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.0"/>
+  <testcase name="[2] c 11 июня - по 15 июля" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="test_parseDateAndAddToMap_withNullMap()" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="[1] ({dateStr=11 июня - 31 декабря},{dateStr=11 июня - 31 декабря, endDate=2024-12-31, startDate=2024-06-11})" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="[2] ({dateStr=с 11 июня},{dateStr=с 11 июня, endDate=null, startDate=2024-06-11})" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="[3] ({dateStr=по 31 декабря},{dateStr=по 31 декабря, endDate=2024-12-31, startDate=null})" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="[4] ({dateStr=до 31 декабря},{dateStr=до 31 декабря, endDate=2024-12-31, startDate=null})" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.001"/>
+  <testcase name="[5] ({dateStr=31 декабря},{dateStr=31 декабря, endDate=2024-12-31, startDate=2024-12-31})" classname="by.klevitov.eventparser.util.EventParserUtilTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -40,7 +40,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<Location> createMultiple(final List<Location> locations) {
+    public List<Location> create(final List<Location> locations) {
         locations.forEach(LocationValidator::validateLocationBeforeCreation);
         List<Location> existentLocations = repository.findAll();
         List<Location> nonExistentLocations = createNonExistentLocationsList(locations, existentLocations);
@@ -63,9 +63,9 @@ public class LocationServiceImpl implements LocationService {
         return nonExistentLocations;
     }
 
-    private Map<String, Location> createLocationsMapWithCountryCityKey(final List<Location> locaitons) {
+    private Map<String, Location> createLocationsMapWithCountryCityKey(final List<Location> locations) {
         Map<String, Location> locationsMap = new HashMap<>();
-        locaitons.forEach(l -> locationsMap.put(l.createIdBasedOnCountryAndCity(), l));
+        locations.forEach(l -> locationsMap.put(l.createIdBasedOnCountryAndCity(), l));
         return locationsMap;
     }
 

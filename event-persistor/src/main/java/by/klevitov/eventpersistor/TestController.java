@@ -68,7 +68,7 @@ public class TestController {
 
     @PostMapping("/locations/multiple")
     public List<Location> createMultipleLocations(@RequestBody List<Location> locations) {
-        return locationService.createMultiple(locations);
+        return locationService.create(locations);
     }
 
     @PutMapping("/locations")

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/event-parser.lib.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/event-parser.lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/event-parser.lib.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/event-parser.lib.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/event-parser.lib.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/event-parser.lib.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/event-radar.event-parser.lib.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/event-radar.event-parser.lib.main.iml" />
+    </modules>
+  </component>
+</project>

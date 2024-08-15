@@ -7,7 +7,7 @@ import java.util.List;
 public interface LocationService {
     Location create(final Location location);
 
-    List<Location> createMultiple(final List<Location> locations);
+    List<Location> create(final List<Location> locations);
 
     Location findById(final String id);
 

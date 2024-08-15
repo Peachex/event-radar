@@ -25,4 +25,8 @@ public class AbstractEvent {
     private EventDate date;
     private String category;
     private EventSourceType sourceType;
+
+    public String createIdBasedOnTitleAndSourceType() {
+        return String.format("%s:%s", title.toLowerCase(), sourceType.name().toLowerCase());
+    }
 }

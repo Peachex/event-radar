@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="by.klevitov.eventparser.util.ByCardEventParserUtilTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2024-08-01T17:08:26" hostname="PEACHEX-LAPTOP" time="0.068">
+  <properties/>
+  <testcase name="[1] ({priceStr=от 10.00 - до 33.00 руб.},{priceStr=от 10.00 - до 33.00 руб., minPrice=10.00, maxPrice=33.00})" classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.029"/>
+  <testcase name="[2] ({priceStr=от 10.00 руб.},{priceStr=от 10.00 руб., minPrice=10.00, maxPrice=null})" classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.001"/>
+  <testcase name="[3] ({priceStr=до 10.00 руб.},{priceStr=до 10.00 руб., minPrice=null, maxPrice=10.00})" classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.002"/>
+  <testcase name="[4] ({priceStr=10.00 руб},{priceStr=10.00 руб, minPrice=10.00, maxPrice=10.00})" classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.0"/>
+  <testcase name="test_convertStringToBigDecimal_withNullPriceStrAndNullPattern()" classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.001"/>
+  <testcase name="test_convertStringToBigDecimal_withValidPriceStrAndNullPattern()" classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.0"/>
+  <testcase name="test_parseBigDecimalPrice_withValidPriceWithCustomPattern()" classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.001"/>
+  <testcase name="test_convertStringToBigDecimal_withEmptyPriceStrAndNullPattern()" classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.001"/>
+  <testcase name="test_convertStringToBigDecimal_withInvalidPriceStrAndNullPattern()" classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.002"/>
+  <testcase name="test_convertStringToBigDecimal_withValidPriceStrAndNotNullPattern()" classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.0"/>
+  <testcase name="[1] 10.00 руб." classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.002"/>
+  <testcase name="[2] от 10.00 руб." classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.0"/>
+  <testcase name="[3] до 10.00 руб." classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.0"/>
+  <testcase name="test_parsePriceAndAddToMap_withNullMap()" classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.001"/>
+  <testcase name="[1] 10.00 - 33.00 руб." classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.005"/>
+  <testcase name="[2] от 10.00 - до 33.00 руб." classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.001"/>
+  <testcase name="[1] (10.00,10.00 руб.)" classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.001"/>
+  <testcase name="[2] (123.45,от 123.45 руб.)" classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.001"/>
+  <testcase name="[3] (20,до 20 руб.)" classname="by.klevitov.eventparser.util.ByCardEventParserUtilTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

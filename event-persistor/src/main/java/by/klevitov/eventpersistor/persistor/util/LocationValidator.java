@@ -1,7 +1,7 @@
 package by.klevitov.eventpersistor.persistor.util;
 
 import by.klevitov.eventpersistor.persistor.entity.Location;
-import by.klevitov.eventpersistor.persistor.exception.LocationServiceException;
+import by.klevitov.eventpersistor.persistor.exception.LocationValidatorException;
 import lombok.extern.log4j.Log4j2;
 
 import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.NULL_LOCATION;
@@ -26,21 +26,21 @@ public final class LocationValidator {
     private static void throwExceptionInCaseOfNullOrEmptyLocation(final Location location) {
         if (location == null) {
             log.error(NULL_LOCATION);
-            throw new LocationServiceException(NULL_LOCATION);
+            throw new LocationValidatorException(NULL_LOCATION);
         }
     }
 
     private static void throwExceptionInCaseOfEmptyCountry(final String country) {
         if (isEmpty(country)) {
             log.error(NULL_OR_EMPTY_LOCATION_COUNTRY);
-            throw new LocationServiceException(NULL_OR_EMPTY_LOCATION_COUNTRY);
+            throw new LocationValidatorException(NULL_OR_EMPTY_LOCATION_COUNTRY);
         }
     }
 
     private static void throwExceptionInCaseOfEmptyCity(final String city) {
         if (isEmpty(city)) {
             log.error(NULL_OR_EMPTY_LOCATION_CITY);
-            throw new LocationServiceException(NULL_OR_EMPTY_LOCATION_CITY);
+            throw new LocationValidatorException(NULL_OR_EMPTY_LOCATION_CITY);
         }
     }
 
@@ -53,14 +53,14 @@ public final class LocationValidator {
     public static void throwExceptionInCaseOfEmptyId(final String id) {
         if (isEmpty(id)) {
             log.error(NULL_OR_EMPTY_LOCATION_ID);
-            throw new LocationServiceException(NULL_OR_EMPTY_LOCATION_ID);
+            throw new LocationValidatorException(NULL_OR_EMPTY_LOCATION_ID);
         }
     }
 
     private static void throwExceptionInCaseOfEmptyCountryAndCity(final String country, final String city) {
         if (isEmpty(country) && isEmpty(city)) {
             log.error(NULL_OR_EMPTY_LOCATION_COUNTRY_OR_CITY);
-            throw new LocationServiceException(NULL_OR_EMPTY_LOCATION_COUNTRY_OR_CITY);
+            throw new LocationValidatorException(NULL_OR_EMPTY_LOCATION_COUNTRY_OR_CITY);
         }
     }
 }

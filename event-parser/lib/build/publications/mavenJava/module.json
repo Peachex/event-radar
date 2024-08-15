@@ -1,0 +1,97 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "event-parser",
+    "module": "lib",
+    "version": "1.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.7"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "lib-1.0.jar",
+          "url": "lib-1.0.jar",
+          "size": 32493,
+          "sha512": "391f0151d9f804281bb8e5f0e67e963096e6880a3e87bb48a2576c8f70338683b13fad18b93aa61c6f47f306ea8af2924a7084daffccb5e8259171f006e31a67",
+          "sha256": "897c17146d7be51d878476bc90e0736f8ed0c4e265f8be84308207c75bec1dc9",
+          "sha1": "05b59cc1187130adead48b73f1550916c72798d4",
+          "md5": "13d0aa9f59cc47b9f39e12617a2496d9"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "event-radar-common",
+          "module": "lib",
+          "version": {
+            "requires": "1.0"
+          }
+        },
+        {
+          "group": "org.jsoup",
+          "module": "jsoup",
+          "version": {
+            "requires": "1.17.2"
+          }
+        },
+        {
+          "group": "org.apache.commons",
+          "module": "commons-lang3",
+          "version": {
+            "requires": "3.14.0"
+          }
+        },
+        {
+          "group": "org.apache.logging.log4j",
+          "module": "log4j-api",
+          "version": {
+            "requires": "2.20.0"
+          }
+        },
+        {
+          "group": "org.apache.logging.log4j",
+          "module": "log4j-core",
+          "version": {
+            "requires": "2.20.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "lib-1.0.jar",
+          "url": "lib-1.0.jar",
+          "size": 32493,
+          "sha512": "391f0151d9f804281bb8e5f0e67e963096e6880a3e87bb48a2576c8f70338683b13fad18b93aa61c6f47f306ea8af2924a7084daffccb5e8259171f006e31a67",
+          "sha256": "897c17146d7be51d878476bc90e0736f8ed0c4e265f8be84308207c75bec1dc9",
+          "sha1": "05b59cc1187130adead48b73f1550916c72798d4",
+          "md5": "13d0aa9f59cc47b9f39e12617a2496d9"
+        }
+      ]
+    }
+  ]
+}
