@@ -40,7 +40,7 @@ public class EventServiceImpl implements EventService {
     public AbstractEvent create(AbstractEvent event) {
         validateEventBeforeCreation(event);
         processLocationCreation(event);
-        return createEventOrGetExistentOne(event);
+        return createEventOrGetExistingOne(event);
     }
 
     private void processLocationCreation(final AbstractEvent event) {
@@ -48,7 +48,7 @@ public class EventServiceImpl implements EventService {
         event.setLocation(locationWithId);
     }
 
-    private AbstractEvent createEventOrGetExistentOne(final AbstractEvent event) {
+    private AbstractEvent createEventOrGetExistingOne(final AbstractEvent event) {
         return repository.findFirstByTitleAndCategoryIgnoreCaseAndSourceType(
                         event.getTitle(),
                         event.getCategory(),
