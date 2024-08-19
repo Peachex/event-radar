@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
+//@EnableTransactionManagement
 public class MongoConfig {
     private static final String CONNECTION_STRING_FORMAT = "mongodb://%s:%s@%s:%d/%s?authSource=%s";
     @Value("${spring.data.mongodb.host}")
@@ -51,6 +52,11 @@ public class MongoConfig {
                 .build();
         return MongoClients.create(settings);
     }
+
+//    @Bean
+//    public MongoTransactionManager transactionManager(MongoDatabaseFactory databaseFactory) {
+//        return new MongoTransactionManager(databaseFactory);
+//    }
 
     //todo Review timeouts and update if necessary.
 }

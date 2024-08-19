@@ -10,6 +10,7 @@ import by.klevitov.eventpersistor.persistor.util.EventValidator;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,16 +35,12 @@ public class EventServiceImpl implements EventService {
         this.repository = repository;
     }
 
+    //@Transactional
     @Override
     public AbstractEvent create(AbstractEvent event) {
-        //todo Add transaction to save event and location in one operation.
         validateEventBeforeCreation(event);
         processLocationCreation(event);
-        return repository.findFirstByTitleAndCategoryIgnoreCaseAndSourceType(
-                        event.getTitle(),
-                        event.getCategory(),
-                        event.getSourceType())
-                .orElseGet(() -> repository.insert(event));
+        return createEventOrGetExistentOne(event);
     }
 
     private void processLocationCreation(final AbstractEvent event) {
@@ -51,21 +48,36 @@ public class EventServiceImpl implements EventService {
         event.setLocation(locationWithId);
     }
 
+    private AbstractEvent createEventOrGetExistentOne(final AbstractEvent event) {
+        return repository.findFirstByTitleAndCategoryIgnoreCaseAndSourceType(
+                        event.getTitle(),
+                        event.getCategory(),
+                        event.getSourceType())
+                .orElseGet(() -> repository.insert(event));
+    }
+
+    @Transactional
     @Override
     public List<AbstractEvent> create(List<AbstractEvent> events) {
         //todo Add transaction to save event and location in one operation.
         events.forEach(EventValidator::validateEventBeforeCreation);
-        locationService.create(createLocationsListFromEvents(events));
-        List<AbstractEvent> existentEvents = repository.findAll();
-        List<AbstractEvent> nonExistentEvents = createNonExistentEventsList(events, existentEvents);
-        existentEvents.addAll(repository.saveAll(nonExistentEvents));
-        Map<String, AbstractEvent> existentEventsWithKey = createEventsMapWithTitleAndSourceTypeKey(existentEvents);
-        updateEventsWithId(events, existentEventsWithKey);
-        return events;
+        processLocationsCreation(events);
+        return createEventsWithoutDuplication(events);
     }
 
-    private List<Location> createLocationsListFromEvents(final List<AbstractEvent> events) {
-        return events.stream().map(AbstractEvent::getLocation).toList();
+    private void processLocationsCreation(final List<AbstractEvent> events) {
+        List<Location> locations = events.stream().map(AbstractEvent::getLocation).toList();
+        locationService.create(locations);
+    }
+
+    private List<AbstractEvent> createEventsWithoutDuplication(final List<AbstractEvent> events) {
+        throw new RuntimeException();
+        //        List<AbstractEvent> existentEvents = repository.findAll();
+//        List<AbstractEvent> nonExistentEvents = createNonExistentEventsList(events, existentEvents);
+//        existentEvents.addAll(repository.saveAll(nonExistentEvents));
+//        Map<String, AbstractEvent> existentEventsWithKey = createEventsMapWithTitleAndSourceTypeKey(existentEvents);
+//        updateEventsWithId(events, existentEventsWithKey);
+//        return existentEvents;
     }
 
     private List<AbstractEvent> createNonExistentEventsList(final List<AbstractEvent> events,
