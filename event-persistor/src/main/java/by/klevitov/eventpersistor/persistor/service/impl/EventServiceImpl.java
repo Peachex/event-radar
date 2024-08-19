@@ -10,7 +10,6 @@ import by.klevitov.eventpersistor.persistor.util.EventValidator;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,7 +55,7 @@ public class EventServiceImpl implements EventService {
                 .orElseGet(() -> repository.insert(event));
     }
 
-    @Transactional
+    //@Transactional
     @Override
     public List<AbstractEvent> create(List<AbstractEvent> events) {
         //todo Add transaction to save event and location in one operation.
@@ -71,13 +70,12 @@ public class EventServiceImpl implements EventService {
     }
 
     private List<AbstractEvent> createEventsWithoutDuplication(final List<AbstractEvent> events) {
-        throw new RuntimeException();
-        //        List<AbstractEvent> existentEvents = repository.findAll();
-//        List<AbstractEvent> nonExistentEvents = createNonExistentEventsList(events, existentEvents);
-//        existentEvents.addAll(repository.saveAll(nonExistentEvents));
-//        Map<String, AbstractEvent> existentEventsWithKey = createEventsMapWithTitleAndSourceTypeKey(existentEvents);
-//        updateEventsWithId(events, existentEventsWithKey);
-//        return existentEvents;
+        List<AbstractEvent> existentEvents = repository.findAll();
+        List<AbstractEvent> nonExistentEvents = createNonExistentEventsList(events, existentEvents);
+        existentEvents.addAll(repository.saveAll(nonExistentEvents));
+        Map<String, AbstractEvent> existentEventsWithKey = createEventsMapWithTitleAndSourceTypeKey(existentEvents);
+        updateEventsWithId(events, existentEventsWithKey);
+        return existentEvents;
     }
 
     private List<AbstractEvent> createNonExistentEventsList(final List<AbstractEvent> events,
