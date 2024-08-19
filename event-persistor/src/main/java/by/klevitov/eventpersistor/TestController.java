@@ -10,6 +10,7 @@ import by.klevitov.eventpersistor.persistor.entity.ByCardEvent;
 import by.klevitov.eventpersistor.persistor.entity.Location;
 import by.klevitov.eventpersistor.persistor.repository.EventRepository;
 import by.klevitov.eventpersistor.persistor.repository.LocationRepository;
+import by.klevitov.eventpersistor.persistor.service.EventService;
 import by.klevitov.eventpersistor.persistor.service.LocationService;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import by.klevitov.eventradarcommon.dto.AfishaRelaxEventDTO;
@@ -27,11 +28,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @RestController
 public class TestController {
@@ -45,10 +43,37 @@ public class TestController {
     @Autowired
     private LocationService locationService;
 
+    @Autowired
+    private EventService eventService;
+
     @GetMapping("/events")
-    public List<AbstractEvent> findAllEvents() {
-        List<AbstractEvent> events = eventRepository.findAll();
-        return events;
+    public List<AbstractEvent> findEvents() {
+        return eventService.findAll();
+    }
+
+//    @PostMapping("/events")
+//    public AbstractEvent createEvent(@RequestBody AbstractEvent event) {
+//        return eventService.create(event);
+//    }
+
+    @PostMapping("/events/multiple")
+    public List<AbstractEvent> createEvents(@RequestBody List<AbstractEvent> events) {
+        return eventService.create(events);
+    }
+
+    @PutMapping("/events")
+    public AbstractEvent updateEvent(@RequestBody AbstractEvent event) {
+        return eventService.update(event);
+    }
+
+    @DeleteMapping("/events/{id}")
+    public void deleteEvent(@PathVariable String id) {
+        eventService.delete(id);
+    }
+
+    @GetMapping("/events/{id}")
+    public AbstractEvent findById(@PathVariable String id) {
+        return eventService.findById(id);
     }
 
     @GetMapping("/locations")
@@ -105,36 +130,36 @@ public class TestController {
 //    }
 
     @PostMapping("/events")
-    public void createEvents() throws EventParserServiceException {
+    public List<AbstractEvent> createEvents() throws EventParserServiceException {
         EventParserService parserService = new EventParserServiceImpl();
-        Map<by.klevitov.eventradarcommon.dto.EventSourceType, EventParser> availableParsers = parserService.retrieveAvailableParsers();
+        Map<EventSourceType, EventParser> availableParsers = parserService.retrieveAvailableParsers();
         List<AbstractEvent> events = new ArrayList<>();
-        Set<Location> uniqueLocationsFromEvents = new LinkedHashSet<>();
 
         for (EventParser parser : availableParsers.values()) {
             List<AbstractEventDTO> eventsDTO = parserService.retrieveEvents(parser);
             for (AbstractEventDTO abstractEventDTO : eventsDTO) {
                 AbstractEvent event = convertEventDTO(abstractEventDTO);
-                event.setLocation(new Location("testCountry", "testCity"));
-                uniqueLocationsFromEvents.add(event.getLocation());
                 events.add(event);
             }
         }
+        return eventService.create(events);
+    }
 
-        List<Location> existingLocations = locationRepository.findAll();
-        List<Location> locationsNeedsToBeSaved = new ArrayList<>(uniqueLocationsFromEvents);
-        locationsNeedsToBeSaved.removeAll(existingLocations);
-        existingLocations.addAll(locationRepository.saveAll(locationsNeedsToBeSaved));
+    @PostMapping("/events/single")
+    public AbstractEvent createEvent() throws EventParserServiceException {
+        EventParserService parserService = new EventParserServiceImpl();
+        Map<EventSourceType, EventParser> availableParsers = parserService.retrieveAvailableParsers();
+        List<AbstractEvent> events = new ArrayList<>();
 
-        Map<String, Location> locationsWithIdAndKey = new HashMap<>();
-        existingLocations.forEach(l -> locationsWithIdAndKey.put(l.getCountry() + l.getCity(), l));
-
-        for (AbstractEvent event : events) {
-            Location locationWithId = locationsWithIdAndKey.get(event.getLocation().getCountry() + event.getLocation().getCity());
-            event.setLocation(locationWithId);
+        for (EventParser parser : availableParsers.values()) {
+            List<AbstractEventDTO> eventsDTO = parserService.retrieveEvents(parser);
+            for (AbstractEventDTO abstractEventDTO : eventsDTO) {
+                AbstractEvent event = convertEventDTO(abstractEventDTO);
+                events.add(event);
+            }
         }
-
-        eventRepository.saveAll(events);
+        AbstractEvent eventToCreate = events.get(0);
+        return eventService.create(eventToCreate);
     }
 
     private AbstractEvent convertEventDTO(AbstractEventDTO abstractEventDTO) {

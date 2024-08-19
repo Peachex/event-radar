@@ -7,5 +7,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 public interface EventRepository extends MongoRepository<AbstractEvent, String> {
-    Optional<AbstractEvent> findByTitleAndSourceTypeIgnoreCase(String title, EventSourceType sourceType);
+    Optional<AbstractEvent> findFirstByTitleAndCategoryIgnoreCaseAndSourceType(String title, String category,
+                                                                               EventSourceType sourceType);
 }

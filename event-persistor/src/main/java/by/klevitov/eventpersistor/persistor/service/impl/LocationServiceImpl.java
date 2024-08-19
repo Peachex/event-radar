@@ -9,11 +9,12 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.LOCATION_ALREADY_EXISTS;
 import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.LOCATION_NOT_FOUND;
@@ -52,7 +53,7 @@ public class LocationServiceImpl implements LocationService {
 
     private List<Location> createNonExistentLocationsList(final List<Location> locations,
                                                           final List<Location> existentLocations) {
-        List<Location> nonExistentLocations = new ArrayList<>();
+        Set<Location> nonExistentLocations = new HashSet<>();
         Map<String, Location> locationsWithKey = createLocationsMapWithCountryCityKey(existentLocations);
         locations.forEach(l -> {
             String locationKey = l.createIdBasedOnCountryAndCity();
@@ -60,7 +61,7 @@ public class LocationServiceImpl implements LocationService {
                 nonExistentLocations.add(l);
             }
         });
-        return nonExistentLocations;
+        return nonExistentLocations.stream().toList();
     }
 
     private Map<String, Location> createLocationsMapWithCountryCityKey(final List<Location> locations) {

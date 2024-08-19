@@ -26,7 +26,7 @@ public class AbstractEvent {
     private String category;
     private EventSourceType sourceType;
 
-    public String createIdBasedOnTitleAndSourceType() {
-        return String.format("%s:%s", title.toLowerCase(), sourceType.name().toLowerCase());
+    public String createKeyForComparing() {
+        return String.format("%s:%s:%s", title.toLowerCase(), category, sourceType.name().toLowerCase());
     }
 }
