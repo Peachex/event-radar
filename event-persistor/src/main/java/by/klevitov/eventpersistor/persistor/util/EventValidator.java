@@ -60,4 +60,9 @@ public final class EventValidator {
             throw new LocationValidatorException(NULL_OR_EMPTY_EVENT_ID);
         }
     }
+
+    public static void validateEventBeforeUpdating(final AbstractEvent event) {
+        throwExceptionInCaseOfNullOrEmptyEvent(event);
+        throwExceptionInCaseOfEmptyId(event.getId());
+    }
 }

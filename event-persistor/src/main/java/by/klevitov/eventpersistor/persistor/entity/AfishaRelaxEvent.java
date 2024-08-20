@@ -18,4 +18,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class AfishaRelaxEvent extends AbstractEvent {
     private String eventLink;
     private String imageLink;
+
+    @Override
+    public void copyValuesForNullOrEmptyFieldsFromEvent(AbstractEvent source) {
+        if (source instanceof AfishaRelaxEvent sourceEvent) {
+            super.copyValuesForNullOrEmptyFieldsFromEvent(sourceEvent);
+            this.eventLink = (this.eventLink == null ? sourceEvent.eventLink : eventLink);
+            this.imageLink = (this.imageLink == null ? sourceEvent.imageLink : imageLink);
+        }
+    }
 }

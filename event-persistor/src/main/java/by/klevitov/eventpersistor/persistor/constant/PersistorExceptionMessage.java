@@ -28,6 +28,9 @@ public final class PersistorExceptionMessage {
 
     public static final String EVENT_NOT_FOUND = "Cannot find event with id: '%s'";
 
+    public static final String EVENT_ALREADY_EXISTS = "Event with title: '%s', category: '%s', source type: '%s' " +
+            "already exists. Event id: '%s'.";
+
     private PersistorExceptionMessage() {
     }
 }

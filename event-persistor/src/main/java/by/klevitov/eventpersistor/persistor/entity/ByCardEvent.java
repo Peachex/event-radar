@@ -21,4 +21,26 @@ public class ByCardEvent extends AbstractEvent {
     private EventPrice price;
     private String eventLink;
     private String imageLink;
+
+    @Override
+    public void copyValuesForNullOrEmptyFieldsFromEvent(AbstractEvent source) {
+        if (source instanceof ByCardEvent sourceEvent) {
+            super.copyValuesForNullOrEmptyFieldsFromEvent(sourceEvent);
+            this.priceStr = (this.priceStr == null ? sourceEvent.priceStr : priceStr);
+            this.eventLink = (this.eventLink == null ? sourceEvent.eventLink : eventLink);
+            this.imageLink = (this.imageLink == null ? sourceEvent.imageLink : imageLink);
+            this.price = createUpdatedPrice(sourceEvent.price);
+        }
+    }
+
+    private EventPrice createUpdatedPrice(final EventPrice source) {
+        if (price == null) {
+            return source;
+        }
+        this.price.setMinPrice(this.price.getMinPrice() == null
+                ? source.getMinPrice() : price.getMinPrice());
+        this.price.setMaxPrice(this.price.getMaxPrice() == null
+                ? source.getMaxPrice() : price.getMaxPrice());
+        return source;
+    }
 }

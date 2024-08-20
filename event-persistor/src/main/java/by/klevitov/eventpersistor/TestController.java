@@ -145,6 +145,11 @@ public class TestController {
         return eventService.create(events);
     }
 
+    @PostMapping("/events/single/custom")
+    public AbstractEvent createEvent(@RequestBody AfishaRelaxEvent event) throws EventParserServiceException {
+        return eventService.create(event);
+    }
+
     @PostMapping("/events/single")
     public AbstractEvent createEvent() throws EventParserServiceException {
         EventParserService parserService = new EventParserServiceImpl();

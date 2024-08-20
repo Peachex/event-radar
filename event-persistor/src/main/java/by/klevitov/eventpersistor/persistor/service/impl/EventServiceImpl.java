@@ -7,6 +7,7 @@ import by.klevitov.eventpersistor.persistor.repository.EventRepository;
 import by.klevitov.eventpersistor.persistor.service.EventService;
 import by.klevitov.eventpersistor.persistor.service.LocationService;
 import by.klevitov.eventpersistor.persistor.util.EventValidator;
+import by.klevitov.eventradarcommon.dto.EventSourceType;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.EVENT_ALREADY_EXISTS;
 import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.EVENT_NOT_FOUND;
 import static by.klevitov.eventpersistor.persistor.util.EventValidator.throwExceptionInCaseOfEmptyId;
 import static by.klevitov.eventpersistor.persistor.util.EventValidator.validateEventBeforeCreation;
+import static by.klevitov.eventpersistor.persistor.util.EventValidator.validateEventBeforeUpdating;
 
 @Log4j2
 @Service
@@ -36,7 +39,7 @@ public class EventServiceImpl implements EventService {
 
     //@Transactional
     @Override
-    public AbstractEvent create(AbstractEvent event) {
+    public AbstractEvent create(final AbstractEvent event) {
         validateEventBeforeCreation(event);
         processLocationCreation(event);
         return createEventOrGetExistingOne(event);
@@ -57,7 +60,7 @@ public class EventServiceImpl implements EventService {
 
     //@Transactional
     @Override
-    public List<AbstractEvent> create(List<AbstractEvent> events) {
+    public List<AbstractEvent> create(final List<AbstractEvent> events) {
         //todo Add transaction to save event and location in one operation.
         events.forEach(EventValidator::validateEventBeforeCreation);
         processLocationsCreation(events);
@@ -103,7 +106,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public AbstractEvent findById(String id) {
+    public AbstractEvent findById(final String id) {
         throwExceptionInCaseOfEmptyId(id);
         Optional<AbstractEvent> event = repository.findById(id);
         return event.orElseThrow(() -> createAndLogEventNotFoundException(id));
@@ -121,15 +124,29 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public AbstractEvent update(AbstractEvent updatedEvent) {
+    public AbstractEvent update(final AbstractEvent updatedEvent) {
         //todo Add transaction to update event and location in one operation.
-        //todo AbstractEvent entities will have different fields and should be processed separately. Possible solution
-        // is to make this class abstract and create separate non-abstract subclasses for certain event.
-        return null;
+        validateEventBeforeUpdating(updatedEvent);
+        AbstractEvent existentEvent = findById(updatedEvent.getId());
+        updatedEvent.copyValuesForNullOrEmptyFieldsFromEvent(existentEvent);
+        throwExceptionInCaseOfEventAlreadyExists(updatedEvent);
+        return repository.save(updatedEvent);
+    }
+
+    private void throwExceptionInCaseOfEventAlreadyExists(final AbstractEvent event) {
+        final String title = event.getTitle();
+        final String category = event.getCategory();
+        final EventSourceType sourceType = event.getSourceType();
+        final String id = event.getId();
+        if (repository.findFirstByTitleAndCategoryIgnoreCaseAndSourceType(title, category, sourceType).isPresent()) {
+            final String exceptionMessage = String.format(EVENT_ALREADY_EXISTS, title, category, sourceType, id);
+            log.error(exceptionMessage);
+            throw new EventServiceException(exceptionMessage);
+        }
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(final String id) {
         throwExceptionInCaseOfEmptyId(id);
         //todo Add location deletion only for case when location is not used anymore.
         repository.deleteById(id);
