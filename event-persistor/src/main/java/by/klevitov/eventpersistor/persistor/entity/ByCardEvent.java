@@ -9,6 +9,8 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 @Document(collection = "events")
 @Data
 @AllArgsConstructor
@@ -26,10 +28,10 @@ public class ByCardEvent extends AbstractEvent {
     public void copyValuesForNullOrEmptyFieldsFromEvent(AbstractEvent source) {
         if (source instanceof ByCardEvent sourceEvent) {
             super.copyValuesForNullOrEmptyFieldsFromEvent(sourceEvent);
-            this.priceStr = (this.priceStr == null ? sourceEvent.priceStr : priceStr);
-            this.eventLink = (this.eventLink == null ? sourceEvent.eventLink : eventLink);
-            this.imageLink = (this.imageLink == null ? sourceEvent.imageLink : imageLink);
-            this.price = createUpdatedPrice(sourceEvent.price);
+            priceStr = (isEmpty(priceStr) ? sourceEvent.priceStr : priceStr);
+            eventLink = (isEmpty(eventLink) ? sourceEvent.eventLink : eventLink);
+            imageLink = (isEmpty(imageLink) ? sourceEvent.imageLink : imageLink);
+            price = createUpdatedPrice(sourceEvent.price);
         }
     }
 
@@ -37,10 +39,8 @@ public class ByCardEvent extends AbstractEvent {
         if (price == null) {
             return source;
         }
-        this.price.setMinPrice(this.price.getMinPrice() == null
-                ? source.getMinPrice() : price.getMinPrice());
-        this.price.setMaxPrice(this.price.getMaxPrice() == null
-                ? source.getMaxPrice() : price.getMaxPrice());
+        price.setMinPrice(price.getMinPrice() == null ? source.getMinPrice() : price.getMinPrice());
+        price.setMaxPrice(price.getMaxPrice() == null ? source.getMaxPrice() : price.getMaxPrice());
         return source;
     }
 }

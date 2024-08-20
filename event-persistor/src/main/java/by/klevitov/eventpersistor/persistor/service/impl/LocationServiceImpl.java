@@ -21,7 +21,6 @@ import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMe
 import static by.klevitov.eventpersistor.persistor.util.LocationValidator.throwExceptionInCaseOfEmptyId;
 import static by.klevitov.eventpersistor.persistor.util.LocationValidator.validateLocationBeforeCreation;
 import static by.klevitov.eventpersistor.persistor.util.LocationValidator.validateLocationBeforeUpdating;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Log4j2
 @Service
@@ -36,6 +35,10 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public Location create(final Location location) {
         validateLocationBeforeCreation(location);
+        return createLocationOrGetExistingOne(location);
+    }
+
+    private Location createLocationOrGetExistingOne(final Location location) {
         return repository.findByCountryAndCityIgnoreCase(location.getCountry(), location.getCity())
                 .orElseGet(() -> repository.insert(location));
     }
@@ -43,6 +46,10 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public List<Location> create(final List<Location> locations) {
         locations.forEach(LocationValidator::validateLocationBeforeCreation);
+        return createLocationsWithoutDuplication(locations);
+    }
+
+    private List<Location> createLocationsWithoutDuplication(final List<Location> locations) {
         List<Location> existentLocations = repository.findAll();
         List<Location> nonExistentLocations = createNonExistentLocationsList(locations, existentLocations);
         existentLocations.addAll(repository.saveAll(nonExistentLocations));
@@ -97,18 +104,9 @@ public class LocationServiceImpl implements LocationService {
     public Location update(final Location updatedLocation) {
         validateLocationBeforeUpdating(updatedLocation);
         Location existentLocation = findById(updatedLocation.getId());
-        updateLocationWithExistentFields(updatedLocation, existentLocation);
+        updatedLocation.copyValuesForNullOrEmptyFieldsFromLocation(existentLocation);
         throwExceptionInCaseOfLocationAlreadyExists(updatedLocation);
         return repository.save(updatedLocation);
-    }
-
-    private void updateLocationWithExistentFields(final Location updatedLocation, final Location existingLocation) {
-        if (isEmpty(updatedLocation.getCountry())) {
-            updatedLocation.setCountry(existingLocation.getCountry());
-        }
-        if (isEmpty(updatedLocation.getCity())) {
-            updatedLocation.setCity(existingLocation.getCity());
-        }
     }
 
     private void throwExceptionInCaseOfLocationAlreadyExists(final Location location) {

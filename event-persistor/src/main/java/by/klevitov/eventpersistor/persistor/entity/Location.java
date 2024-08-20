@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 @Document(collection = "event_locations")
 @Data
 @AllArgsConstructor
@@ -27,5 +29,9 @@ public class Location {
         return String.format("%s:%s", country.toLowerCase(), city.toLowerCase());
     }
 
-    //todo Instances of this class should be saved in MongoDB separately of Event instance.
+    public void copyValuesForNullOrEmptyFieldsFromLocation(final Location source) {
+        id = (isEmpty(id) ? source.id : id);
+        country = (isEmpty(country) ? source.country : country);
+        city = (isEmpty(city) ? source.city : city);
+    }
 }

@@ -10,6 +10,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 @Document(collection = "events")
 @Data
 @AllArgsConstructor
@@ -31,23 +33,21 @@ public abstract class AbstractEvent {
     }
 
     public void copyValuesForNullOrEmptyFieldsFromEvent(final AbstractEvent source) {
-        this.id = (this.id == null ? source.id : id);
-        this.title = (this.title == null ? source.title : title);
-        this.dateStr = (this.dateStr == null ? source.dateStr : dateStr);
-        this.date = (this.date == null ? source.date : date);
-        this.category = (this.category == null ? source.category : category);
-        this.sourceType = source.sourceType;
-        this.location = createUpdatedLocation(source.location);
+        id = (isEmpty(id) ? source.id : id);
+        title = (isEmpty(title) ? source.title : title);
+        dateStr = (isEmpty(dateStr) ? source.dateStr : dateStr);
+        date = (date == null ? source.date : date);
+        category = (isEmpty(category) ? source.category : category);
+        sourceType = source.sourceType;
+        location = createUpdatedLocation(source.location);
     }
 
     private Location createUpdatedLocation(final Location source) {
-        if (this.location == null) {
+        if (location == null) {
             return source;
         }
-        this.location.setCountry(this.location.getCountry() == null
-                ? source.getCountry() : location.getCountry());
-        this.location.setCity(this.location.getCity() == null
-                ? source.getCity() : location.getCity());
+        this.location.setCountry(isEmpty(location.getCountry()) ? source.getCountry() : location.getCountry());
+        this.location.setCity(isEmpty(location.getCity()) ? source.getCity() : location.getCity());
         return location;
     }
 }

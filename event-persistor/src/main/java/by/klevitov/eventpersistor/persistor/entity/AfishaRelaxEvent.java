@@ -8,6 +8,8 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 @Document(collection = "events")
 @Data
 @AllArgsConstructor
@@ -23,8 +25,8 @@ public class AfishaRelaxEvent extends AbstractEvent {
     public void copyValuesForNullOrEmptyFieldsFromEvent(AbstractEvent source) {
         if (source instanceof AfishaRelaxEvent sourceEvent) {
             super.copyValuesForNullOrEmptyFieldsFromEvent(sourceEvent);
-            this.eventLink = (this.eventLink == null ? sourceEvent.eventLink : eventLink);
-            this.imageLink = (this.imageLink == null ? sourceEvent.imageLink : imageLink);
+            eventLink = (isEmpty(eventLink) ? sourceEvent.eventLink : eventLink);
+            imageLink = (isEmpty(imageLink) ? sourceEvent.imageLink : imageLink);
         }
     }
 }
