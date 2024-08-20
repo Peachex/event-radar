@@ -129,6 +129,7 @@ public class EventServiceImpl implements EventService {
         validateEventBeforeUpdating(updatedEvent);
         AbstractEvent existentEvent = findById(updatedEvent.getId());
         updatedEvent.copyValuesForNullOrEmptyFieldsFromEvent(existentEvent);
+        processLocationCreation(updatedEvent);
         throwExceptionInCaseOfEventAlreadyExists(updatedEvent);
         return repository.save(updatedEvent);
     }

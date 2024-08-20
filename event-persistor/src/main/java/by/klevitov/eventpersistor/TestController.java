@@ -62,8 +62,25 @@ public class TestController {
     }
 
     @PutMapping("/events")
-    public AbstractEvent updateEvent(@RequestBody AbstractEvent event) {
-        return eventService.update(event);
+    public AbstractEvent updateEvent() throws EventParserServiceException {
+        EventParserService parserService = new EventParserServiceImpl();
+        Map<EventSourceType, EventParser> availableParsers = parserService.retrieveAvailableParsers();
+        List<AbstractEvent> events = new ArrayList<>();
+
+        for (EventParser parser : availableParsers.values()) {
+            List<AbstractEventDTO> eventsDTO = parserService.retrieveEvents(parser);
+            for (AbstractEventDTO abstractEventDTO : eventsDTO) {
+                AbstractEvent event = convertEventDTO(abstractEventDTO);
+                events.add(event);
+            }
+        }
+
+        AbstractEvent eventToUpdate = events.get(0);
+        eventToUpdate = eventService.create(eventToUpdate);
+        eventToUpdate.setTitle("Test title after updating 2.");
+        eventToUpdate.setLocation(new Location(null, "Vitebsk"));
+        eventToUpdate.setDate(null);
+        return eventService.update(eventToUpdate);
     }
 
     @DeleteMapping("/events/{id}")

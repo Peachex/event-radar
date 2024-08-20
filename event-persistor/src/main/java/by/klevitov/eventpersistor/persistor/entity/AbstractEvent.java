@@ -46,8 +46,8 @@ public abstract class AbstractEvent {
         if (location == null) {
             return source;
         }
-        this.location.setCountry(isEmpty(location.getCountry()) ? source.getCountry() : location.getCountry());
-        this.location.setCity(isEmpty(location.getCity()) ? source.getCity() : location.getCity());
+        location.setCountry(isEmpty(location.getCountry()) ? source.getCountry() : location.getCountry());
+        location.setCity(isEmpty(location.getCity()) ? source.getCity() : location.getCity());
         return location;
     }
 }
