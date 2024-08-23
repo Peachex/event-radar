@@ -2,6 +2,7 @@ package by.klevitov.eventpersistor.persistor.service.impl;
 
 import by.klevitov.eventpersistor.persistor.entity.Location;
 import by.klevitov.eventpersistor.persistor.exception.LocationServiceException;
+import by.klevitov.eventpersistor.persistor.repository.EventRepository;
 import by.klevitov.eventpersistor.persistor.repository.LocationRepository;
 import by.klevitov.eventpersistor.persistor.service.LocationService;
 import by.klevitov.eventpersistor.persistor.util.LocationValidator;
@@ -17,6 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.LOCATION_ALREADY_EXISTS;
+import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.LOCATION_IS_IN_USE;
 import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.LOCATION_NOT_FOUND;
 import static by.klevitov.eventpersistor.persistor.util.LocationValidator.throwExceptionInCaseOfEmptyId;
 import static by.klevitov.eventpersistor.persistor.util.LocationValidator.validateLocationBeforeCreation;
@@ -25,11 +27,13 @@ import static by.klevitov.eventpersistor.persistor.util.LocationValidator.valida
 @Log4j2
 @Service
 public class LocationServiceImpl implements LocationService {
-    private final LocationRepository repository;
+    private final LocationRepository locationRepository;
+    private final EventRepository eventRepository;
 
     @Autowired
-    public LocationServiceImpl(LocationRepository repository) {
-        this.repository = repository;
+    public LocationServiceImpl(LocationRepository locationRepository, EventRepository eventRepository) {
+        this.locationRepository = locationRepository;
+        this.eventRepository = eventRepository;
     }
 
     @Override
@@ -39,8 +43,8 @@ public class LocationServiceImpl implements LocationService {
     }
 
     private Location createLocationOrGetExistingOne(final Location location) {
-        return repository.findByCountryAndCityIgnoreCase(location.getCountry(), location.getCity())
-                .orElseGet(() -> repository.insert(location));
+        return locationRepository.findByCountryAndCityIgnoreCase(location.getCountry(), location.getCity())
+                .orElseGet(() -> locationRepository.insert(location));
     }
 
     @Override
@@ -50,9 +54,9 @@ public class LocationServiceImpl implements LocationService {
     }
 
     private List<Location> createLocationsWithoutDuplication(final List<Location> locations) {
-        List<Location> existentLocations = repository.findAll();
+        List<Location> existentLocations = locationRepository.findAll();
         List<Location> nonExistentLocations = createNonExistentLocationsList(locations, existentLocations);
-        existentLocations.addAll(repository.saveAll(nonExistentLocations));
+        existentLocations.addAll(locationRepository.saveAll(nonExistentLocations));
         Map<String, Location> existentLocationsWithKey = createLocationsMapWithCountryCityKey(existentLocations);
         updateLocationsWithId(locations, existentLocationsWithKey);
         return locations;
@@ -85,7 +89,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public Location findById(final String id) {
         throwExceptionInCaseOfEmptyId(id);
-        Optional<Location> location = repository.findById(id);
+        Optional<Location> location = locationRepository.findById(id);
         return location.orElseThrow(() -> createAndLogLocationNotFoundException(id));
     }
 
@@ -97,7 +101,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public List<Location> findAll() {
-        return repository.findAll();
+        return locationRepository.findAll();
     }
 
     @Override
@@ -106,14 +110,14 @@ public class LocationServiceImpl implements LocationService {
         Location existentLocation = findById(updatedLocation.getId());
         updatedLocation.copyValuesForNullOrEmptyFieldsFromLocation(existentLocation);
         throwExceptionInCaseOfLocationAlreadyExists(updatedLocation);
-        return repository.save(updatedLocation);
+        return locationRepository.save(updatedLocation);
     }
 
     private void throwExceptionInCaseOfLocationAlreadyExists(final Location location) {
         final String country = location.getCountry();
         final String city = location.getCity();
         final String id = location.getId();
-        if (repository.findByCountryAndCityIgnoreCase(country, city).isPresent()) {
+        if (locationRepository.findByCountryAndCityIgnoreCase(country, city).isPresent()) {
             final String exceptionMessage = String.format(LOCATION_ALREADY_EXISTS, country, city, id);
             log.error(exceptionMessage);
             throw new LocationServiceException(exceptionMessage);
@@ -122,7 +126,16 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public void delete(final String id) {
-        throwExceptionInCaseOfEmptyId(id);
-        repository.deleteById(id);
+        Location location = findById(id);
+        throwExceptionInCaseOfLocationIsInUse(location);
+        locationRepository.deleteById(id);
+    }
+
+    private void throwExceptionInCaseOfLocationIsInUse(final Location location) {
+        if (eventRepository.countByLocation(location) != 0) {
+            final String exceptionMessage = String.format(LOCATION_IS_IN_USE, location.getId());
+            log.error(exceptionMessage);
+            throw new LocationServiceException(exceptionMessage);
+        }
     }
 }

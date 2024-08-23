@@ -17,7 +17,7 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public abstract class AbstractEvent {
+public class AbstractEvent {
     @Id
     private String id;
     private String title;

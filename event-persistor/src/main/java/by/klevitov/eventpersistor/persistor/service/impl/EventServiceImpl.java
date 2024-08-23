@@ -149,7 +149,6 @@ public class EventServiceImpl implements EventService {
     @Override
     public void delete(final String id) {
         throwExceptionInCaseOfEmptyId(id);
-        //todo Add location deletion only for case when location is not used anymore.
         repository.deleteById(id);
     }
 }

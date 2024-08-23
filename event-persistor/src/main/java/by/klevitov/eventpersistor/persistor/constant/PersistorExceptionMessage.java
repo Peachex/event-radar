@@ -31,6 +31,8 @@ public final class PersistorExceptionMessage {
     public static final String EVENT_ALREADY_EXISTS = "Event with title: '%s', category: '%s', source type: '%s' " +
             "already exists. Event id: '%s'.";
 
+    public static final String LOCATION_IS_IN_USE = "Location with id: '%s' cannot be deleted because it is in use.";
+
     private PersistorExceptionMessage() {
     }
 }
