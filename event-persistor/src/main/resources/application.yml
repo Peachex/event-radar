@@ -16,6 +16,11 @@ spring:
       socket-timeout: 3000
       max-wait-time: 3000
       server-selection-timeout: 3000
+  rabbitmq:
+    host: 'localhost'
+    port: '5673'
+    username: 'rabbitmq_user'
+    password: 'rabbitmq_password'
 
 logging:
   level:

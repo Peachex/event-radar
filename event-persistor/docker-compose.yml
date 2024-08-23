@@ -24,15 +24,32 @@ services:
     environment:
       - 'ME_CONFIG_MONGODB_ADMINUSERNAME=root'
       - 'ME_CONFIG_MONGODB_ADMINPASSWORD=root'
-      - 'ME_CONFIG_BASICAUTH_USERNAME=admin'
-      - 'ME_CONFIG_BASICAUTH_PASSWORD=admin'
+      - 'ME_CONFIG_BASICAUTH_USERNAME=mongo_express_user'
+      - 'ME_CONFIG_BASICAUTH_PASSWORD=mongo_express_password'
       - 'ME_CONFIG_MONGODB_SERVER=mongodb'
       - 'ME_CONFIG_MONGODB_PORT=27017'
     networks:
       - 'eventradar-network'
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: 'rabbitmq'
+    ports:
+      - "5673:5672"     # RabbitMQ main port
+      - "15673:15672"   # RabbitMQ Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: 'rabbitmq_user'
+      RABBITMQ_DEFAULT_PASS: 'rabbitmq_password'
+    volumes:
+      - 'rabbitmq-data:/var/lib/rabbitmq'
+    networks:
+      - 'eventradar-network'
+
 volumes:
   mongo-data:
+    driver: 'local'
+
+  rabbitmq-data:
     driver: 'local'
 
 networks:

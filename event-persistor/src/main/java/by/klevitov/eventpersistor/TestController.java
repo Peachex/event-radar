@@ -4,6 +4,7 @@ import by.klevitov.eventparser.exception.EventParserServiceException;
 import by.klevitov.eventparser.parser.EventParser;
 import by.klevitov.eventparser.service.EventParserService;
 import by.klevitov.eventparser.service.impl.EventParserServiceImpl;
+import by.klevitov.eventpersistor.messaging.test.TestProducer;
 import by.klevitov.eventpersistor.persistor.entity.AbstractEvent;
 import by.klevitov.eventpersistor.persistor.entity.AfishaRelaxEvent;
 import by.klevitov.eventpersistor.persistor.entity.ByCardEvent;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -45,6 +47,9 @@ public class TestController {
 
     @Autowired
     private EventService eventService;
+
+    @Autowired
+    private TestProducer testProducer;
 
     @GetMapping("/events")
     public List<AbstractEvent> findEvents() {
@@ -221,4 +226,10 @@ public class TestController {
             }
         };
     }
+
+    @GetMapping("/message/send")
+    public String sendMessageToQueueAndReceiveResponse(@RequestParam String text) {
+        return testProducer.sendAndReceiveMessage(text);
+    }
+
 }
