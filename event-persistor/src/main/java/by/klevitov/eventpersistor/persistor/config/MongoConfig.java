@@ -1,5 +1,4 @@
-package by.klevitov.eventpersistor.healthcheck.config;
-
+package by.klevitov.eventpersistor.persistor.config;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
