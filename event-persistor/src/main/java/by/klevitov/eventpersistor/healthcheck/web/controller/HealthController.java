@@ -13,11 +13,11 @@ import static by.klevitov.eventpersistor.healthcheck.constant.HealthCheckMessage
 
 @RestController
 public class HealthController {
-    private final ResourceCheckService resourceCheckService;
+    private final ResourceCheckService service;
 
     @Autowired
-    public HealthController(ResourceCheckService resourceCheckService) {
-        this.resourceCheckService = resourceCheckService;
+    public HealthController(ResourceCheckService service) {
+        this.service = service;
     }
 
     @GetMapping("/healthcheck")
@@ -27,8 +27,9 @@ public class HealthController {
 
     @GetMapping("/resourcecheck")
     public List<Pair<String, String>> checkResource() {
-        //todo Add resource check - check if message queue is available.
-        Pair<String, String> databaseAvailabilityResult = resourceCheckService.checkDatabaseAvailabilityAndGetResult();
-        return List.of(databaseAvailabilityResult);
+        //todo Try Spring Boot actuator.
+        Pair<String, String> databaseAvailabilityResult = service.checkDatabaseAvailabilityAndGetResult();
+        Pair<String, String> messageBrokerAvailabilityResult = service.checkMessageBrokerAvailabilityAndGetResult();
+        return List.of(databaseAvailabilityResult, messageBrokerAvailabilityResult);
     }
 }
