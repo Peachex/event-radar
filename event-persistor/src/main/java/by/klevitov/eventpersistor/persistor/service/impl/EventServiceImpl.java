@@ -3,7 +3,7 @@ package by.klevitov.eventpersistor.persistor.service.impl;
 import by.klevitov.eventpersistor.persistor.entity.AbstractEvent;
 import by.klevitov.eventpersistor.persistor.entity.Location;
 import by.klevitov.eventpersistor.persistor.exception.EventServiceException;
-import by.klevitov.eventpersistor.persistor.repository.EventRepository;
+import by.klevitov.eventpersistor.persistor.repository.EventMongoRepository;
 import by.klevitov.eventpersistor.persistor.service.EventService;
 import by.klevitov.eventpersistor.persistor.service.LocationService;
 import by.klevitov.eventpersistor.persistor.util.EventValidator;
@@ -12,6 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,15 +25,16 @@ import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMe
 import static by.klevitov.eventpersistor.persistor.util.EventValidator.throwExceptionInCaseOfEmptyId;
 import static by.klevitov.eventpersistor.persistor.util.EventValidator.validateEventBeforeCreation;
 import static by.klevitov.eventpersistor.persistor.util.EventValidator.validateEventBeforeUpdating;
+import static org.apache.commons.collections4.MapUtils.isNotEmpty;
 
 @Log4j2
 @Service
 public class EventServiceImpl implements EventService {
     private final LocationService locationService;
-    private final EventRepository repository;
+    private final EventMongoRepository repository;
 
     @Autowired
-    public EventServiceImpl(LocationService locationService, EventRepository repository) {
+    public EventServiceImpl(LocationService locationService, EventMongoRepository repository) {
         this.locationService = locationService;
         this.repository = repository;
     }
@@ -110,6 +112,11 @@ public class EventServiceImpl implements EventService {
         throwExceptionInCaseOfEmptyId(id);
         Optional<AbstractEvent> event = repository.findById(id);
         return event.orElseThrow(() -> createAndLogEventNotFoundException(id));
+    }
+
+    @Override
+    public List<AbstractEvent> findByFields(Map<String, Object> fields) {
+        return isNotEmpty(fields) ? repository.findByFields(fields) : new ArrayList<>();
     }
 
     private EventServiceException createAndLogEventNotFoundException(final String id) {

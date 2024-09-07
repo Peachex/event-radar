@@ -1,15 +1,10 @@
 package by.klevitov.eventpersistor.persistor.repository;
 
 import by.klevitov.eventpersistor.persistor.entity.AbstractEvent;
-import by.klevitov.eventpersistor.persistor.entity.Location;
-import by.klevitov.eventradarcommon.dto.EventSourceType;
-import org.springframework.data.mongodb.repository.MongoRepository;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.Map;
 
-public interface EventRepository extends MongoRepository<AbstractEvent, String> {
-    Optional<AbstractEvent> findFirstByTitleAndCategoryIgnoreCaseAndSourceType(String title, String category,
-                                                                               EventSourceType sourceType);
-
-    long countByLocation(Location location);
+public interface EventRepository {
+    List<AbstractEvent> findByFields(Map<String, Object> fields);
 }

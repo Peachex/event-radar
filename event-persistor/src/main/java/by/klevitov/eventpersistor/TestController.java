@@ -9,8 +9,9 @@ import by.klevitov.eventpersistor.persistor.entity.AbstractEvent;
 import by.klevitov.eventpersistor.persistor.entity.AfishaRelaxEvent;
 import by.klevitov.eventpersistor.persistor.entity.ByCardEvent;
 import by.klevitov.eventpersistor.persistor.entity.Location;
-import by.klevitov.eventpersistor.persistor.repository.EventRepository;
-import by.klevitov.eventpersistor.persistor.repository.LocationRepository;
+import by.klevitov.eventpersistor.persistor.repository.EventMongoRepository;
+import by.klevitov.eventpersistor.persistor.repository.impl.EventRepositoryImpl;
+import by.klevitov.eventpersistor.persistor.repository.LocationMongoRepository;
 import by.klevitov.eventpersistor.persistor.service.EventService;
 import by.klevitov.eventpersistor.persistor.service.LocationService;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
@@ -37,10 +38,10 @@ import java.util.Map;
 public class TestController {
     //todo Delete this class.
     @Autowired
-    EventRepository eventRepository;
+    EventMongoRepository eventMongoRepository;
 
     @Autowired
-    LocationRepository locationRepository;
+    LocationMongoRepository locationMongoRepository;
 
     @Autowired
     private LocationService locationService;
@@ -51,6 +52,9 @@ public class TestController {
     @Autowired
     private TestProducer testProducer;
 
+    @Autowired
+    private EventRepositoryImpl eventRepositoryImpl;
+
     @GetMapping("/events")
     public List<AbstractEvent> findEvents() {
         return eventService.findAll();
@@ -60,6 +64,11 @@ public class TestController {
 //    public AbstractEvent createEvent(@RequestBody AbstractEvent event) {
 //        return eventService.create(event);
 //    }
+
+    @PostMapping("/events/search")
+    public List<AbstractEvent> findByFields(@RequestBody Map<String, Object> searchFields) {
+        return eventService.findByFields(searchFields);
+    }
 
     @PostMapping("/events/multiple")
     public List<AbstractEvent> createEvents(@RequestBody List<AbstractEvent> events) {
@@ -139,16 +148,16 @@ public class TestController {
 //            for (AbstractEventDTO abstractEventDTO : eventsDTO) {
 //                AbstractEvent event = convertEventDTO(abstractEventDTO);
 //                event.setLocation(new Location("testCountry", "testCity"));
-//                Optional<Location> existingLocation = locationRepository.findByCountryAndCity(event.getLocation().getCountry()
+//                Optional<Location> existingLocation = locationMongoRepository.findByCountryAndCity(event.getLocation().getCountry()
 //                        , event.getLocation().getCity());
 //                if (existingLocation.isEmpty()) {
-//                    existingLocation = Optional.of(locationRepository.save(event.getLocation()));
+//                    existingLocation = Optional.of(locationMongoRepository.save(event.getLocation()));
 //                }
 //                event.setLocation(existingLocation.get());
 //                events.add(event);
 //            }
 //        }
-//        eventRepository.saveAll(events);
+//        eventMongoRepository.saveAll(events);
 //    }
 
     @PostMapping("/events")

@@ -2,8 +2,8 @@ package by.klevitov.eventpersistor.persistor.service.impl;
 
 import by.klevitov.eventpersistor.persistor.entity.Location;
 import by.klevitov.eventpersistor.persistor.exception.LocationServiceException;
-import by.klevitov.eventpersistor.persistor.repository.EventRepository;
-import by.klevitov.eventpersistor.persistor.repository.LocationRepository;
+import by.klevitov.eventpersistor.persistor.repository.EventMongoRepository;
+import by.klevitov.eventpersistor.persistor.repository.LocationMongoRepository;
 import by.klevitov.eventpersistor.persistor.service.LocationService;
 import by.klevitov.eventpersistor.persistor.util.LocationValidator;
 import lombok.extern.log4j.Log4j2;
@@ -27,11 +27,11 @@ import static by.klevitov.eventpersistor.persistor.util.LocationValidator.valida
 @Log4j2
 @Service
 public class LocationServiceImpl implements LocationService {
-    private final LocationRepository locationRepository;
-    private final EventRepository eventRepository;
+    private final LocationMongoRepository locationRepository;
+    private final EventMongoRepository eventRepository;
 
     @Autowired
-    public LocationServiceImpl(LocationRepository locationRepository, EventRepository eventRepository) {
+    public LocationServiceImpl(LocationMongoRepository locationRepository, EventMongoRepository eventRepository) {
         this.locationRepository = locationRepository;
         this.eventRepository = eventRepository;
     }
