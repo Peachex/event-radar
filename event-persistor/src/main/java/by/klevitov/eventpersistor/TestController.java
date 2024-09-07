@@ -4,6 +4,10 @@ import by.klevitov.eventparser.exception.EventParserServiceException;
 import by.klevitov.eventparser.parser.EventParser;
 import by.klevitov.eventparser.service.EventParserService;
 import by.klevitov.eventparser.service.impl.EventParserServiceImpl;
+import by.klevitov.eventpersistor.messaging.comnon.request.dto.EntityData;
+import by.klevitov.eventpersistor.messaging.comnon.request.dto.MessageRequest;
+import by.klevitov.eventpersistor.messaging.comnon.request.dto.data.MultipleLocationData;
+import by.klevitov.eventpersistor.messaging.service.MessageService;
 import by.klevitov.eventpersistor.messaging.test.TestProducer;
 import by.klevitov.eventpersistor.persistor.entity.AbstractEvent;
 import by.klevitov.eventpersistor.persistor.entity.AfishaRelaxEvent;
@@ -34,6 +38,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static by.klevitov.eventpersistor.messaging.comnon.request.dto.EntityType.LOCATION;
+import static by.klevitov.eventpersistor.messaging.comnon.request.dto.RequestType.CREATE_MULTIPLE;
+
 @RestController
 public class TestController {
     //todo Delete this class.
@@ -55,6 +62,9 @@ public class TestController {
     @Autowired
     private EventRepositoryImpl eventRepositoryImpl;
 
+    @Autowired
+    private MessageService messageService;
+
     @GetMapping("/events")
     public List<AbstractEvent> findEvents() {
         return eventService.findAll();
@@ -68,6 +78,25 @@ public class TestController {
     @PostMapping("/events/search")
     public List<AbstractEvent> findByFields(@RequestBody Map<String, Object> searchFields) {
         return eventService.findByFields(searchFields);
+    }
+
+    @GetMapping("/events/test")
+    public Object test123() {
+        EntityData entityData = new MultipleLocationData(
+                List.of(
+                        new Location("New country1", "New city 1"),
+                        new Location("New country2", "New city 2"),
+                        new Location("New country3", "New city 3"))
+        );
+
+        MessageRequest createRequest = MessageRequest.builder()
+                .id("testid")
+                .requestType(CREATE_MULTIPLE)
+                .entityType(LOCATION)
+                .entityData(entityData)
+                .build();
+
+        return messageService.processAndRetrieveResult(createRequest);
     }
 
     @PostMapping("/events/multiple")

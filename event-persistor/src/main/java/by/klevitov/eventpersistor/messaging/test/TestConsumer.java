@@ -12,4 +12,6 @@ public class TestConsumer {
         System.out.println("Received request: " + request);
         return "Response to: " + request;
     }
+
+    //todo delete this class.
 }

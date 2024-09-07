@@ -18,4 +18,6 @@ public class TestProducer {
         String response = (String) rabbitTemplate.convertSendAndReceive(requestQueue.getName(), request);
         return response != null ? response : "No response received";
     }
+
+    //todo delete this class.
 }
