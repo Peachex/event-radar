@@ -14,8 +14,8 @@ import by.klevitov.eventpersistor.persistor.entity.AfishaRelaxEvent;
 import by.klevitov.eventpersistor.persistor.entity.ByCardEvent;
 import by.klevitov.eventpersistor.persistor.entity.Location;
 import by.klevitov.eventpersistor.persistor.repository.EventMongoRepository;
-import by.klevitov.eventpersistor.persistor.repository.impl.EventRepositoryImpl;
 import by.klevitov.eventpersistor.persistor.repository.LocationMongoRepository;
+import by.klevitov.eventpersistor.persistor.repository.impl.EventRepositoryImpl;
 import by.klevitov.eventpersistor.persistor.service.EventService;
 import by.klevitov.eventpersistor.persistor.service.LocationService;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
@@ -86,7 +86,8 @@ public class TestController {
                 List.of(
                         new Location("New country1", "New city 1"),
                         new Location("New country2", "New city 2"),
-                        new Location("New country3", "New city 3"))
+                        new Location("New country3", "New city 3"),
+                        new Location(null, null))
         );
 
         MessageRequest createRequest = MessageRequest.builder()
