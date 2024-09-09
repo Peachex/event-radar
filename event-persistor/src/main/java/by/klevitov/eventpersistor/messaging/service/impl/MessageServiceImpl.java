@@ -37,14 +37,13 @@ public class MessageServiceImpl implements MessageService {
     }
 
     private MessageResponse processRequestForNotNullHandler(final RequestHandler handler, final MessageRequest request) {
-        MessageResponse response = null;
+        MessageResponse response;
         try {
             response = handler.handle(request.getEntityData());
         } catch (Exception e) {
             response = new ErrorMessageResponse("responseId", e.getMessage(), e);
-        } finally {
-            updateResponseWithMetadata(request, response);
         }
+        updateResponseWithMetadata(request, response);
         return response;
     }
 
