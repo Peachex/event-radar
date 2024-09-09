@@ -86,9 +86,11 @@ public class TestController {
                 List.of(
                         new Location("New country1", "New city 1"),
                         new Location("New country2", "New city 2"),
-                        new Location("New country3", "New city 3"),
-                        new Location(null, null))
+                        new Location("New country3", "New city 3"))
+//                        new Location(null, null))
         );
+
+//        EntityData entityData = new SingleEventData(null);
 
         MessageRequest createRequest = MessageRequest.builder()
                 .id("testid")

@@ -1,17 +1,18 @@
 package by.klevitov.eventpersistor.messaging.service.impl;
 
-import by.klevitov.eventpersistor.messaging.comnon.request.dto.EntityData;
 import by.klevitov.eventpersistor.messaging.comnon.request.dto.EntityType;
 import by.klevitov.eventpersistor.messaging.comnon.request.dto.MessageRequest;
 import by.klevitov.eventpersistor.messaging.comnon.request.dto.RequestType;
+import by.klevitov.eventpersistor.messaging.comnon.response.dto.ErrorMessageResponse;
 import by.klevitov.eventpersistor.messaging.comnon.response.dto.MessageResponse;
 import by.klevitov.eventpersistor.messaging.request.factory.RequestHandlerFactory;
 import by.klevitov.eventpersistor.messaging.request.handler.RequestHandler;
 import by.klevitov.eventpersistor.messaging.service.MessageService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
+@Log4j2
 @Service
 public class MessageServiceImpl implements MessageService {
     private final RequestHandlerFactory handlerFactory;
@@ -25,16 +26,35 @@ public class MessageServiceImpl implements MessageService {
     public MessageResponse processAndRetrieveResult(final MessageRequest request) {
         RequestType requestType = request.getRequestType();
         EntityType entityType = request.getEntityType();
-
         RequestHandler handler = handlerFactory.getHandler(entityType, requestType);
-        if (handler == null) {
-            throw new IllegalArgumentException("Unsupported request/entity type: " + requestType + " for " + entityType);
-        }
+        return processRequest(handler, request);
+    }
 
-        EntityData entityData = request.getEntityData();
-        MessageResponse response = handler.handle(entityData);
-        updateResponseWithMetadata(request, response);
+    private MessageResponse processRequest(final RequestHandler handler, final MessageRequest request) {
+        return (handler != null
+                ? processRequestForNotNullHandler(handler, request)
+                : processRequestForNullHandler(request));
+    }
+
+    private MessageResponse processRequestForNotNullHandler(final RequestHandler handler, final MessageRequest request) {
+        MessageResponse response = null;
+        try {
+            response = handler.handle(request.getEntityData());
+        } catch (Exception e) {
+            response = new ErrorMessageResponse("responseId", e.getMessage(), e);
+        } finally {
+            updateResponseWithMetadata(request, response);
+        }
         return response;
+    }
+
+    private MessageResponse processRequestForNullHandler(final MessageRequest request) {
+        Exception e = new IllegalArgumentException("Unsupported request/entity type: " + request.getRequestType()
+                + " for " + request.getEntityType());
+        log.error(e.getMessage());
+        ErrorMessageResponse errorResponse = new ErrorMessageResponse("responseId", e.getMessage(), e);
+        updateResponseWithMetadata(request, errorResponse);
+        return errorResponse;
     }
 
     private void updateResponseWithMetadata(final MessageRequest request, final MessageResponse response) {
@@ -42,5 +62,5 @@ public class MessageServiceImpl implements MessageService {
         response.setRequestCreatedDate(request.getCreatedDate());
     }
 
-    //todo Add error handling and replace exception.
+    //todo Replace exception.
 }
