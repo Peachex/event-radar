@@ -93,7 +93,6 @@ public class TestController {
 //        EntityData entityData = new SingleEventData(null);
 
         MessageRequest createRequest = MessageRequest.builder()
-                .id("testid")
                 .requestType(CREATE_MULTIPLE)
                 .entityType(LOCATION)
                 .entityData(entityData)

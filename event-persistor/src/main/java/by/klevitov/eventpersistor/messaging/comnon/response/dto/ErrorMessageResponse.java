@@ -13,8 +13,8 @@ public class ErrorMessageResponse extends MessageResponse {
     private String errorMessage;
     private Throwable throwable;
 
-    public ErrorMessageResponse(String id, String errorMessage, Throwable throwable) {
-        super(id, true);
+    public ErrorMessageResponse(String errorMessage, Throwable throwable) {
+        super(true);
         this.errorMessage = errorMessage;
         this.throwable = throwable;
     }
@@ -27,6 +27,6 @@ public class ErrorMessageResponse extends MessageResponse {
     }
 
     public ErrorMessageResponse(String id, String requestId, LocalDateTime requestCreatedDate) {
-        super(id, requestId, requestCreatedDate, now(), true, null);
+        super(id, requestId, requestCreatedDate, now(), true);
     }
 }
