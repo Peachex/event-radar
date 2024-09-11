@@ -9,6 +9,6 @@ public final class IdGenerator {
     }
 
     public static String generateId() {
-    return randomAlphanumeric(length);
+        return randomAlphanumeric(length);
     }
 }
