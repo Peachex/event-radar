@@ -30,7 +30,7 @@ public class MultipleEventCreationRequestHandler implements RequestHandler {
     public MessageResponse handle(final EntityData entityData) {
         throwExceptionInCaseOfInvalidEntityData(entityData);
         MultipleEventData eventData = (MultipleEventData) entityData;
-        List<AbstractEvent> eventsToCreate = eventData.getEvents();
+        List<AbstractEvent> eventsToCreate = eventData.getEventsDTO();
         List<AbstractEvent> createdEvents = service.create(eventsToCreate);
         return new SuccessfulMessageResponse(new MultipleEventData(createdEvents));
     }

@@ -1,7 +1,7 @@
 package by.klevitov.eventpersistor.messaging.comnon.request.dto.data;
 
 import by.klevitov.eventpersistor.messaging.comnon.request.dto.EntityData;
-import by.klevitov.eventpersistor.persistor.entity.AbstractEvent;
+import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,5 +10,5 @@ import lombok.EqualsAndHashCode;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class SingleEventData extends EntityData {
-    private AbstractEvent event;
+    private AbstractEventDTO eventDTO;
 }

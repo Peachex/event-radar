@@ -28,7 +28,7 @@ public class SingleEventCreationRequestHandler implements RequestHandler {
     public MessageResponse handle(EntityData entityData) {
         throwExceptionInCaseOfInvalidEntityData(entityData);
         SingleEventData eventData = (SingleEventData) entityData;
-        AbstractEvent eventToCreate = eventData.getEvent();
+        AbstractEvent eventToCreate = eventData.getEventDTO();
         AbstractEvent createdEvent = service.create(eventToCreate);
         return new SuccessfulMessageResponse(new SingleEventData(createdEvent));
     }

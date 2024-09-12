@@ -28,7 +28,7 @@ public class SingleLocationCreationRequestHandler implements RequestHandler {
     public MessageResponse handle(EntityData entityData) {
         throwExceptionInCaseOfInvalidEntityData(entityData);
         SingleLocationData locationData = (SingleLocationData) entityData;
-        Location locationToCreate = locationData.getLocation();
+        Location locationToCreate = locationData.getLocationDTO();
         Location createdLocation = service.create(locationToCreate);
         return new SuccessfulMessageResponse(new SingleLocationData(createdLocation));
     }

@@ -30,7 +30,7 @@ public class MultipleLocationCreationRequestHandler implements RequestHandler {
     public MessageResponse handle(EntityData entityData) {
         throwExceptionInCaseOfInvalidEntityData(entityData);
         MultipleLocationData locationsData = (MultipleLocationData) entityData;
-        List<Location> locationsToCreate = locationsData.getLocations();
+        List<Location> locationsToCreate = locationsData.getLocationsDTO();
         List<Location> createdLocations = service.create(locationsToCreate);
         return new SuccessfulMessageResponse(new MultipleLocationData(createdLocations));
     }
