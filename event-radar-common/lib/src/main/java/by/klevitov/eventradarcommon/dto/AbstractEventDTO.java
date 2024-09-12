@@ -2,6 +2,7 @@ package by.klevitov.eventradarcommon.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -9,7 +10,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public abstract class AbstractEventDTO {
+@EqualsAndHashCode(callSuper = true)
+public abstract class AbstractEventDTO extends AbstractDTO {
     private String title;
     private LocationDTO location;
     private String dateStr;
