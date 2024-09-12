@@ -1,7 +1,6 @@
 package by.klevitov.eventradarcommon.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@Builder
+@SuperBuilder
 public class ByCardEventDTO extends AbstractEventDTO {
     private String priceStr;
     private EventPrice price;
