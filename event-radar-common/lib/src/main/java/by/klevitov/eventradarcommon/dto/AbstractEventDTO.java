@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 public abstract class AbstractEventDTO extends AbstractDTO {
     private String title;

@@ -1,6 +1,7 @@
 package by.klevitov.eventradarcommon.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@SuperBuilder
+@Builder
 public class AfishaRelaxEventDTO extends AbstractEventDTO {
     private String eventLink;
     private String imageLink;
