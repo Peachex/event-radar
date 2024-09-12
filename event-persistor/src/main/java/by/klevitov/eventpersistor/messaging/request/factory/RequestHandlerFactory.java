@@ -3,8 +3,10 @@ package by.klevitov.eventpersistor.messaging.request.factory;
 import by.klevitov.eventpersistor.messaging.comnon.request.dto.EntityType;
 import by.klevitov.eventpersistor.messaging.comnon.request.dto.RequestType;
 import by.klevitov.eventpersistor.messaging.request.handler.RequestHandler;
-import by.klevitov.eventpersistor.messaging.request.handler.impl.event.EventMultipleCreationRequestHandler;
-import by.klevitov.eventpersistor.messaging.request.handler.impl.location.LocationMultipleCreationRequestHandler;
+import by.klevitov.eventpersistor.messaging.request.handler.impl.event.MultipleEventCreationRequestHandler;
+import by.klevitov.eventpersistor.messaging.request.handler.impl.event.SingleEventCreationRequestHandler;
+import by.klevitov.eventpersistor.messaging.request.handler.impl.location.MultipleLocationCreationRequestHandler;
+import by.klevitov.eventpersistor.messaging.request.handler.impl.location.SingleLocationCreationRequestHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,8 @@ import java.util.Map;
 
 import static by.klevitov.eventpersistor.messaging.comnon.request.dto.EntityType.EVENT;
 import static by.klevitov.eventpersistor.messaging.comnon.request.dto.EntityType.LOCATION;
+import static by.klevitov.eventpersistor.messaging.comnon.request.dto.RequestType.CREATE_MULTIPLE;
+import static by.klevitov.eventpersistor.messaging.comnon.request.dto.RequestType.CREATE_SINGLE;
 
 @Component
 public class RequestHandlerFactory {
@@ -22,12 +26,18 @@ public class RequestHandlerFactory {
     @Autowired
     public RequestHandlerFactory(List<RequestHandler> handlerList) {
         for (RequestHandler handler : handlerList) {
-            if (handler instanceof EventMultipleCreationRequestHandler) {
+            if (handler instanceof MultipleEventCreationRequestHandler) {
                 handlerMap.computeIfAbsent(EVENT, t -> new HashMap<>())
-                        .put(RequestType.CREATE_MULTIPLE, handler);
-            } else if (handler instanceof LocationMultipleCreationRequestHandler) {
+                        .put(CREATE_MULTIPLE, handler);
+            } else if (handler instanceof MultipleLocationCreationRequestHandler) {
                 handlerMap.computeIfAbsent(LOCATION, t -> new HashMap<>())
-                        .put(RequestType.CREATE_MULTIPLE, handler);
+                        .put(CREATE_MULTIPLE, handler);
+            } else if (handler instanceof SingleEventCreationRequestHandler) {
+                handlerMap.computeIfAbsent(EVENT, t -> new HashMap<>())
+                        .put(CREATE_SINGLE, handler);
+            } else if (handler instanceof SingleLocationCreationRequestHandler) {
+                handlerMap.computeIfAbsent(LOCATION, t -> new HashMap<>())
+                        .put(CREATE_SINGLE, handler);
             }
         }
     }
