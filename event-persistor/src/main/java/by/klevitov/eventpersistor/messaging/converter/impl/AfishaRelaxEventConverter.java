@@ -28,6 +28,7 @@ public class AfishaRelaxEventConverter implements EntityConverter {
 
         AfishaRelaxEventDTO eventDTO = (AfishaRelaxEventDTO) dto;
         return AfishaRelaxEvent.builder()
+                .id(eventDTO.getId())
                 .title(eventDTO.getTitle())
                 .location((Location) locationConverter.convertFromDTO(eventDTO.getLocation()))
                 .dateStr(eventDTO.getDateStr())
@@ -45,6 +46,7 @@ public class AfishaRelaxEventConverter implements EntityConverter {
 
         AfishaRelaxEvent event = (AfishaRelaxEvent) entity;
         return AfishaRelaxEventDTO.builder()
+                .id(event.getId())
                 .title(event.getTitle())
                 .location((LocationDTO) locationConverter.convertToDTO(event.getLocation()))
                 .dateStr(event.getDateStr())

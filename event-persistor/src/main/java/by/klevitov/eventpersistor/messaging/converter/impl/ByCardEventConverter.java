@@ -28,6 +28,7 @@ public class ByCardEventConverter implements EntityConverter {
 
         ByCardEventDTO eventDTO = (ByCardEventDTO) dto;
         return ByCardEvent.builder()
+                .id(eventDTO.getId())
                 .title(eventDTO.getTitle())
                 .location((Location) locationConverter.convertFromDTO(eventDTO.getLocation()))
                 .dateStr(eventDTO.getDateStr())
@@ -47,6 +48,7 @@ public class ByCardEventConverter implements EntityConverter {
 
         ByCardEvent event = (ByCardEvent) entity;
         return ByCardEventDTO.builder()
+                .id(event.getId())
                 .title(event.getTitle())
                 .location((LocationDTO) locationConverter.convertToDTO(event.getLocation()))
                 .dateStr(event.getDateStr())

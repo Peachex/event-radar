@@ -9,7 +9,6 @@ import by.klevitov.eventpersistor.persistor.service.LocationService;
 import by.klevitov.eventradarcommon.dto.LocationDTO;
 import by.klevitov.eventradarcommon.messaging.request.EntityData;
 import by.klevitov.eventradarcommon.messaging.request.data.SingleLocationData;
-import by.klevitov.eventradarcommon.messaging.request.data.SingleLocationWithIdData;
 import by.klevitov.eventradarcommon.messaging.response.MessageResponse;
 import by.klevitov.eventradarcommon.messaging.response.SuccessfulMessageResponse;
 import lombok.extern.log4j.Log4j2;
@@ -33,10 +32,9 @@ public class UpdatingLocationRequestHandler implements RequestHandler {
     @Override
     public MessageResponse handle(final EntityData entityData) {
         throwExceptionInCaseOfInvalidEntityData(entityData);
-        LocationDTO locationDTO = ((SingleLocationWithIdData) entityData).getLocationDTO();
+        LocationDTO locationDTO = ((SingleLocationData) entityData).getLocationDTO();
         EntityConverter converter = converterFactory.getConverter(locationDTO.getClass());
         Location locationToUpdate = (Location) converter.convertFromDTO(locationDTO);
-        locationToUpdate.setId(((SingleLocationWithIdData) entityData).getId());
         Location updatedLocation = service.update(locationToUpdate);
         LocationDTO updatedLocationDTO = (LocationDTO) converter.convertToDTO(updatedLocation);
         return new SuccessfulMessageResponse(new SingleLocationData(updatedLocationDTO));
@@ -51,10 +49,10 @@ public class UpdatingLocationRequestHandler implements RequestHandler {
     }
 
     private boolean entityDataIsNotValid(final EntityData entityData) {
-        return !(entityData instanceof SingleLocationWithIdData);
+        return !(entityData instanceof SingleLocationData);
     }
 
     private boolean entityDataContainsNullData(final EntityData entityData) {
-        return ((SingleLocationWithIdData) entityData).getLocationDTO() == null;
+        return ((SingleLocationData) entityData).getLocationDTO() == null;
     }
 }

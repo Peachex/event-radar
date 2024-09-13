@@ -9,7 +9,6 @@ import by.klevitov.eventpersistor.persistor.service.EventService;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import by.klevitov.eventradarcommon.messaging.request.EntityData;
 import by.klevitov.eventradarcommon.messaging.request.data.SingleEventData;
-import by.klevitov.eventradarcommon.messaging.request.data.SingleEventWithIdData;
 import by.klevitov.eventradarcommon.messaging.response.MessageResponse;
 import by.klevitov.eventradarcommon.messaging.response.SuccessfulMessageResponse;
 import lombok.extern.log4j.Log4j2;
@@ -33,10 +32,9 @@ public class UpdatingEventRequestHandler implements RequestHandler {
     @Override
     public MessageResponse handle(final EntityData entityData) {
         throwExceptionInCaseOfInvalidEntityData(entityData);
-        AbstractEventDTO eventDTO = ((SingleEventWithIdData) entityData).getEventDTO();
-        EntityConverter converter = converterFactory.getConverter(eventDTO.getSourceType());
+        AbstractEventDTO eventDTO = ((SingleEventData) entityData).getEventDTO();
+        EntityConverter converter = converterFactory.getConverter(eventDTO.getClass());
         AbstractEvent eventToUpdate = (AbstractEvent) converter.convertFromDTO(eventDTO);
-        eventToUpdate.setId(((SingleEventWithIdData) entityData).getId());
         AbstractEvent updatedEvent = service.update(eventToUpdate);
         AbstractEventDTO updatedEventDTO = (AbstractEventDTO) converter.convertToDTO(updatedEvent);
         return new SuccessfulMessageResponse(new SingleEventData(updatedEventDTO));
@@ -51,10 +49,10 @@ public class UpdatingEventRequestHandler implements RequestHandler {
     }
 
     private boolean entityDataIsNotValid(final EntityData entityData) {
-        return !(entityData instanceof SingleEventWithIdData);
+        return !(entityData instanceof SingleEventData);
     }
 
     private boolean entityDataContainsNullData(final EntityData entityData) {
-        return ((SingleEventWithIdData) entityData).getEventDTO() == null;
+        return ((SingleEventData) entityData).getEventDTO() == null;
     }
 }

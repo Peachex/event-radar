@@ -80,7 +80,7 @@ public class EventServiceImpl implements EventService {
         existentEvents.addAll(repository.saveAll(nonExistentEvents));
         Map<String, AbstractEvent> existentEventsWithKey = createEventsMapWithTitleAndSourceTypeKey(existentEvents);
         updateEventsWithId(events, existentEventsWithKey);
-        return existentEvents;
+        return events;
     }
 
     private List<AbstractEvent> createNonExistentEventsList(final List<AbstractEvent> events,
