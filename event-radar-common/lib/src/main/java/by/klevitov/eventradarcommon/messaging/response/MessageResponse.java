@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 import static by.klevitov.eventradarcommon.util.IdGenerator.generateId;
 import static java.time.LocalDateTime.now;
 
+@Data
+@AllArgsConstructor
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.CLASS,
         property = "type"
@@ -18,9 +20,6 @@ import static java.time.LocalDateTime.now;
         @JsonSubTypes.Type(value = SuccessfulMessageResponse.class, name = "successfulMessageResponse"),
         @JsonSubTypes.Type(value = ErrorMessageResponse.class, name = "errorMessageResponse")
 })
-
-@Data
-@AllArgsConstructor
 public abstract class MessageResponse {
     private String id;
     private String requestId;
