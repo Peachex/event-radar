@@ -27,6 +27,7 @@ import by.klevitov.eventradarcommon.messaging.request.MessageRequest;
 import by.klevitov.eventradarcommon.messaging.request.data.EntityIdData;
 import by.klevitov.eventradarcommon.messaging.request.data.MultipleLocationData;
 import by.klevitov.eventradarcommon.messaging.request.data.SingleLocationData;
+import by.klevitov.eventradarcommon.messaging.request.data.SingleLocationWithIdData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,6 +49,7 @@ import static by.klevitov.eventradarcommon.messaging.request.RequestType.CREATE_
 import static by.klevitov.eventradarcommon.messaging.request.RequestType.DELETE;
 import static by.klevitov.eventradarcommon.messaging.request.RequestType.SEARCH_BY_ID;
 import static by.klevitov.eventradarcommon.messaging.request.RequestType.SEARCH_FOR_ALL;
+import static by.klevitov.eventradarcommon.messaging.request.RequestType.UPDATE;
 
 
 @RestController
@@ -135,7 +137,7 @@ public class TestController {
         MessageRequest request = MessageRequest.builder()
                 .requestType(DELETE)
                 .entityType(LOCATION)
-                .entityData(new EntityIdData(id))
+                .entityData(new EntityIdData(null))
                 .build();
 
         return messageService.processAndRetrieveResult(request);
@@ -157,22 +159,22 @@ public class TestController {
         MessageRequest request = MessageRequest.builder()
                 .requestType(SEARCH_BY_ID)
                 .entityType(LOCATION)
-                .entityData(new EntityIdData("66dcc5b5dfc07c31659b2e9f"))
+                .entityData(new EntityIdData(null))
                 .build();
 
         return messageService.processAndRetrieveResult(request);
     }
 
-//    @GetMapping("/events/test6")
-//    public Object test6() {
-//        MessageRequest request = MessageRequest.builder()
-//                .requestType(UPDATE)
-//                .entityType(LOCATION)
-//                .entityData(new SingleLocationData(new LocationDTO("", ""))
-//                .build();
-//
-//        return messageService.processAndRetrieveResult(request);
-//    }
+    @GetMapping("/events/test6")
+    public Object test6() {
+        MessageRequest request = MessageRequest.builder()
+                .requestType(UPDATE)
+                .entityType(LOCATION)
+                .entityData(new SingleLocationWithIdData("66e49ad2572bbd1503f0df622", new LocationDTO()))
+                .build();
+
+        return messageService.processAndRetrieveResult(request);
+    }
 
     @PostMapping("/events/multiple")
     public List<AbstractEvent> createEvents(@RequestBody List<AbstractEvent> events) {

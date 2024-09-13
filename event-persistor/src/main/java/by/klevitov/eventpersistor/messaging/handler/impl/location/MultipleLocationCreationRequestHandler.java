@@ -43,7 +43,7 @@ public class MultipleLocationCreationRequestHandler implements RequestHandler {
     }
 
     private void throwExceptionInCaseOfInvalidEntityData(final EntityData entityData) {
-        if (entityDataIsNotValid(entityData)) {
+        if (entityDataIsNotValid(entityData) || entityDataContainsNullData(entityData)) {
             final String exceptionMessage = String.format(INVALID_ENTITY_LOCATIONS_DATA, entityData);
             log.error(exceptionMessage);
             throw new RequestHandlerException(exceptionMessage);
@@ -52,6 +52,10 @@ public class MultipleLocationCreationRequestHandler implements RequestHandler {
 
     private boolean entityDataIsNotValid(final EntityData entityData) {
         return !(entityData instanceof MultipleLocationData);
+    }
+
+    private boolean entityDataContainsNullData(final EntityData entityData) {
+        return ((MultipleLocationData) entityData).getLocationsDTO() == null;
     }
 
     private List<Location> retrieveLocationsToCreate(final List<LocationDTO> locationsDTO,

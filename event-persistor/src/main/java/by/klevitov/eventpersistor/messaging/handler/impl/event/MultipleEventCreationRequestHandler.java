@@ -42,7 +42,7 @@ public class MultipleEventCreationRequestHandler implements RequestHandler {
     }
 
     public void throwExceptionInCaseOfInvalidEntityData(final EntityData entityData) {
-        if (entityDataIsNotValid(entityData)) {
+        if (entityDataIsNotValid(entityData) || entityDataContainsNullData(entityData)) {
             final String exceptionMessage = String.format(INVALID_ENTITY_EVENTS_DATA, entityData);
             log.error(exceptionMessage);
             throw new RequestHandlerException(exceptionMessage);
@@ -51,6 +51,10 @@ public class MultipleEventCreationRequestHandler implements RequestHandler {
 
     private boolean entityDataIsNotValid(final EntityData entityData) {
         return !(entityData instanceof MultipleEventData);
+    }
+
+    private boolean entityDataContainsNullData(final EntityData entityData) {
+        return ((MultipleEventData) entityData).getEventsDTO() == null;
     }
 
     private List<AbstractEvent> retrieveEventsToCreate(final List<AbstractEventDTO> eventsDTO) {

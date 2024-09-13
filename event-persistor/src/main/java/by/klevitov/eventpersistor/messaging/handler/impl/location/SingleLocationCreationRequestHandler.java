@@ -41,7 +41,7 @@ public class SingleLocationCreationRequestHandler implements RequestHandler {
     }
 
     private void throwExceptionInCaseOfInvalidEntityData(final EntityData entityData) {
-        if (entityDataIsNotValid(entityData)) {
+        if (entityDataIsNotValid(entityData) || entityDataContainsNullData(entityData)) {
             final String exceptionMessage = String.format(INVALID_ENTITY_LOCATION_DATA, entityData);
             log.error(exceptionMessage);
             throw new RequestHandlerException(exceptionMessage);
@@ -50,5 +50,9 @@ public class SingleLocationCreationRequestHandler implements RequestHandler {
 
     private boolean entityDataIsNotValid(final EntityData entityData) {
         return !(entityData instanceof SingleLocationData);
+    }
+
+    private boolean entityDataContainsNullData(final EntityData entityData) {
+        return ((SingleLocationData) entityData).getLocationDTO() == null;
     }
 }

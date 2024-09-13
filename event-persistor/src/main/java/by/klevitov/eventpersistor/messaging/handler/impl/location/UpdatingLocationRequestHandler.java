@@ -9,6 +9,7 @@ import by.klevitov.eventpersistor.persistor.service.LocationService;
 import by.klevitov.eventradarcommon.dto.LocationDTO;
 import by.klevitov.eventradarcommon.messaging.request.EntityData;
 import by.klevitov.eventradarcommon.messaging.request.data.SingleLocationData;
+import by.klevitov.eventradarcommon.messaging.request.data.SingleLocationWithIdData;
 import by.klevitov.eventradarcommon.messaging.response.MessageResponse;
 import by.klevitov.eventradarcommon.messaging.response.SuccessfulMessageResponse;
 import lombok.extern.log4j.Log4j2;
@@ -32,16 +33,17 @@ public class UpdatingLocationRequestHandler implements RequestHandler {
     @Override
     public MessageResponse handle(final EntityData entityData) {
         throwExceptionInCaseOfInvalidEntityData(entityData);
-        LocationDTO locationDTO = ((SingleLocationData) entityData).getLocationDTO();
+        LocationDTO locationDTO = ((SingleLocationWithIdData) entityData).getLocationDTO();
         EntityConverter converter = converterFactory.getConverter(locationDTO.getClass());
         Location locationToUpdate = (Location) converter.convertFromDTO(locationDTO);
+        locationToUpdate.setId(((SingleLocationWithIdData) entityData).getId());
         Location updatedLocation = service.update(locationToUpdate);
         LocationDTO updatedLocationDTO = (LocationDTO) converter.convertToDTO(updatedLocation);
         return new SuccessfulMessageResponse(new SingleLocationData(updatedLocationDTO));
     }
 
     private void throwExceptionInCaseOfInvalidEntityData(final EntityData entityData) {
-        if (entityDataIsNotValid(entityData)) {
+        if (entityDataIsNotValid(entityData) || entityDataContainsNullData(entityData)) {
             final String exceptionMessage = String.format(INVALID_ENTITY_LOCATION_DATA, entityData);
             log.error(exceptionMessage);
             throw new RequestHandlerException(exceptionMessage);
@@ -49,6 +51,10 @@ public class UpdatingLocationRequestHandler implements RequestHandler {
     }
 
     private boolean entityDataIsNotValid(final EntityData entityData) {
-        return !(entityData instanceof SingleLocationData);
+        return !(entityData instanceof SingleLocationWithIdData);
+    }
+
+    private boolean entityDataContainsNullData(final EntityData entityData) {
+        return ((SingleLocationWithIdData) entityData).getLocationDTO() == null;
     }
 }
