@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.now;
@@ -12,7 +11,7 @@ import static java.time.LocalDateTime.now;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class ErrorMessageResponse extends MessageResponse implements Serializable {
+public class ErrorMessageResponse extends MessageResponse {
     private String errorMessage;
     private Throwable throwable;
 
@@ -33,5 +32,5 @@ public class ErrorMessageResponse extends MessageResponse implements Serializabl
         super(id, requestId, requestCreatedDate, now(), true);
     }
 
-    //todo Delete redundant constructors and review annotations.
+    //todo Delete redundant constructors.
 }

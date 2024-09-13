@@ -1,18 +1,27 @@
 package by.klevitov.eventradarcommon.messaging.response;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import static by.klevitov.eventradarcommon.util.IdGenerator.generateId;
 import static java.time.LocalDateTime.now;
 
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.CLASS,
+        property = "type"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = SuccessfulMessageResponse.class, name = "successfulMessageResponse"),
+        @JsonSubTypes.Type(value = ErrorMessageResponse.class, name = "errorMessageResponse")
+})
+
 @Data
 @AllArgsConstructor
-public abstract class MessageResponse implements Serializable {
+public abstract class MessageResponse {
     private String id;
     private String requestId;
     private LocalDateTime requestCreatedDate;
@@ -38,5 +47,5 @@ public abstract class MessageResponse implements Serializable {
         this.responseCreatedDate = requestCreatedDate;
     }
 
-    //todo Delete redundant constructors. Review serializable interface.
+    //todo Delete redundant constructors.
 }

@@ -5,13 +5,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class SuccessfulMessageResponse extends MessageResponse implements Serializable {
+public class SuccessfulMessageResponse extends MessageResponse {
     private EntityData entityData;
 
     public SuccessfulMessageResponse(String id, String requestId, LocalDateTime requestCreatedDate,
@@ -34,5 +33,5 @@ public class SuccessfulMessageResponse extends MessageResponse implements Serial
         this.entityData = entityData;
     }
 
-    //todo Delete redundant constructors and review annotations.
+    //todo Delete redundant constructors.
 }

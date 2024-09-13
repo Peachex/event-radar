@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import static by.klevitov.eventradarcommon.util.IdGenerator.generateId;
@@ -16,7 +15,7 @@ import static java.time.LocalDateTime.now;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MessageRequest implements Serializable {
+public class MessageRequest {
     @Builder.Default
     private String id = generateId();
     @Builder.Default
