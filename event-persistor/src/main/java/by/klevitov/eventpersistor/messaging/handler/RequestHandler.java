@@ -1,4 +1,4 @@
-package by.klevitov.eventpersistor.messaging.request.handler;
+package by.klevitov.eventpersistor.messaging.handler;
 
 import by.klevitov.eventpersistor.messaging.comnon.request.dto.EntityData;
 import by.klevitov.eventpersistor.messaging.comnon.response.dto.MessageResponse;

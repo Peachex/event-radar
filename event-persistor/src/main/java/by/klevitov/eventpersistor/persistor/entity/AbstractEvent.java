@@ -4,6 +4,7 @@ import by.klevitov.eventradarcommon.dto.EventDate;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
@@ -16,8 +17,9 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true, exclude = "id")
 @SuperBuilder
-public class AbstractEvent {
+public class AbstractEvent extends AbstractEntity {
     @Id
     private String id;
     private String title;

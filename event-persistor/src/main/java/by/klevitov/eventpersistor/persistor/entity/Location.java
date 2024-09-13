@@ -13,8 +13,8 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = "id")
-public class Location {
+@EqualsAndHashCode(callSuper = true, exclude = "id")
+public class Location extends AbstractEntity {
     @Id
     private String id;
     private String country;

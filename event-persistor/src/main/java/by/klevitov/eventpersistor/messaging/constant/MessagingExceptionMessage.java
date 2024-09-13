@@ -6,6 +6,9 @@ public final class MessagingExceptionMessage {
     public static final String INVALID_ENTITY_EVENT_DATA = "Invalid data for creating event: %s";
     public static final String INVALID_ENTITY_EVENTS_DATA = "Invalid data for creating events: %s";
     public static final String UNSUPPORTED_REQUEST_OR_ENTITY_TYPE = "Unsupported request or entity type: %s | %s";
+    public static final String ENTITY_CONVERTER_NOT_FOUND = "No entity converter found for: %s";
+    public static final String NULL_DTO = "DTO cannot be null.";
+    public static final String NULL_ENTITY = "Entity cannot be null.";
 
     private MessagingExceptionMessage() {
     }

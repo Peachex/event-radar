@@ -24,6 +24,7 @@ import by.klevitov.eventradarcommon.dto.ByCardEventDTO;
 import by.klevitov.eventradarcommon.dto.EventDate;
 import by.klevitov.eventradarcommon.dto.EventPrice;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
+import by.klevitov.eventradarcommon.dto.LocationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -84,9 +85,9 @@ public class TestController {
     public Object test123() {
         EntityData entityData = new MultipleLocationData(
                 List.of(
-                        new Location("New country1", "New city 1"),
-                        new Location("New country2", "New city 2"),
-                        new Location("New country3", "New city 3"))
+                        new LocationDTO("New country1", "New city 1"),
+                        new LocationDTO("New country2", "New city 2"),
+                        new LocationDTO("New country3", "New city 3"))
 //                        new Location(null, null))
         );
 

@@ -1,12 +1,12 @@
-package by.klevitov.eventpersistor.messaging.request.factory;
+package by.klevitov.eventpersistor.messaging.factory;
 
 import by.klevitov.eventpersistor.messaging.comnon.request.dto.EntityType;
 import by.klevitov.eventpersistor.messaging.comnon.request.dto.RequestType;
-import by.klevitov.eventpersistor.messaging.request.handler.RequestHandler;
-import by.klevitov.eventpersistor.messaging.request.handler.impl.event.MultipleEventCreationRequestHandler;
-import by.klevitov.eventpersistor.messaging.request.handler.impl.event.SingleEventCreationRequestHandler;
-import by.klevitov.eventpersistor.messaging.request.handler.impl.location.MultipleLocationCreationRequestHandler;
-import by.klevitov.eventpersistor.messaging.request.handler.impl.location.SingleLocationCreationRequestHandler;
+import by.klevitov.eventpersistor.messaging.handler.RequestHandler;
+import by.klevitov.eventpersistor.messaging.handler.impl.event.MultipleEventCreationRequestHandler;
+import by.klevitov.eventpersistor.messaging.handler.impl.event.SingleEventCreationRequestHandler;
+import by.klevitov.eventpersistor.messaging.handler.impl.location.MultipleLocationCreationRequestHandler;
+import by.klevitov.eventpersistor.messaging.handler.impl.location.SingleLocationCreationRequestHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,13 +1,16 @@
-package by.klevitov.eventpersistor.messaging.request.handler.impl.location;
+package by.klevitov.eventpersistor.messaging.handler.impl.location;
 
 import by.klevitov.eventpersistor.messaging.comnon.request.dto.EntityData;
 import by.klevitov.eventpersistor.messaging.comnon.request.dto.data.SingleLocationData;
 import by.klevitov.eventpersistor.messaging.comnon.response.dto.MessageResponse;
 import by.klevitov.eventpersistor.messaging.comnon.response.dto.SuccessfulMessageResponse;
+import by.klevitov.eventpersistor.messaging.converter.EntityConverter;
+import by.klevitov.eventpersistor.messaging.factory.EntityConverterFactory;
 import by.klevitov.eventpersistor.messaging.exception.RequestHandlerException;
-import by.klevitov.eventpersistor.messaging.request.handler.RequestHandler;
+import by.klevitov.eventpersistor.messaging.handler.RequestHandler;
 import by.klevitov.eventpersistor.persistor.entity.Location;
 import by.klevitov.eventpersistor.persistor.service.LocationService;
+import by.klevitov.eventradarcommon.dto.LocationDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,19 +21,23 @@ import static by.klevitov.eventpersistor.messaging.constant.MessagingExceptionMe
 @Component
 public class SingleLocationCreationRequestHandler implements RequestHandler {
     private final LocationService service;
+    private final EntityConverterFactory converterFactory;
 
     @Autowired
-    public SingleLocationCreationRequestHandler(LocationService service) {
+    public SingleLocationCreationRequestHandler(LocationService service, EntityConverterFactory converterFactory) {
         this.service = service;
+        this.converterFactory = converterFactory;
     }
 
     @Override
-    public MessageResponse handle(EntityData entityData) {
+    public MessageResponse handle(final EntityData entityData) {
         throwExceptionInCaseOfInvalidEntityData(entityData);
-        SingleLocationData locationData = (SingleLocationData) entityData;
-        Location locationToCreate = locationData.getLocationDTO();
+        LocationDTO locationDTO = ((SingleLocationData) entityData).getLocationDTO();
+        EntityConverter converter = converterFactory.getConverter(locationDTO.getClass());
+        Location locationToCreate = (Location) converter.convertFromDTO(locationDTO);
         Location createdLocation = service.create(locationToCreate);
-        return new SuccessfulMessageResponse(new SingleLocationData(createdLocation));
+        LocationDTO createdLocationDTO = (LocationDTO) converter.convertToDTO(createdLocation);
+        return new SuccessfulMessageResponse(new SingleLocationData(createdLocationDTO));
     }
 
     private void throwExceptionInCaseOfInvalidEntityData(final EntityData entityData) {

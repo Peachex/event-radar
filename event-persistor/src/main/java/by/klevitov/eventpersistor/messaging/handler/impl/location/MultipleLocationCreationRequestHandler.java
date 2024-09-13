@@ -1,13 +1,16 @@
-package by.klevitov.eventpersistor.messaging.request.handler.impl.location;
+package by.klevitov.eventpersistor.messaging.handler.impl.location;
 
 import by.klevitov.eventpersistor.messaging.comnon.request.dto.EntityData;
 import by.klevitov.eventpersistor.messaging.comnon.request.dto.data.MultipleLocationData;
 import by.klevitov.eventpersistor.messaging.comnon.response.dto.MessageResponse;
 import by.klevitov.eventpersistor.messaging.comnon.response.dto.SuccessfulMessageResponse;
+import by.klevitov.eventpersistor.messaging.converter.EntityConverter;
+import by.klevitov.eventpersistor.messaging.factory.EntityConverterFactory;
 import by.klevitov.eventpersistor.messaging.exception.RequestHandlerException;
-import by.klevitov.eventpersistor.messaging.request.handler.RequestHandler;
+import by.klevitov.eventpersistor.messaging.handler.RequestHandler;
 import by.klevitov.eventpersistor.persistor.entity.Location;
 import by.klevitov.eventpersistor.persistor.service.LocationService;
+import by.klevitov.eventradarcommon.dto.LocationDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,19 +23,23 @@ import static by.klevitov.eventpersistor.messaging.constant.MessagingExceptionMe
 @Component
 public class MultipleLocationCreationRequestHandler implements RequestHandler {
     private final LocationService service;
+    private final EntityConverterFactory converterFactory;
 
     @Autowired
-    public MultipleLocationCreationRequestHandler(LocationService service) {
+    public MultipleLocationCreationRequestHandler(LocationService service, EntityConverterFactory converterFactory) {
         this.service = service;
+        this.converterFactory = converterFactory;
     }
 
     @Override
-    public MessageResponse handle(EntityData entityData) {
+    public MessageResponse handle(final EntityData entityData) {
         throwExceptionInCaseOfInvalidEntityData(entityData);
-        MultipleLocationData locationsData = (MultipleLocationData) entityData;
-        List<Location> locationsToCreate = locationsData.getLocationsDTO();
+        List<LocationDTO> locationsDTO = ((MultipleLocationData) entityData).getLocationsDTO();
+        EntityConverter converter = converterFactory.getConverter(LocationDTO.class);
+        List<Location> locationsToCreate = retrieveLocationsToCreate(locationsDTO, converter);
         List<Location> createdLocations = service.create(locationsToCreate);
-        return new SuccessfulMessageResponse(new MultipleLocationData(createdLocations));
+        List<LocationDTO> createdLocationsDTO = retrieveCreatedLocationsDTO(createdLocations, converter);
+        return new SuccessfulMessageResponse(new MultipleLocationData(createdLocationsDTO));
     }
 
     private void throwExceptionInCaseOfInvalidEntityData(final EntityData entityData) {
@@ -45,5 +52,15 @@ public class MultipleLocationCreationRequestHandler implements RequestHandler {
 
     private boolean entityDataIsNotValid(final EntityData entityData) {
         return !(entityData instanceof MultipleLocationData);
+    }
+
+    private List<Location> retrieveLocationsToCreate(final List<LocationDTO> locationsDTO,
+                                                     final EntityConverter converter) {
+        return locationsDTO.stream().map(l -> (Location) converter.convertFromDTO(l)).toList();
+    }
+
+    private List<LocationDTO> retrieveCreatedLocationsDTO(final List<Location> createdLocations,
+                                                          final EntityConverter converter) {
+        return createdLocations.stream().map(l -> (LocationDTO) converter.convertToDTO(l)).toList();
     }
 }

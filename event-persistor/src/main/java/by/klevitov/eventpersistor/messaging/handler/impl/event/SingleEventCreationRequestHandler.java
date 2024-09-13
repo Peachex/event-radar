@@ -1,13 +1,16 @@
-package by.klevitov.eventpersistor.messaging.request.handler.impl.event;
+package by.klevitov.eventpersistor.messaging.handler.impl.event;
 
 import by.klevitov.eventpersistor.messaging.comnon.request.dto.EntityData;
 import by.klevitov.eventpersistor.messaging.comnon.request.dto.data.SingleEventData;
 import by.klevitov.eventpersistor.messaging.comnon.response.dto.MessageResponse;
 import by.klevitov.eventpersistor.messaging.comnon.response.dto.SuccessfulMessageResponse;
+import by.klevitov.eventpersistor.messaging.converter.EntityConverter;
+import by.klevitov.eventpersistor.messaging.factory.EntityConverterFactory;
 import by.klevitov.eventpersistor.messaging.exception.RequestHandlerException;
-import by.klevitov.eventpersistor.messaging.request.handler.RequestHandler;
+import by.klevitov.eventpersistor.messaging.handler.RequestHandler;
 import by.klevitov.eventpersistor.persistor.entity.AbstractEvent;
 import by.klevitov.eventpersistor.persistor.service.EventService;
+import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,19 +21,23 @@ import static by.klevitov.eventpersistor.messaging.constant.MessagingExceptionMe
 @Component
 public class SingleEventCreationRequestHandler implements RequestHandler {
     private final EventService service;
+    private final EntityConverterFactory converterFactory;
 
     @Autowired
-    public SingleEventCreationRequestHandler(EventService service) {
+    public SingleEventCreationRequestHandler(EventService service, EntityConverterFactory converterFactory) {
         this.service = service;
+        this.converterFactory = converterFactory;
     }
 
     @Override
-    public MessageResponse handle(EntityData entityData) {
+    public MessageResponse handle(final EntityData entityData) {
         throwExceptionInCaseOfInvalidEntityData(entityData);
-        SingleEventData eventData = (SingleEventData) entityData;
-        AbstractEvent eventToCreate = eventData.getEventDTO();
+        AbstractEventDTO eventDTO = ((SingleEventData) entityData).getEventDTO();
+        EntityConverter converter = converterFactory.getConverter(eventDTO.getClass());
+        AbstractEvent eventToCreate = (AbstractEvent) converter.convertFromDTO(eventDTO);
         AbstractEvent createdEvent = service.create(eventToCreate);
-        return new SuccessfulMessageResponse(new SingleEventData(createdEvent));
+        AbstractEventDTO createdEventDTO = (AbstractEventDTO) converter.convertToDTO(createdEvent);
+        return new SuccessfulMessageResponse(new SingleEventData(createdEventDTO));
     }
 
     private void throwExceptionInCaseOfInvalidEntityData(final EntityData entityData) {
