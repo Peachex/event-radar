@@ -1,7 +1,7 @@
 package by.klevitov.eventpersistor.messaging.service;
 
-import by.klevitov.eventpersistor.messaging.comnon.request.dto.MessageRequest;
-import by.klevitov.eventpersistor.messaging.comnon.response.dto.MessageResponse;
+import by.klevitov.eventradarcommon.messaging.request.MessageRequest;
+import by.klevitov.eventradarcommon.messaging.response.MessageResponse;
 
 public interface MessageService {
     MessageResponse processAndRetrieveResult(final MessageRequest messageRequest);

@@ -4,9 +4,6 @@ import by.klevitov.eventparser.exception.EventParserServiceException;
 import by.klevitov.eventparser.parser.EventParser;
 import by.klevitov.eventparser.service.EventParserService;
 import by.klevitov.eventparser.service.impl.EventParserServiceImpl;
-import by.klevitov.eventpersistor.messaging.comnon.request.dto.EntityData;
-import by.klevitov.eventpersistor.messaging.comnon.request.dto.MessageRequest;
-import by.klevitov.eventpersistor.messaging.comnon.request.dto.data.MultipleLocationData;
 import by.klevitov.eventpersistor.messaging.service.MessageService;
 import by.klevitov.eventpersistor.messaging.test.TestProducer;
 import by.klevitov.eventpersistor.persistor.entity.AbstractEvent;
@@ -25,6 +22,9 @@ import by.klevitov.eventradarcommon.dto.EventDate;
 import by.klevitov.eventradarcommon.dto.EventPrice;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
 import by.klevitov.eventradarcommon.dto.LocationDTO;
+import by.klevitov.eventradarcommon.messaging.request.EntityData;
+import by.klevitov.eventradarcommon.messaging.request.MessageRequest;
+import by.klevitov.eventradarcommon.messaging.request.data.MultipleLocationData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,8 +39,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static by.klevitov.eventpersistor.messaging.comnon.request.dto.EntityType.LOCATION;
-import static by.klevitov.eventpersistor.messaging.comnon.request.dto.RequestType.CREATE_MULTIPLE;
+import static by.klevitov.eventradarcommon.messaging.request.EntityType.LOCATION;
+import static by.klevitov.eventradarcommon.messaging.request.RequestType.CREATE_MULTIPLE;
+
 
 @RestController
 public class TestController {

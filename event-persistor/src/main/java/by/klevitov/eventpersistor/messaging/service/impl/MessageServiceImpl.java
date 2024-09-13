@@ -1,14 +1,14 @@
 package by.klevitov.eventpersistor.messaging.service.impl;
 
-import by.klevitov.eventpersistor.messaging.comnon.request.dto.EntityType;
-import by.klevitov.eventpersistor.messaging.comnon.request.dto.MessageRequest;
-import by.klevitov.eventpersistor.messaging.comnon.request.dto.RequestType;
-import by.klevitov.eventpersistor.messaging.comnon.response.dto.ErrorMessageResponse;
-import by.klevitov.eventpersistor.messaging.comnon.response.dto.MessageResponse;
 import by.klevitov.eventpersistor.messaging.exception.MessageServiceException;
 import by.klevitov.eventpersistor.messaging.factory.RequestHandlerFactory;
 import by.klevitov.eventpersistor.messaging.handler.RequestHandler;
 import by.klevitov.eventpersistor.messaging.service.MessageService;
+import by.klevitov.eventradarcommon.messaging.request.EntityType;
+import by.klevitov.eventradarcommon.messaging.request.MessageRequest;
+import by.klevitov.eventradarcommon.messaging.request.RequestType;
+import by.klevitov.eventradarcommon.messaging.response.ErrorMessageResponse;
+import by.klevitov.eventradarcommon.messaging.response.MessageResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
