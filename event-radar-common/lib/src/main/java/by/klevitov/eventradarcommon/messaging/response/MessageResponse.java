@@ -2,7 +2,9 @@ package by.klevitov.eventradarcommon.messaging.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import static by.klevitov.eventradarcommon.util.IdGenerator.generateId;
@@ -10,7 +12,7 @@ import static java.time.LocalDateTime.now;
 
 @Data
 @AllArgsConstructor
-public abstract class MessageResponse {
+public abstract class MessageResponse implements Serializable {
     private String id;
     private String requestId;
     private LocalDateTime requestCreatedDate;
@@ -36,5 +38,5 @@ public abstract class MessageResponse {
         this.responseCreatedDate = requestCreatedDate;
     }
 
-    //todo Delete redundant constructors.
+    //todo Delete redundant constructors. Review serializable interface.
 }

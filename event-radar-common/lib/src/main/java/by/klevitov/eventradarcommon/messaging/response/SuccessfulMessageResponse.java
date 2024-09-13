@@ -3,12 +3,15 @@ package by.klevitov.eventradarcommon.messaging.response;
 import by.klevitov.eventradarcommon.messaging.request.EntityData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class SuccessfulMessageResponse extends MessageResponse {
+public class SuccessfulMessageResponse extends MessageResponse implements Serializable {
     private EntityData entityData;
 
     public SuccessfulMessageResponse(String id, String requestId, LocalDateTime requestCreatedDate,
@@ -31,5 +34,5 @@ public class SuccessfulMessageResponse extends MessageResponse {
         this.entityData = entityData;
     }
 
-    //todo Delete redundant constructors.
+    //todo Delete redundant constructors and review annotations.
 }

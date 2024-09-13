@@ -2,14 +2,17 @@ package by.klevitov.eventradarcommon.messaging.response;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.now;
 
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class ErrorMessageResponse extends MessageResponse {
+public class ErrorMessageResponse extends MessageResponse implements Serializable {
     private String errorMessage;
     private Throwable throwable;
 
@@ -30,5 +33,5 @@ public class ErrorMessageResponse extends MessageResponse {
         super(id, requestId, requestCreatedDate, now(), true);
     }
 
-    //todo Delete redundant constructors.
+    //todo Delete redundant constructors and review annotations.
 }
