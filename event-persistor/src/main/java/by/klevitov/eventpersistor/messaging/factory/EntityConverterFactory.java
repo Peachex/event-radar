@@ -2,6 +2,7 @@ package by.klevitov.eventpersistor.messaging.factory;
 
 import by.klevitov.eventpersistor.messaging.converter.EntityConverter;
 import by.klevitov.eventpersistor.messaging.converter.impl.AfishaRelaxEventConverter;
+import by.klevitov.eventpersistor.messaging.converter.impl.ByCardEventConverter;
 import by.klevitov.eventpersistor.messaging.converter.impl.LocationConverter;
 import by.klevitov.eventpersistor.messaging.exception.EntityConverterFactoryException;
 import by.klevitov.eventradarcommon.dto.AbstractDTO;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import static by.klevitov.eventpersistor.messaging.constant.MessagingExceptionMessage.ENTITY_CONVERTER_NOT_FOUND;
+import static by.klevitov.eventradarcommon.dto.EventSourceType.AFISHA_RELAX;
+import static by.klevitov.eventradarcommon.dto.EventSourceType.BYCARD;
 
 @Log4j2
 @Component
@@ -32,10 +35,10 @@ public class EntityConverterFactory {
         for (EntityConverter converter : converters) {
             if (converter instanceof AfishaRelaxEventConverter) {
                 convertersMapWithClassKey.put(AfishaRelaxEventDTO.class, converter);
-                convertersMapWithEventSourceTypeKey.put(EventSourceType.AFISHA_RELAX, converter);
-            } else if (converter instanceof ByCardEventDTO) {
+                convertersMapWithEventSourceTypeKey.put(AFISHA_RELAX, converter);
+            } else if (converter instanceof ByCardEventConverter) {
                 convertersMapWithClassKey.put(ByCardEventDTO.class, converter);
-                convertersMapWithEventSourceTypeKey.put(EventSourceType.BYCARD, converter);
+                convertersMapWithEventSourceTypeKey.put(BYCARD, converter);
             } else if (converter instanceof LocationConverter) {
                 convertersMapWithClassKey.put(LocationDTO.class, converter);
             }

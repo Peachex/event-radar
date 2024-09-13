@@ -24,7 +24,9 @@ import by.klevitov.eventradarcommon.dto.EventSourceType;
 import by.klevitov.eventradarcommon.dto.LocationDTO;
 import by.klevitov.eventradarcommon.messaging.request.EntityData;
 import by.klevitov.eventradarcommon.messaging.request.MessageRequest;
+import by.klevitov.eventradarcommon.messaging.request.data.EntityIdData;
 import by.klevitov.eventradarcommon.messaging.request.data.MultipleLocationData;
+import by.klevitov.eventradarcommon.messaging.request.data.SingleLocationData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,8 +41,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static by.klevitov.eventradarcommon.messaging.request.EntityType.EVENT;
 import static by.klevitov.eventradarcommon.messaging.request.EntityType.LOCATION;
 import static by.klevitov.eventradarcommon.messaging.request.RequestType.CREATE_MULTIPLE;
+import static by.klevitov.eventradarcommon.messaging.request.RequestType.CREATE_SINGLE;
+import static by.klevitov.eventradarcommon.messaging.request.RequestType.DELETE;
+import static by.klevitov.eventradarcommon.messaging.request.RequestType.SEARCH_BY_ID;
+import static by.klevitov.eventradarcommon.messaging.request.RequestType.SEARCH_FOR_ALL;
 
 
 @RestController
@@ -83,7 +90,7 @@ public class TestController {
     }
 
     @GetMapping("/events/test")
-    public Object test123() {
+    public Object test() {
         EntityData entityData = new MultipleLocationData(
                 List.of(
                         new LocationDTO("New country1", "New city 1"),
@@ -102,6 +109,70 @@ public class TestController {
 
         return messageService.processAndRetrieveResult(createRequest);
     }
+
+    @GetMapping("/events/test1")
+    public Object test1() {
+        MessageRequest request = MessageRequest.builder()
+                .requestType(SEARCH_FOR_ALL)
+                .entityType(LOCATION)
+                .build();
+
+        return messageService.processAndRetrieveResult(request);
+    }
+
+    @GetMapping("/events/test2")
+    public Object test2() {
+        MessageRequest request = MessageRequest.builder()
+                .requestType(SEARCH_FOR_ALL)
+                .entityType(EVENT)
+                .build();
+
+        return messageService.processAndRetrieveResult(request);
+    }
+
+    @GetMapping("/events/test3/{id}")
+    public Object test3(@PathVariable String id) {
+        MessageRequest request = MessageRequest.builder()
+                .requestType(DELETE)
+                .entityType(LOCATION)
+                .entityData(new EntityIdData(id))
+                .build();
+
+        return messageService.processAndRetrieveResult(request);
+    }
+
+    @GetMapping("/events/test4")
+    public Object test4() {
+        MessageRequest request = MessageRequest.builder()
+                .requestType(CREATE_SINGLE)
+                .entityType(LOCATION)
+                .entityData(new SingleLocationData(new LocationDTO("test", "test")))
+                .build();
+
+        return messageService.processAndRetrieveResult(request);
+    }
+
+    @GetMapping("/events/test5")
+    public Object test5() {
+        MessageRequest request = MessageRequest.builder()
+                .requestType(SEARCH_BY_ID)
+                .entityType(LOCATION)
+                .entityData(new EntityIdData("66dcc5b5dfc07c31659b2e9f"))
+                .build();
+
+        return messageService.processAndRetrieveResult(request);
+    }
+
+//    @GetMapping("/events/test6")
+//    public Object test6() {
+//        MessageRequest request = MessageRequest.builder()
+//                .requestType(UPDATE)
+//                .entityType(LOCATION)
+//                .entityData(new SingleLocationData(new LocationDTO("", ""))
+//                .build();
+//
+//        return messageService.processAndRetrieveResult(request);
+//    }
 
     @PostMapping("/events/multiple")
     public List<AbstractEvent> createEvents(@RequestBody List<AbstractEvent> events) {
