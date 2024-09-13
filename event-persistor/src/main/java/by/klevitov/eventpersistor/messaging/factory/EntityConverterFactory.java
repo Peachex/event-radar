@@ -7,6 +7,7 @@ import by.klevitov.eventpersistor.messaging.exception.EntityConverterFactoryExce
 import by.klevitov.eventradarcommon.dto.AbstractDTO;
 import by.klevitov.eventradarcommon.dto.AfishaRelaxEventDTO;
 import by.klevitov.eventradarcommon.dto.ByCardEventDTO;
+import by.klevitov.eventradarcommon.dto.EventSourceType;
 import by.klevitov.eventradarcommon.dto.LocationDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,25 +22,28 @@ import static by.klevitov.eventpersistor.messaging.constant.MessagingExceptionMe
 @Log4j2
 @Component
 public class EntityConverterFactory {
-    private final Map<Class<? extends AbstractDTO>, EntityConverter> convertersMap;
+    private final Map<Class<? extends AbstractDTO>, EntityConverter> convertersMapWithClassKey;
+    private final Map<EventSourceType, EntityConverter> convertersMapWithEventSourceTypeKey;
 
     @Autowired
     public EntityConverterFactory(List<EntityConverter> converters) {
-        this.convertersMap = new HashMap<>();
+        this.convertersMapWithClassKey = new HashMap<>();
+        this.convertersMapWithEventSourceTypeKey = new HashMap<>();
         for (EntityConverter converter : converters) {
             if (converter instanceof AfishaRelaxEventConverter) {
-                convertersMap.put(AfishaRelaxEventDTO.class, converter);
+                convertersMapWithClassKey.put(AfishaRelaxEventDTO.class, converter);
+                convertersMapWithEventSourceTypeKey.put(EventSourceType.AFISHA_RELAX, converter);
             } else if (converter instanceof ByCardEventDTO) {
-                convertersMap.put(ByCardEventDTO.class, converter);
+                convertersMapWithClassKey.put(ByCardEventDTO.class, converter);
+                convertersMapWithEventSourceTypeKey.put(EventSourceType.BYCARD, converter);
             } else if (converter instanceof LocationConverter) {
-                convertersMap.put(LocationDTO.class, converter);
-
+                convertersMapWithClassKey.put(LocationDTO.class, converter);
             }
         }
     }
 
     public EntityConverter getConverter(final Class<? extends AbstractDTO> dtoClass) {
-        EntityConverter converter = convertersMap.get(dtoClass);
+        EntityConverter converter = convertersMapWithClassKey.get(dtoClass);
         throwExceptionInCaseOfConverterNotFound(converter, dtoClass);
         return converter;
     }
@@ -48,6 +52,21 @@ public class EntityConverterFactory {
                                                          final Class<? extends AbstractDTO> dtoClass) {
         if (converter == null) {
             final String exceptionMessage = String.format(ENTITY_CONVERTER_NOT_FOUND, dtoClass);
+            log.error(exceptionMessage);
+            throw new EntityConverterFactoryException(exceptionMessage);
+        }
+    }
+
+    public EntityConverter getConverter(final EventSourceType sourceType) {
+        EntityConverter converter = convertersMapWithEventSourceTypeKey.get(sourceType);
+        throwExceptionInCaseOfConverterNotFound(converter, sourceType);
+        return converter;
+    }
+
+    private void throwExceptionInCaseOfConverterNotFound(final EntityConverter converter,
+                                                         final EventSourceType sourceType) {
+        if (converter == null) {
+            final String exceptionMessage = String.format(ENTITY_CONVERTER_NOT_FOUND, sourceType);
             log.error(exceptionMessage);
             throw new EntityConverterFactoryException(exceptionMessage);
         }
