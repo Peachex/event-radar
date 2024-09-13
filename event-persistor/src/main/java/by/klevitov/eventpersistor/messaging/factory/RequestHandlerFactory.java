@@ -21,22 +21,23 @@ import static by.klevitov.eventpersistor.messaging.comnon.request.dto.RequestTyp
 
 @Component
 public class RequestHandlerFactory {
-    private final Map<EntityType, Map<RequestType, RequestHandler>> handlerMap = new HashMap<>();
+    private final Map<EntityType, Map<RequestType, RequestHandler>> handlersMap;
 
     @Autowired
-    public RequestHandlerFactory(List<RequestHandler> handlerList) {
-        for (RequestHandler handler : handlerList) {
+    public RequestHandlerFactory(List<RequestHandler> handlers) {
+        this.handlersMap = new HashMap<>();
+        for (RequestHandler handler : handlers) {
             if (handler instanceof MultipleEventCreationRequestHandler) {
-                handlerMap.computeIfAbsent(EVENT, t -> new HashMap<>())
+                handlersMap.computeIfAbsent(EVENT, t -> new HashMap<>())
                         .put(CREATE_MULTIPLE, handler);
             } else if (handler instanceof MultipleLocationCreationRequestHandler) {
-                handlerMap.computeIfAbsent(LOCATION, t -> new HashMap<>())
+                handlersMap.computeIfAbsent(LOCATION, t -> new HashMap<>())
                         .put(CREATE_MULTIPLE, handler);
             } else if (handler instanceof SingleEventCreationRequestHandler) {
-                handlerMap.computeIfAbsent(EVENT, t -> new HashMap<>())
+                handlersMap.computeIfAbsent(EVENT, t -> new HashMap<>())
                         .put(CREATE_SINGLE, handler);
             } else if (handler instanceof SingleLocationCreationRequestHandler) {
-                handlerMap.computeIfAbsent(LOCATION, t -> new HashMap<>())
+                handlersMap.computeIfAbsent(LOCATION, t -> new HashMap<>())
                         .put(CREATE_SINGLE, handler);
             }
         }
@@ -46,6 +47,6 @@ public class RequestHandlerFactory {
     // SearchByFieldsRequest, DeletionRequest, SingleCreationRequest.
 
     public RequestHandler getHandler(EntityType entityType, RequestType requestType) {
-        return handlerMap.get(entityType).get(requestType);
+        return handlersMap.get(entityType).get(requestType);
     }
 }
