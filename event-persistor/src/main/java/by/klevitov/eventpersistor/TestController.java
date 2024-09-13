@@ -7,11 +7,11 @@ import by.klevitov.eventradarcommon.messaging.request.MessageRequest;
 import by.klevitov.eventradarcommon.messaging.request.RequestType;
 import by.klevitov.eventradarcommon.messaging.request.data.SearchFieldsData;
 import by.klevitov.eventradarcommon.messaging.response.MessageResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.Map;
 
 
@@ -31,7 +31,7 @@ public class TestController {
 //    }
 
     @GetMapping("/events/test1")
-    public MessageResponse createMultipleEvent() throws JsonProcessingException {
+    public MessageResponse createMultipleEvent() throws IOException {
         MessageRequest request = MessageRequest.builder()
                 .entityType(EntityType.EVENT)
                 .requestType(RequestType.SEARCH_BY_FIELDS)
