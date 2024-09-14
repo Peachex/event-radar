@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.util.Map;
 
 
@@ -31,7 +30,7 @@ public class TestController {
 //    }
 
     @GetMapping("/events/test1")
-    public MessageResponse createMultipleEvent() throws IOException {
+    public MessageResponse createMultipleEvent() throws Exception {
         MessageRequest request = MessageRequest.builder()
                 .entityType(EntityType.EVENT)
                 .requestType(RequestType.SEARCH_BY_FIELDS)

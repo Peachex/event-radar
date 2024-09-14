@@ -22,6 +22,9 @@ spring:
     username: 'rabbitmq_user'
     password: 'rabbitmq_password'
 
+queue:
+  singleQueue: 'singleQueue'
+
 logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
