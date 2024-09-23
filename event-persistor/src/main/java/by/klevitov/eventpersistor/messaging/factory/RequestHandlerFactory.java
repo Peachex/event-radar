@@ -11,6 +11,7 @@ import by.klevitov.eventpersistor.messaging.handler.impl.event.UpdatingEventRequ
 import by.klevitov.eventpersistor.messaging.handler.impl.location.DeletionLocationRequestHandler;
 import by.klevitov.eventpersistor.messaging.handler.impl.location.MultipleLocationCreationRequestHandler;
 import by.klevitov.eventpersistor.messaging.handler.impl.location.SearchAllLocationRequestHandler;
+import by.klevitov.eventpersistor.messaging.handler.impl.location.SearchByFieldsLocationRequestHandler;
 import by.klevitov.eventpersistor.messaging.handler.impl.location.SearchByIdLocationRequestHandler;
 import by.klevitov.eventpersistor.messaging.handler.impl.location.SingleLocationCreationRequestHandler;
 import by.klevitov.eventpersistor.messaging.handler.impl.location.UpdatingLocationRequestHandler;
@@ -71,6 +72,9 @@ public class RequestHandlerFactory {
             } else if (handler instanceof SearchByIdLocationRequestHandler) {
                 handlersMap.computeIfAbsent(LOCATION, t -> new HashMap<>())
                         .put(SEARCH_BY_ID, handler);
+            } else if (handler instanceof SearchByFieldsLocationRequestHandler) {
+                handlersMap.computeIfAbsent(LOCATION, t -> new HashMap<>())
+                        .put(SEARCH_BY_FIELDS, handler);
             } else if (handler instanceof SearchAllLocationRequestHandler) {
                 handlersMap.computeIfAbsent(LOCATION, t -> new HashMap<>())
                         .put(SEARCH_FOR_ALL, handler);
@@ -83,10 +87,6 @@ public class RequestHandlerFactory {
             }
         }
     }
-
-
-    //todo Add other newly created handlers to the map. To add: UpdatingRequest,SearchForAllRequest, SearchByIdRequest,
-    // SearchByFieldsRequest, DeletionRequest, SingleCreationRequest.
 
     public RequestHandler getHandler(EntityType entityType, RequestType requestType) {
         return handlersMap.get(entityType).get(requestType);

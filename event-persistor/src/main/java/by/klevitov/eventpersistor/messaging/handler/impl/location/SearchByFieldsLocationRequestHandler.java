@@ -1,19 +1,18 @@
-package by.klevitov.eventpersistor.messaging.handler.impl.event;
+package by.klevitov.eventpersistor.messaging.handler.impl.location;
 
 import by.klevitov.eventpersistor.messaging.converter.EntityConverter;
 import by.klevitov.eventpersistor.messaging.exception.RequestHandlerException;
 import by.klevitov.eventpersistor.messaging.factory.EntityConverterFactory;
 import by.klevitov.eventpersistor.messaging.handler.RequestHandler;
-import by.klevitov.eventpersistor.persistor.entity.AbstractEvent;
-import by.klevitov.eventpersistor.persistor.service.EventService;
-import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
+import by.klevitov.eventpersistor.persistor.entity.Location;
+import by.klevitov.eventpersistor.persistor.service.LocationService;
+import by.klevitov.eventradarcommon.dto.LocationDTO;
 import by.klevitov.eventradarcommon.messaging.request.EntityData;
-import by.klevitov.eventradarcommon.messaging.request.data.MultipleEventData;
+import by.klevitov.eventradarcommon.messaging.request.data.MultipleLocationData;
 import by.klevitov.eventradarcommon.messaging.request.data.SearchFieldsData;
 import by.klevitov.eventradarcommon.messaging.response.MessageResponse;
 import by.klevitov.eventradarcommon.messaging.response.SuccessfulMessageResponse;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -23,23 +22,23 @@ import static by.klevitov.eventpersistor.messaging.constant.MessagingExceptionMe
 
 @Log4j2
 @Component
-public class SearchByFieldsEventRequestHandler implements RequestHandler {
-    private final EventService service;
+public class SearchByFieldsLocationRequestHandler implements RequestHandler {
+    private final LocationService service;
     private final EntityConverterFactory converterFactory;
 
-    @Autowired
-    public SearchByFieldsEventRequestHandler(EventService service, EntityConverterFactory converterFactory) {
+    public SearchByFieldsLocationRequestHandler(LocationService service, EntityConverterFactory converterFactory) {
         this.service = service;
         this.converterFactory = converterFactory;
     }
 
     @Override
-    public MessageResponse handle(final EntityData entityData) {
+    public MessageResponse handle(EntityData entityData) {
         throwExceptionInCaseOfInvalidEntityData(entityData);
         Map<String, Object> fields = ((SearchFieldsData) entityData).getFields();
-        List<AbstractEvent> events = service.findByFields(fields);
-        List<AbstractEventDTO> eventsDTO = retrieveEventsDTO(events);
-        return new SuccessfulMessageResponse(new MultipleEventData(eventsDTO));
+        List<Location> locations = service.findByFields(fields);
+        EntityConverter converter = converterFactory.getConverter(LocationDTO.class);
+        List<LocationDTO> locationsDTO = retrieveLocationsDTO(locations, converter);
+        return new SuccessfulMessageResponse(new MultipleLocationData(locationsDTO));
     }
 
     public void throwExceptionInCaseOfInvalidEntityData(final EntityData entityData) {
@@ -54,10 +53,8 @@ public class SearchByFieldsEventRequestHandler implements RequestHandler {
         return !(entityData instanceof SearchFieldsData);
     }
 
-    private List<AbstractEventDTO> retrieveEventsDTO(final List<AbstractEvent> createdEvents) {
-        return createdEvents.stream().map(e -> {
-            EntityConverter converter = converterFactory.getConverter(e.getSourceType());
-            return (AbstractEventDTO) converter.convertToDTO(e);
-        }).toList();
+    private List<LocationDTO> retrieveLocationsDTO(final List<Location> createdLocations,
+                                                   final EntityConverter converter) {
+        return createdLocations.stream().map(l -> (LocationDTO) converter.convertToDTO(l)).toList();
     }
 }
