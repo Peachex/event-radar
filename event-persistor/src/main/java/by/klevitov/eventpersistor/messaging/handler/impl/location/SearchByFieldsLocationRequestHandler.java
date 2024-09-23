@@ -20,7 +20,6 @@ import java.util.Map;
 
 import static by.klevitov.eventpersistor.messaging.constant.MessagingExceptionMessage.INVALID_SEARCH_BY_FIELDS_DATA;
 
-
 @Log4j2
 @Component
 public class SearchByFieldsLocationRequestHandler implements RequestHandler {
