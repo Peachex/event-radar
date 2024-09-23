@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +24,7 @@ import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMe
 import static by.klevitov.eventpersistor.persistor.util.LocationValidator.throwExceptionInCaseOfEmptyId;
 import static by.klevitov.eventpersistor.persistor.util.LocationValidator.validateLocationBeforeCreation;
 import static by.klevitov.eventpersistor.persistor.util.LocationValidator.validateLocationBeforeUpdating;
+import static org.apache.commons.collections4.MapUtils.isNotEmpty;
 
 @Log4j2
 @Service
@@ -91,6 +93,11 @@ public class LocationServiceImpl implements LocationService {
         throwExceptionInCaseOfEmptyId(id);
         Optional<Location> location = locationRepository.findById(id);
         return location.orElseThrow(() -> createAndLogLocationNotFoundException(id));
+    }
+
+    @Override
+    public List<Location> findByFields(Map<String, Object> fields) {
+        return (isNotEmpty(fields) ? locationRepository.findByFields(fields) : new ArrayList<>());
     }
 
     private LocationServiceException createAndLogLocationNotFoundException(final String id) {
