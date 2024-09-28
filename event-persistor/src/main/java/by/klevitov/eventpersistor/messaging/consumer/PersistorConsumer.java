@@ -20,7 +20,7 @@ public class PersistorConsumer {
         this.messageService = messageService;
     }
 
-    @RabbitListener(queues = "${queue.singleQueue}")
+    @RabbitListener(queues = "${queue.single-queue}")
     @SendTo
     public byte[] processRequest(final byte[] requestInBytes) throws Exception {
         MessageRequest request = convertRequestFromBytes(requestInBytes);

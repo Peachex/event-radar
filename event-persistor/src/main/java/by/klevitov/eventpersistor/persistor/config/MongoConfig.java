@@ -56,6 +56,4 @@ public class MongoConfig {
 //    public MongoTransactionManager transactionManager(MongoDatabaseFactory databaseFactory) {
 //        return new MongoTransactionManager(databaseFactory);
 //    }
-
-    //todo Review timeouts and update if necessary.
 }

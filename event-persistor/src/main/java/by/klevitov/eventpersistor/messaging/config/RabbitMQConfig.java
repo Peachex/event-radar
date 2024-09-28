@@ -9,8 +9,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
-    @Value("${queue.singleQueue}")
+    @Value("${queue.single-queue}")
     private String requestQueueName;
+
+    @Value("${spring.rabbitmq.reply-timeout}")
+    private long replyTimeout;
 
     @Bean
     public Queue requestQueue() {
@@ -20,11 +23,10 @@ public class RabbitMQConfig {
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
-        template.setReplyTimeout(5000); // Set a timeout for the reply
+        template.setReplyTimeout(replyTimeout); // Set a timeout for the reply
         return template;
     }
 
     //todo Delete queue data since it is needed only for applications that are going to use producer.
-    //todo Setup timeouts and other useful properties.
     //todo Catch and log exception when connecting to RabbitMQ.
 }

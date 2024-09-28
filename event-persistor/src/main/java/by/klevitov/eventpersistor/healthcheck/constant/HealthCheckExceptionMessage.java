@@ -6,6 +6,4 @@ public final class HealthCheckExceptionMessage {
 
     private HealthCheckExceptionMessage() {
     }
-
-    //todo Make this class common for the whole application.
 }
