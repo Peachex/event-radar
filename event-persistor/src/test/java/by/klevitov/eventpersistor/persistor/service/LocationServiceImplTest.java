@@ -256,5 +256,24 @@ public class LocationServiceImplTest {
         assertEquals(expected, actual);
         verifyLocationsId(expected, actual);
     }
-}
 
+    @Test
+    public void test_update_withValidExistentLocation() {
+        try (MockedStatic<LocationValidator> validator = Mockito.mockStatic(LocationValidator.class)) {
+            validator.when(() -> LocationValidator.validateLocationBeforeUpdating(any(Location.class)))
+                    .then(invocationOnMock -> null);
+            when(locationRepository.findById(anyString()))
+                    .thenReturn(Optional.of(new Location("id", "oldCountry", "city")));
+            when(locationRepository.findByCountryAndCityIgnoreCase(anyString(), anyString()))
+                    .thenReturn(Optional.empty());
+
+            Location updatedLocation = new Location("id", "newCountry", null);
+            when(locationRepository.save(updatedLocation))
+                    .thenReturn(new Location("id", updatedLocation.getCountry(), "city"));
+
+            Location expected = new Location("id", "newCountry", "city");
+            Location actual = service.update(updatedLocation);
+            assertEquals(expected, actual);
+        }
+    }
+}
