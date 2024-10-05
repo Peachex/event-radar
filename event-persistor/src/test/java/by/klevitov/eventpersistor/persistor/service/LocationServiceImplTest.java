@@ -14,12 +14,14 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -212,6 +214,47 @@ public class LocationServiceImplTest {
         String expectedMessage = "Location id cannot be null or empty.";
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
+    }
+
+    @Test
+    public void test_findByFields_withExistentFields() {
+        when(locationRepository.findByFields(anyMap()))
+                .thenReturn(List.of(
+                        new Location("id1", "country1", "city1"),
+                        new Location("id2", "country1", "city2")
+                ));
+        List<Location> expected = List.of(
+                new Location("id1", "country1", "city1"),
+                new Location("id2", "country1", "city2")
+        );
+        List<Location> actual = service.findByFields(Map.of("country", "country1"));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_findByFields_withNonExistentFields() {
+        when(locationRepository.findByFields(anyMap()))
+                .thenReturn(new ArrayList<>());
+        List<Location> actual = service.findByFields(Map.of("nonExistentField", "fieldValue"));
+        assertEquals(0, actual.size());
+    }
+
+    @Test
+    public void test_findAll() {
+        when(locationRepository.findAll())
+                .thenReturn(List.of(
+                        new Location("id1", "country1", "city1"),
+                        new Location("id2", "country2", "city2"),
+                        new Location("id3", "country3", "city3")
+                ));
+        List<Location> expected = List.of(
+                new Location("id1", "country1", "city1"),
+                new Location("id2", "country2", "city2"),
+                new Location("id3", "country3", "city3")
+        );
+        List<Location> actual = service.findAll();
+        assertEquals(expected, actual);
+        verifyLocationsId(expected, actual);
     }
 }
 
