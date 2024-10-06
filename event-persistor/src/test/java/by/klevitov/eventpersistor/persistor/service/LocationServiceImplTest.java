@@ -276,4 +276,116 @@ public class LocationServiceImplTest {
             assertEquals(expected, actual);
         }
     }
+
+    @Test
+    public void test_update_withValidNonExistentLocation() {
+        try (MockedStatic<LocationValidator> validator = Mockito.mockStatic(LocationValidator.class)) {
+            validator.when(() -> LocationValidator.validateLocationBeforeUpdating(any(Location.class)))
+                    .then(invocationOnMock -> null);
+            when(locationRepository.findById(anyString()))
+                    .thenReturn(Optional.empty());
+
+            Location updatedLocation = new Location("nonExistentLocationId", "newCountry", null);
+            Exception exception = assertThrows(LocationServiceException.class, () -> service.update(updatedLocation));
+            String expectedMessage = "Cannot find location with id: 'nonExistentLocationId'";
+            String actualMessage = exception.getMessage();
+
+            assertEquals(expectedMessage, actualMessage);
+            verify(locationRepository, times(1)).findById(anyString());
+            verify(locationRepository, times(0)).save(any());
+            verify(locationRepository, times(0)).findByCountryAndCityIgnoreCase(anyString(),
+                    anyString());
+        }
+    }
+
+    @Test
+    public void test_update_withInvalidLocation() {
+        try (MockedStatic<LocationValidator> validator = Mockito.mockStatic(LocationValidator.class)) {
+            validator.when(() -> LocationValidator.validateLocationBeforeUpdating(any(Location.class)))
+                    .thenThrow(new LocationValidatorException("Location id cannot be null or empty."));
+
+            Location updatedLocation = new Location(null, null, null);
+            Exception exception = assertThrows(LocationValidatorException.class, () -> service.update(updatedLocation));
+            String expectedMessage = "Location id cannot be null or empty.";
+            String actualMessage = exception.getMessage();
+
+            assertEquals(expectedMessage, actualMessage);
+            verify(locationRepository, times(0)).findById(anyString());
+            verify(locationRepository, times(0)).save(any());
+            verify(locationRepository, times(0)).findByCountryAndCityIgnoreCase(anyString(),
+                    anyString());
+        }
+    }
+
+    @Test
+    public void test_update_withValidLocationThatAlreadyExistsAfterUpdating() {
+        try (MockedStatic<LocationValidator> validator = Mockito.mockStatic(LocationValidator.class)) {
+            validator.when(() -> LocationValidator.validateLocationBeforeUpdating(any(Location.class)))
+                    .then(invocationOnMock -> null);
+            when(locationRepository.findById(anyString()))
+                    .thenReturn(Optional.of(new Location("id", "country", "city")));
+            when(locationRepository.findByCountryAndCityIgnoreCase(anyString(), anyString()))
+                    .thenReturn(Optional.of(new Location("id", "updatedCountry", "city")));
+
+            Location updatedLocation = new Location("id", "updatedCountry", "city");
+            Exception exception = assertThrows(LocationServiceException.class, () -> service.update(updatedLocation));
+            String expectedMessage = "Location with country: 'updatedCountry', city: 'city' already exists. "
+                    + "Location id: 'id'.";
+            String actualMessage = exception.getMessage();
+
+            assertEquals(expectedMessage, actualMessage);
+            verify(locationRepository, times(1)).findById(anyString());
+            verify(locationRepository, times(0)).save(any());
+            verify(locationRepository, times(1)).findByCountryAndCityIgnoreCase(anyString(),
+                    anyString());
+        }
+    }
+
+    @Test
+    public void test_delete_withValidExistentLocationIdThatIsNotInUse() {
+        when(locationRepository.findById(anyString()))
+                .thenReturn(Optional.of(new Location("id", "country", "city")));
+        when(eventRepository.countByLocation(any()))
+                .thenReturn(0L);
+
+        service.delete("id");
+
+        verify(locationRepository, times(1)).findById(anyString());
+        verify(eventRepository, times(1)).countByLocation(any());
+        verify(locationRepository, times(1)).deleteById(anyString());
+    }
+
+    @Test
+    public void test_delete_withValidExistentLocationIdThatIsInUse() {
+        when(locationRepository.findById(anyString()))
+                .thenReturn(Optional.of(new Location("id", "country", "city")));
+        when(eventRepository.countByLocation(any()))
+                .thenReturn(1L);
+
+        Exception exception = assertThrows(LocationServiceException.class, () -> service.delete("id"));
+        String expectedMessage = "Location with id: 'id' cannot be deleted because it is in use.";
+        String actualMessage = exception.getMessage();
+
+        assertEquals(expectedMessage, actualMessage);
+        verify(locationRepository, times(1)).findById(anyString());
+        verify(eventRepository, times(1)).countByLocation(any());
+        verify(locationRepository, times(0)).deleteById(anyString());
+    }
+
+    @Test
+    public void test_delete_withInvalidLocationId() {
+        try (MockedStatic<LocationValidator> validator = Mockito.mockStatic(LocationValidator.class)) {
+            validator.when(() -> LocationValidator.throwExceptionInCaseOfEmptyId(anyString()))
+                    .thenThrow(new LocationValidatorException("Location id cannot be null or empty."));
+
+            Exception exception = assertThrows(LocationValidatorException.class, () -> service.delete("id"));
+            String expectedMessage = "Location id cannot be null or empty.";
+            String actualMessage = exception.getMessage();
+
+            assertEquals(expectedMessage, actualMessage);
+            verify(locationRepository, times(0)).findById(anyString());
+            verify(eventRepository, times(0)).countByLocation(any());
+            verify(locationRepository, times(0)).deleteById(anyString());
+        }
+    }
 }

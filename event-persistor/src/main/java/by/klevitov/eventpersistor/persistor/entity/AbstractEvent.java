@@ -19,7 +19,7 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true, exclude = "id")
 @SuperBuilder
-public class AbstractEvent extends AbstractEntity {
+public abstract class AbstractEvent extends AbstractEntity {
     @Id
     private String id;
     private String title;
