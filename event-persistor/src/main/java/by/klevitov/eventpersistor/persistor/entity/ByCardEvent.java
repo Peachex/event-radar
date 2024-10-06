@@ -50,6 +50,6 @@ public class ByCardEvent extends AbstractEvent {
         }
         price.setMinPrice(price.getMinPrice() == null ? source.getMinPrice() : price.getMinPrice());
         price.setMaxPrice(price.getMaxPrice() == null ? source.getMaxPrice() : price.getMaxPrice());
-        return source;
+        return price;
     }
 }
