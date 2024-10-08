@@ -23,6 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -73,7 +74,7 @@ public class LocationServiceImplTest {
             Location expected = new Location("id", location.getCountry(), location.getCity());
             Location actual = service.create(location);
 
-            verify(locationRepository, times(0)).insert(any(Location.class));
+            verify(locationRepository, never()).insert(any(Location.class));
             assertEquals(expected, actual);
             assertEquals(expected.getId(), actual.getId());
         }
@@ -92,6 +93,7 @@ public class LocationServiceImplTest {
             String expectedMessage = "Location country cannot be null or empty.";
             String actualMessage = exception.getMessage();
             assertEquals(expectedMessage, actualMessage);
+            verify(locationRepository, never()).insert(any(Location.class));
         }
     }
 
@@ -186,6 +188,7 @@ public class LocationServiceImplTest {
             String expectedMessage = "Location country cannot be null or empty.";
             String actualMessage = exception.getMessage();
             assertEquals(expectedMessage, actualMessage);
+            verify(locationRepository, never()).saveAll(anyList());
         }
     }
 
@@ -292,8 +295,8 @@ public class LocationServiceImplTest {
 
             assertEquals(expectedMessage, actualMessage);
             verify(locationRepository, times(1)).findById(anyString());
-            verify(locationRepository, times(0)).save(any());
-            verify(locationRepository, times(0)).findByCountryAndCityIgnoreCase(anyString(),
+            verify(locationRepository, never()).save(any());
+            verify(locationRepository, never()).findByCountryAndCityIgnoreCase(anyString(),
                     anyString());
         }
     }
@@ -310,9 +313,9 @@ public class LocationServiceImplTest {
             String actualMessage = exception.getMessage();
 
             assertEquals(expectedMessage, actualMessage);
-            verify(locationRepository, times(0)).findById(anyString());
-            verify(locationRepository, times(0)).save(any());
-            verify(locationRepository, times(0)).findByCountryAndCityIgnoreCase(anyString(),
+            verify(locationRepository, never()).findById(anyString());
+            verify(locationRepository, never()).save(any());
+            verify(locationRepository, never()).findByCountryAndCityIgnoreCase(anyString(),
                     anyString());
         }
     }
@@ -335,7 +338,7 @@ public class LocationServiceImplTest {
 
             assertEquals(expectedMessage, actualMessage);
             verify(locationRepository, times(1)).findById(anyString());
-            verify(locationRepository, times(0)).save(any());
+            verify(locationRepository, never()).save(any());
             verify(locationRepository, times(1)).findByCountryAndCityIgnoreCase(anyString(),
                     anyString());
         }
@@ -369,7 +372,7 @@ public class LocationServiceImplTest {
         assertEquals(expectedMessage, actualMessage);
         verify(locationRepository, times(1)).findById(anyString());
         verify(eventRepository, times(1)).countByLocation(any());
-        verify(locationRepository, times(0)).deleteById(anyString());
+        verify(locationRepository, never()).deleteById(anyString());
     }
 
     @Test
@@ -383,9 +386,9 @@ public class LocationServiceImplTest {
             String actualMessage = exception.getMessage();
 
             assertEquals(expectedMessage, actualMessage);
-            verify(locationRepository, times(0)).findById(anyString());
-            verify(eventRepository, times(0)).countByLocation(any());
-            verify(locationRepository, times(0)).deleteById(anyString());
+            verify(locationRepository, never()).findById(anyString());
+            verify(eventRepository, never()).countByLocation(any());
+            verify(locationRepository, never()).deleteById(anyString());
         }
     }
 }
