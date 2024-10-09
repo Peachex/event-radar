@@ -155,7 +155,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void delete(final String id) {
-        throwExceptionInCaseOfEmptyId(id);
+        findById(id);
         repository.deleteById(id);
     }
 }

@@ -4,7 +4,9 @@ import by.klevitov.eventpersistor.persistor.entity.AbstractEvent;
 import by.klevitov.eventpersistor.persistor.entity.AfishaRelaxEvent;
 import by.klevitov.eventpersistor.persistor.entity.ByCardEvent;
 import by.klevitov.eventpersistor.persistor.entity.Location;
+import by.klevitov.eventpersistor.persistor.exception.EventServiceException;
 import by.klevitov.eventpersistor.persistor.exception.EventValidatorException;
+import by.klevitov.eventpersistor.persistor.exception.LocationValidatorException;
 import by.klevitov.eventpersistor.persistor.repository.EventMongoRepository;
 import by.klevitov.eventpersistor.persistor.service.impl.EventServiceImpl;
 import by.klevitov.eventpersistor.persistor.util.EventValidator;
@@ -20,6 +22,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static by.klevitov.eventradarcommon.dto.EventSourceType.AFISHA_RELAX;
@@ -28,7 +31,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -148,7 +153,7 @@ public class EventServiceImplTest {
 
             verify(repository, times(1)).saveAll(anyList());
             assertEquals(expected, actual);
-            verifyLocationsId(expected, actual);
+            verifyEventsId(expected, actual);
         }
     }
 
@@ -196,11 +201,11 @@ public class EventServiceImplTest {
 
             verify(repository, times(1)).saveAll(anyList());
             assertEquals(expected, actual);
-            verifyLocationsId(expected, actual);
+            verifyEventsId(expected, actual);
         }
     }
 
-    private void verifyLocationsId(final List<AbstractEvent> expected, final List<AbstractEvent> actual) {
+    private void verifyEventsId(final List<AbstractEvent> expected, final List<AbstractEvent> actual) {
         for (int i = 0; i < expected.size() && i < actual.size(); i++) {
             assertEquals(expected.get(i).getId(), actual.get(i).getId());
         }
@@ -223,6 +228,187 @@ public class EventServiceImplTest {
             String actualMessage = exception.getMessage();
             assertEquals(expectedMessage, actualMessage);
             verify(repository, never()).saveAll(anyList());
+        }
+    }
+
+    @Test
+    public void test_findById_withValidIdAndExistentEvent() {
+        when(repository.findById(anyString()))
+                .thenReturn(Optional.of(createTestEvent(AFISHA_RELAX)));
+        AbstractEvent expected = createTestEvent(AFISHA_RELAX);
+        AbstractEvent actual = eventService.findById("id");
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_findById_withValidIdAndNonExistentEvent() {
+        when(repository.findById(anyString()))
+                .thenReturn(Optional.empty());
+        Exception exception = assertThrows(EventServiceException.class, () -> eventService.findById("id"));
+        String expectedMessage = "Cannot find event with id: 'id'";
+        String actualMessage = exception.getMessage();
+        assertEquals(expectedMessage, actualMessage);
+    }
+
+    @Test
+    public void test_findById_withInvalidId() {
+        Exception exception = assertThrows(LocationValidatorException.class, () -> eventService.findById(null));
+        String expectedMessage = "Event id cannot be null or empty.";
+        String actualMessage = exception.getMessage();
+        assertEquals(expectedMessage, actualMessage);
+    }
+
+    @Test
+    public void test_findByFields_withExistentFields() {
+        when(repository.findByFields(anyMap()))
+                .thenReturn(List.of(createTestEvent(AFISHA_RELAX), createTestEvent(BYCARD)));
+        List<AbstractEvent> expected = List.of(createTestEvent(AFISHA_RELAX), createTestEvent(BYCARD));
+        List<AbstractEvent> actual = eventService.findByFields(Map.of("existentField", "fieldValue"));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_findByFields_withNonExistentFields() {
+        when(repository.findByFields(anyMap())).thenReturn(new ArrayList<>());
+        List<AbstractEvent> actual = eventService.findByFields(Map.of("nonExistentField", "fieldValue"));
+        assertEquals(0, actual.size());
+    }
+
+    @Test
+    public void test_findAll() {
+        when(repository.findAll())
+                .thenReturn(List.of(createTestEvent(AFISHA_RELAX), createTestEvent(BYCARD)));
+        List<AbstractEvent> expected = List.of(createTestEvent(AFISHA_RELAX), createTestEvent(BYCARD));
+        List<AbstractEvent> actual = eventService.findAll();
+        assertEquals(expected, actual);
+        verifyEventsId(expected, actual);
+    }
+
+    @Test
+    public void test_update_withValidExistentEvent() {
+        try (MockedStatic<EventValidator> validator = Mockito.mockStatic(EventValidator.class)) {
+            validator.when(() -> EventValidator.validateEventBeforeUpdating(any(AbstractEvent.class)))
+                    .then(invocationOnMock -> null);
+            when(repository.findById(anyString()))
+                    .thenReturn(Optional.of(createTestEvent(AFISHA_RELAX)));
+            when(repository.findFirstByTitleAndCategoryIgnoreCaseAndSourceType(anyString(), anyString(),
+                    any(EventSourceType.class)))
+                    .thenReturn(Optional.empty());
+
+            String updatedTitle = "Updated title";
+            AbstractEvent updatedEvent = createTestEvent(AFISHA_RELAX);
+            updatedEvent.setTitle(updatedTitle);
+            when(repository.save(updatedEvent))
+                    .thenAnswer(invocationOnMock ->
+                    {
+                        AbstractEvent event = createTestEvent(AFISHA_RELAX);
+                        event.setTitle(updatedTitle);
+                        return event;
+                    });
+
+            AbstractEvent expected = createTestEvent(AFISHA_RELAX);
+            expected.setTitle(updatedTitle);
+            AbstractEvent actual = eventService.update(updatedEvent);
+            assertEquals(expected, actual);
+        }
+    }
+
+    @Test
+    public void test_update_withValidNonExistentEvent() {
+        try (MockedStatic<EventValidator> validator = Mockito.mockStatic(EventValidator.class)) {
+            validator.when(() -> EventValidator.validateEventBeforeUpdating(any(AbstractEvent.class)))
+                    .then(invocationOnMock -> null);
+            when(repository.findById(anyString()))
+                    .thenReturn(Optional.empty());
+
+            AbstractEvent updatedEvent = createTestEvent(AFISHA_RELAX);
+            updatedEvent.setId("nonExistentEventId");
+            Exception exception = assertThrows(EventServiceException.class, () -> eventService.update(updatedEvent));
+            String expectedMessage = "Cannot find event with id: 'nonExistentEventId'";
+            String actualMessage = exception.getMessage();
+
+            assertEquals(expectedMessage, actualMessage);
+            verify(repository, times(1)).findById(anyString());
+            verify(repository, never()).save(any());
+            verify(repository, never()).findFirstByTitleAndCategoryIgnoreCaseAndSourceType(anyString(), anyString(),
+                    any(EventSourceType.class));
+        }
+    }
+
+    @Test
+    public void test_update_withInvalidEvent() {
+        try (MockedStatic<EventValidator> validator = Mockito.mockStatic(EventValidator.class)) {
+            validator.when(() -> EventValidator.validateEventBeforeUpdating(any(AbstractEvent.class)))
+                    .thenThrow(new EventValidatorException("Event id cannot be null or empty."));
+
+            AbstractEvent updatedEvent = AfishaRelaxEvent.builder().id(null).build();
+            Exception exception = assertThrows(EventValidatorException.class, () -> eventService.update(updatedEvent));
+            String expectedMessage = "Event id cannot be null or empty.";
+            String actualMessage = exception.getMessage();
+
+            assertEquals(expectedMessage, actualMessage);
+            verify(repository, never()).findById(anyString());
+            verify(repository, never()).save(any());
+            verify(repository, never()).findFirstByTitleAndCategoryIgnoreCaseAndSourceType(anyString(), anyString(),
+                    any(EventSourceType.class));
+        }
+    }
+
+    @Test
+    public void test_update_withValidEventThatAlreadyExistsAfterUpdating() {
+        try (MockedStatic<EventValidator> validator = Mockito.mockStatic(EventValidator.class)) {
+            validator.when(() -> EventValidator.validateEventBeforeUpdating(any(AbstractEvent.class)))
+                    .then(invocationOnMock -> null);
+            when(repository.findById(anyString()))
+                    .thenReturn(Optional.of(createTestEvent(BYCARD)));
+
+            String updatedTitle = "Updated title";
+            when(repository.findFirstByTitleAndCategoryIgnoreCaseAndSourceType(anyString(), anyString(),
+                    any(EventSourceType.class)))
+                    .thenAnswer(invocationOnMock -> {
+                        AbstractEvent event = createTestEvent(BYCARD);
+                        event.setTitle(updatedTitle);
+                        return Optional.of(event);
+                    });
+
+            AbstractEvent updatedEvent = createTestEvent(BYCARD);
+            updatedEvent.setTitle(updatedTitle);
+
+            Exception exception = assertThrows(EventServiceException.class, () -> eventService.update(updatedEvent));
+            String expectedMessage = "Event with title: 'Updated title', category: 'category', source type: 'BYCARD' "
+                    + "already exists. Event id: 'id'.";
+            String actualMessage = exception.getMessage();
+
+            assertEquals(expectedMessage, actualMessage);
+            verify(repository, times(1)).findById(anyString());
+            verify(repository, never()).save(any());
+            verify(repository, times(1)).findFirstByTitleAndCategoryIgnoreCaseAndSourceType(
+                    anyString(), anyString(), any(EventSourceType.class));
+        }
+    }
+
+    @Test
+    public void test_delete_withValidExistentEventId() {
+        when(repository.findById(anyString()))
+                .thenReturn(Optional.of(createTestEvent(BYCARD)));
+        eventService.delete("id");
+        verify(repository, times(1)).findById(anyString());
+        verify(repository, times(1)).deleteById(anyString());
+    }
+
+    @Test
+    public void test_delete_withInvalidEventId() {
+        try (MockedStatic<EventValidator> validator = Mockito.mockStatic(EventValidator.class)) {
+            validator.when(() -> EventValidator.throwExceptionInCaseOfEmptyId(nullable(String.class)))
+                    .thenThrow(new EventValidatorException("Event id cannot be null or empty."));
+
+            Exception exception = assertThrows(EventValidatorException.class, () -> eventService.delete(null));
+            String expectedMessage = "Event id cannot be null or empty.";
+            String actualMessage = exception.getMessage();
+
+            assertEquals(expectedMessage, actualMessage);
+            verify(repository, never()).findById(anyString());
+            verify(repository, never()).deleteById(anyString());
         }
     }
 
