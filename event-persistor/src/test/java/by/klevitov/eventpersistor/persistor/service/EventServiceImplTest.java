@@ -6,7 +6,6 @@ import by.klevitov.eventpersistor.persistor.entity.ByCardEvent;
 import by.klevitov.eventpersistor.persistor.entity.Location;
 import by.klevitov.eventpersistor.persistor.exception.EventServiceException;
 import by.klevitov.eventpersistor.persistor.exception.EventValidatorException;
-import by.klevitov.eventpersistor.persistor.exception.LocationValidatorException;
 import by.klevitov.eventpersistor.persistor.repository.EventMongoRepository;
 import by.klevitov.eventpersistor.persistor.service.impl.EventServiceImpl;
 import by.klevitov.eventpersistor.persistor.util.EventValidator;
@@ -252,7 +251,7 @@ public class EventServiceImplTest {
 
     @Test
     public void test_findById_withInvalidId() {
-        Exception exception = assertThrows(LocationValidatorException.class, () -> eventService.findById(null));
+        Exception exception = assertThrows(EventValidatorException.class, () -> eventService.findById(null));
         String expectedMessage = "Event id cannot be null or empty.";
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);

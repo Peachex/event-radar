@@ -2,7 +2,6 @@ package by.klevitov.eventpersistor.persistor.util;
 
 import by.klevitov.eventpersistor.persistor.entity.AbstractEvent;
 import by.klevitov.eventpersistor.persistor.exception.EventValidatorException;
-import by.klevitov.eventpersistor.persistor.exception.LocationValidatorException;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
 import lombok.extern.log4j.Log4j2;
 
@@ -57,7 +56,7 @@ public final class EventValidator {
     public static void throwExceptionInCaseOfEmptyId(final String id) {
         if (isEmpty(id)) {
             log.error(NULL_OR_EMPTY_EVENT_ID);
-            throw new LocationValidatorException(NULL_OR_EMPTY_EVENT_ID);
+            throw new EventValidatorException(NULL_OR_EMPTY_EVENT_ID);
         }
     }
 
