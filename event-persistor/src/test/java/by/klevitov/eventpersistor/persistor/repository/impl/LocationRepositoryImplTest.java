@@ -1,7 +1,7 @@
-package by.klevitov.eventpersistor.persistor.repository;
+package by.klevitov.eventpersistor.persistor.repository.impl;
 
 import by.klevitov.eventpersistor.persistor.entity.Location;
-import by.klevitov.eventpersistor.persistor.repository.impl.LocationRepositoryImpl;
+import by.klevitov.eventpersistor.persistor.repository.LocationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -19,13 +19,13 @@ public class LocationRepositoryImplTest {
     private LocationRepository repository;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         mongoTemplate = Mockito.mock(MongoTemplate.class);
         repository = new LocationRepositoryImpl(mongoTemplate);
     }
 
     @Test
-    void test_findByFields() {
+    public void test_findByFields() {
         repository.findByFields(Map.of());
         verify(mongoTemplate, times(1)).find(any(), eq(Location.class));
     }

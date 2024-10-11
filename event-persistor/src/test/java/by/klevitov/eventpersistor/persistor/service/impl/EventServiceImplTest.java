@@ -1,4 +1,4 @@
-package by.klevitov.eventpersistor.persistor.service;
+package by.klevitov.eventpersistor.persistor.service.impl;
 
 import by.klevitov.eventpersistor.persistor.entity.AbstractEvent;
 import by.klevitov.eventpersistor.persistor.entity.AfishaRelaxEvent;
@@ -7,7 +7,8 @@ import by.klevitov.eventpersistor.persistor.entity.Location;
 import by.klevitov.eventpersistor.persistor.exception.EventServiceException;
 import by.klevitov.eventpersistor.persistor.exception.EventValidatorException;
 import by.klevitov.eventpersistor.persistor.repository.EventMongoRepository;
-import by.klevitov.eventpersistor.persistor.service.impl.EventServiceImpl;
+import by.klevitov.eventpersistor.persistor.service.EventService;
+import by.klevitov.eventpersistor.persistor.service.LocationService;
 import by.klevitov.eventpersistor.persistor.util.EventValidator;
 import by.klevitov.eventradarcommon.dto.EventDate;
 import by.klevitov.eventradarcommon.dto.EventPrice;
@@ -44,7 +45,7 @@ public class EventServiceImplTest {
     private EventMongoRepository repository;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         locationService = Mockito.mock(LocationService.class);
         repository = Mockito.mock(EventMongoRepository.class);
         eventService = new EventServiceImpl(locationService, repository);

@@ -1,11 +1,11 @@
-package by.klevitov.eventpersistor.persistor.service;
+package by.klevitov.eventpersistor.persistor.service.impl;
 
 import by.klevitov.eventpersistor.persistor.entity.Location;
 import by.klevitov.eventpersistor.persistor.exception.LocationServiceException;
 import by.klevitov.eventpersistor.persistor.exception.LocationValidatorException;
 import by.klevitov.eventpersistor.persistor.repository.EventMongoRepository;
 import by.klevitov.eventpersistor.persistor.repository.LocationMongoRepository;
-import by.klevitov.eventpersistor.persistor.service.impl.LocationServiceImpl;
+import by.klevitov.eventpersistor.persistor.service.LocationService;
 import by.klevitov.eventpersistor.persistor.util.LocationValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ public class LocationServiceImplTest {
     private EventMongoRepository eventRepository;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         locationRepository = Mockito.mock(LocationMongoRepository.class);
         eventRepository = Mockito.mock(EventMongoRepository.class);
         service = new LocationServiceImpl(locationRepository, eventRepository);
