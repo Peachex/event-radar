@@ -41,7 +41,7 @@ public class SearchByFieldsLocationRequestHandler implements RequestHandler {
         return new SuccessfulMessageResponse(new MultipleLocationData(locationsDTO));
     }
 
-    public void throwExceptionInCaseOfInvalidEntityData(final EntityData entityData) {
+    private void throwExceptionInCaseOfInvalidEntityData(final EntityData entityData) {
         if (entityDataIsNotValid(entityData)) {
             final String exceptionMessage = String.format(INVALID_SEARCH_BY_FIELDS_DATA, entityData);
             log.error(exceptionMessage);

@@ -41,7 +41,7 @@ public class MultipleEventCreationRequestHandler implements RequestHandler {
         return new SuccessfulMessageResponse(new MultipleEventData(createdEventsDTO));
     }
 
-    public void throwExceptionInCaseOfInvalidEntityData(final EntityData entityData) {
+    private void throwExceptionInCaseOfInvalidEntityData(final EntityData entityData) {
         if (entityDataIsNotValid(entityData) || entityDataContainsNullData(entityData)) {
             final String exceptionMessage = String.format(INVALID_ENTITY_EVENTS_DATA, entityData);
             log.error(exceptionMessage);

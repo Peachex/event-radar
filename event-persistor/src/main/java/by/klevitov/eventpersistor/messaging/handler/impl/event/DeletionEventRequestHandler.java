@@ -31,7 +31,7 @@ public class DeletionEventRequestHandler implements RequestHandler {
         return new SuccessfulMessageResponse(false);
     }
 
-    public void throwExceptionInCaseOfInvalidEntityData(final EntityData entityData) {
+    private void throwExceptionInCaseOfInvalidEntityData(final EntityData entityData) {
         if (entityDataIsNotValid(entityData)) {
             final String exceptionMessage = String.format(INVALID_ENTITY_EVENTS_DATA, entityData);
             log.error(exceptionMessage);
