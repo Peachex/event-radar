@@ -19,17 +19,17 @@ import static org.mockito.Mockito.when;
 
 public class ByCardEventConverterTest {
     private static EntityConverter eventConverter;
-    private static LocationConverter locationConverter;
+    private static LocationConverter mockedLocationConverter;
 
     @BeforeAll
     public static void init() {
-        locationConverter = Mockito.mock(LocationConverter.class);
-        eventConverter = new ByCardEventConverter(locationConverter);
+        mockedLocationConverter = Mockito.mock(LocationConverter.class);
+        eventConverter = new ByCardEventConverter(mockedLocationConverter);
     }
 
     @Test
     public void test_convertFromDTO_withNotNullDTO() {
-        when(locationConverter.convertFromDTO(any(LocationDTO.class)))
+        when(mockedLocationConverter.convertFromDTO(any(LocationDTO.class)))
                 .thenReturn(new Location("country", "city"));
 
         AbstractDTO eventDTO = ByCardEventDTO.builder()
@@ -53,7 +53,7 @@ public class ByCardEventConverterTest {
 
     @Test
     public void test_convertToDTO_withNotNullDTO() {
-        when(locationConverter.convertToDTO(any(Location.class)))
+        when(mockedLocationConverter.convertToDTO(any(Location.class)))
                 .thenReturn(new LocationDTO("country", "city"));
 
         AbstractEntity event = ByCardEvent.builder()
