@@ -16,13 +16,11 @@ import static by.klevitov.eventpersistor.messaging.handler.HandlerUtil.assertEqu
 
 public class SearchAllLocationRequestHandlerTest {
     private static RequestHandler handler;
-    private static LocationService mockedLocationService;
-    private static EntityConverterFactory mockedConverterFactory;
 
     @BeforeAll
     public static void init() {
-        mockedLocationService = Mockito.mock(LocationService.class);
-        mockedConverterFactory = Mockito.mock(EntityConverterFactory.class);
+        LocationService mockedLocationService = Mockito.mock(LocationService.class);
+        EntityConverterFactory mockedConverterFactory = Mockito.mock(EntityConverterFactory.class);
         handler = new SearchAllLocationRequestHandler(mockedLocationService, mockedConverterFactory);
     }
 

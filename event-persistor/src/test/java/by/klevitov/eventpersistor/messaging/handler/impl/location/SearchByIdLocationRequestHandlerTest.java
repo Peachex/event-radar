@@ -22,13 +22,12 @@ import static org.mockito.Mockito.when;
 
 public class SearchByIdLocationRequestHandlerTest {
     private static RequestHandler handler;
-    private static LocationService mockedLocationService;
     private static EntityConverterFactory mockedConverterFactory;
     private static EntityConverter mockedConverter;
 
     @BeforeAll
     public static void init() {
-        mockedLocationService = Mockito.mock(LocationService.class);
+        LocationService mockedLocationService = Mockito.mock(LocationService.class);
         mockedConverterFactory = Mockito.mock(EntityConverterFactory.class);
         mockedConverter = Mockito.mock(EntityConverter.class);
         handler = new SearchByIdLocationRequestHandler(mockedLocationService, mockedConverterFactory);

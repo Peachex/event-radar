@@ -22,13 +22,12 @@ import static org.mockito.Mockito.when;
 
 public class UpdatingEventRequestHandlerTest {
     private static RequestHandler handler;
-    private static EventService mockedEventService;
     private static EntityConverterFactory mockedConverterFactory;
     private static EntityConverter mockedConverter;
 
     @BeforeAll
     public static void init() {
-        mockedEventService = Mockito.mock(EventService.class);
+        EventService mockedEventService = Mockito.mock(EventService.class);
         mockedConverterFactory = Mockito.mock(EntityConverterFactory.class);
         mockedConverter = Mockito.mock(EntityConverter.class);
         handler = new UpdatingEventRequestHandler(mockedEventService, mockedConverterFactory);

@@ -14,25 +14,24 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import static by.klevitov.eventpersistor.messaging.handler.HandlerUtil.assertEqualsExcludingCreatedDate;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SearchByFieldsEventRequestHandlerTest {
     private static RequestHandler handler;
-    private static EventService mockedEventService;
-    private static EntityConverterFactory mockedConverterFactory;
 
     @BeforeAll
     public static void init() {
-        mockedEventService = Mockito.mock(EventService.class);
-        mockedConverterFactory = Mockito.mock(EntityConverterFactory.class);
+        EventService mockedEventService = Mockito.mock(EventService.class);
+        EntityConverterFactory mockedConverterFactory = Mockito.mock(EntityConverterFactory.class);
         handler = new SearchByFieldsEventRequestHandler(mockedEventService, mockedConverterFactory);
     }
 
     @Test
     public void test_handle_withValidEntityData() {
-        EntityData entityData = new SearchFieldsData();
+        EntityData entityData = new SearchFieldsData(Map.of("fieldName", "fieldValue"));
         MessageResponse expected = new SuccessfulMessageResponse(new MultipleEventData(new ArrayList<>()));
         MessageResponse actual = handler.handle(entityData);
         assertEqualsExcludingCreatedDate(expected, actual);

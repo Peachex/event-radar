@@ -16,11 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DeletionLocationRequestHandlerTest {
     private static RequestHandler handler;
-    private static LocationService mockedLocationService;
 
     @BeforeAll
     public static void init() {
-        mockedLocationService = Mockito.mock(LocationService.class);
+        LocationService mockedLocationService = Mockito.mock(LocationService.class);
         handler = new DeletionLocationRequestHandler(mockedLocationService);
     }
 

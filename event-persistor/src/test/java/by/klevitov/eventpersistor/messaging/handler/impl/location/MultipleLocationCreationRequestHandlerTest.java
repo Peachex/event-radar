@@ -19,14 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MultipleLocationCreationRequestHandlerTest {
     private static RequestHandler handler;
-    private static LocationService mockedLocaitonService;
-    private static EntityConverterFactory mockedConverterFactory;
 
     @BeforeAll
     public static void init() {
-        mockedLocaitonService = Mockito.mock(LocationService.class);
-        mockedConverterFactory = Mockito.mock(EntityConverterFactory.class);
-        handler = new MultipleLocationCreationRequestHandler(mockedLocaitonService, mockedConverterFactory);
+        LocationService mockedLocationService = Mockito.mock(LocationService.class);
+        EntityConverterFactory mockedConverterFactory = Mockito.mock(EntityConverterFactory.class);
+        handler = new MultipleLocationCreationRequestHandler(mockedLocationService, mockedConverterFactory);
     }
 
     @Test

@@ -19,13 +19,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MultipleEventCreationRequestHandlerTest {
     private static RequestHandler handler;
-    private static EventService mockedEventService;
-    private static EntityConverterFactory mockedConverterFactory;
 
     @BeforeAll
     public static void init() {
-        mockedEventService = Mockito.mock(EventService.class);
-        mockedConverterFactory = Mockito.mock(EntityConverterFactory.class);
+        EventService mockedEventService = Mockito.mock(EventService.class);
+        EntityConverterFactory mockedConverterFactory = Mockito.mock(EntityConverterFactory.class);
         handler = new MultipleEventCreationRequestHandler(mockedEventService, mockedConverterFactory);
     }
 
