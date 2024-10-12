@@ -14,7 +14,7 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 
-import static by.klevitov.eventpersistor.messaging.handler.HandlerUtil.assertEqualsExcludingCreatedDate;
+import static by.klevitov.eventpersistor.messaging.handler.RequestHandlerUtil.assertEqualsExcludingCreatedDate;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MultipleLocationCreationRequestHandlerTest {

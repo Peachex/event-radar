@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public final class HandlerUtil {
-    private HandlerUtil() {
+public final class RequestHandlerUtil {
+    private RequestHandlerUtil() {
     }
 
     public static void assertEqualsExcludingCreatedDate(final MessageResponse expected, final MessageResponse actual) {

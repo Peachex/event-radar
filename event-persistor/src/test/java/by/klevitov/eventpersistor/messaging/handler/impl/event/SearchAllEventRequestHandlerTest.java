@@ -12,7 +12,7 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 
-import static by.klevitov.eventpersistor.messaging.handler.HandlerUtil.assertEqualsExcludingCreatedDate;
+import static by.klevitov.eventpersistor.messaging.handler.RequestHandlerUtil.assertEqualsExcludingCreatedDate;
 
 public class SearchAllEventRequestHandlerTest {
     private static RequestHandler handler;
