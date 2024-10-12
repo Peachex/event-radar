@@ -16,12 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DeletionEventRequestHandlerTest {
     private static RequestHandler handler;
-    private static EventService eventService;
+    private static EventService mockedEventService;
 
     @BeforeAll
     public static void init() {
-        eventService = Mockito.mock(EventService.class);
-        handler = new DeletionEventRequestHandler(eventService);
+        mockedEventService = Mockito.mock(EventService.class);
+        handler = new DeletionEventRequestHandler(mockedEventService);
     }
 
     @Test

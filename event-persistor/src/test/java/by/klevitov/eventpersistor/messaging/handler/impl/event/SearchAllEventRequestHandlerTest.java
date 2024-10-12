@@ -1,10 +1,8 @@
 package by.klevitov.eventpersistor.messaging.handler.impl.event;
 
-import by.klevitov.eventpersistor.messaging.exception.RequestHandlerException;
 import by.klevitov.eventpersistor.messaging.factory.EntityConverterFactory;
 import by.klevitov.eventpersistor.messaging.handler.RequestHandler;
 import by.klevitov.eventpersistor.persistor.service.EventService;
-import by.klevitov.eventradarcommon.messaging.request.EntityData;
 import by.klevitov.eventradarcommon.messaging.request.data.MultipleEventData;
 import by.klevitov.eventradarcommon.messaging.response.MessageResponse;
 import by.klevitov.eventradarcommon.messaging.response.SuccessfulMessageResponse;
@@ -15,9 +13,8 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 
 import static by.klevitov.eventpersistor.messaging.handler.HandlerUtil.assertEqualsExcludingCreatedDate;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class MultipleEventCreationRequestHandlerTest {
+public class SearchAllEventRequestHandlerTest {
     private static RequestHandler handler;
     private static EventService mockedEventService;
     private static EntityConverterFactory mockedConverterFactory;
@@ -26,26 +23,13 @@ public class MultipleEventCreationRequestHandlerTest {
     public static void init() {
         mockedEventService = Mockito.mock(EventService.class);
         mockedConverterFactory = Mockito.mock(EntityConverterFactory.class);
-        handler = new MultipleEventCreationRequestHandler(mockedEventService, mockedConverterFactory);
+        handler = new SearchAllEventRequestHandler(mockedEventService, mockedConverterFactory);
     }
 
     @Test
     public void test_handle_withValidEntityData() {
-        EntityData entityData = new MultipleEventData(new ArrayList<>());
         MessageResponse expected = new SuccessfulMessageResponse(new MultipleEventData(new ArrayList<>()));
-        MessageResponse actual = handler.handle(entityData);
+        MessageResponse actual = handler.handle(null);
         assertEqualsExcludingCreatedDate(expected, actual);
-    }
-
-    @Test
-    public void test_handle_withInvalidEntityData() {
-        EntityData invalidEntityData = null;
-        assertThrows(RequestHandlerException.class, () -> handler.handle(invalidEntityData));
-    }
-
-    @Test
-    public void test_handle_withEntityDataThatContainsNullData() {
-        EntityData invalidEntityData = new MultipleEventData();
-        assertThrows(RequestHandlerException.class, () -> handler.handle(invalidEntityData));
     }
 }
