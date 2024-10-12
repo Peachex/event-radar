@@ -1,5 +1,6 @@
 package by.klevitov.eventpersistor.messaging.factory;
 
+import by.klevitov.eventpersistor.messaging.exception.RequestHandlerFactoryException;
 import by.klevitov.eventpersistor.messaging.handler.RequestHandler;
 import by.klevitov.eventpersistor.messaging.handler.impl.event.DeletionEventRequestHandler;
 import by.klevitov.eventpersistor.messaging.handler.impl.event.MultipleEventCreationRequestHandler;
@@ -17,6 +18,7 @@ import by.klevitov.eventpersistor.messaging.handler.impl.location.SingleLocation
 import by.klevitov.eventpersistor.messaging.handler.impl.location.UpdatingLocationRequestHandler;
 import by.klevitov.eventradarcommon.messaging.request.EntityType;
 import by.klevitov.eventradarcommon.messaging.request.RequestType;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static by.klevitov.eventpersistor.messaging.constant.MessagingExceptionMessage.REQUEST_HANDLER_NOT_FOUND;
 import static by.klevitov.eventradarcommon.messaging.request.EntityType.EVENT;
 import static by.klevitov.eventradarcommon.messaging.request.EntityType.LOCATION;
 import static by.klevitov.eventradarcommon.messaging.request.RequestType.CREATE_MULTIPLE;
@@ -34,6 +37,7 @@ import static by.klevitov.eventradarcommon.messaging.request.RequestType.SEARCH_
 import static by.klevitov.eventradarcommon.messaging.request.RequestType.SEARCH_FOR_ALL;
 import static by.klevitov.eventradarcommon.messaging.request.RequestType.UPDATE;
 
+@Log4j2
 @Component
 public class RequestHandlerFactory {
     private final Map<EntityType, Map<RequestType, RequestHandler>> handlersMap;
@@ -88,7 +92,18 @@ public class RequestHandlerFactory {
         }
     }
 
-    public RequestHandler getHandler(EntityType entityType, RequestType requestType) {
-        return handlersMap.get(entityType).get(requestType);
+    public RequestHandler getHandler(final EntityType entityType, final RequestType requestType) {
+        RequestHandler handler = handlersMap.get(entityType).get(requestType);
+        throwExceptionInCaseOfHandlerNotFound(handler, entityType, requestType);
+        return handler;
+    }
+
+    private void throwExceptionInCaseOfHandlerNotFound(final RequestHandler handler, final EntityType entityType,
+                                                       final RequestType requestType) {
+        if (handler == null) {
+            final String exceptionMessage = String.format(REQUEST_HANDLER_NOT_FOUND, entityType, requestType);
+            log.error(exceptionMessage);
+            throw new RequestHandlerFactoryException(exceptionMessage);
+        }
     }
 }
