@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +13,7 @@ import static java.time.LocalDateTime.now;
 
 @Data
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = "id")
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.CLASS,
         property = "type"

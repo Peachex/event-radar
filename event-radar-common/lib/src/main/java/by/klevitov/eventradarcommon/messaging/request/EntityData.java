@@ -8,6 +8,7 @@ import by.klevitov.eventradarcommon.messaging.request.data.SingleEventData;
 import by.klevitov.eventradarcommon.messaging.request.data.SingleLocationData;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import lombok.EqualsAndHashCode;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.CLASS,
@@ -21,5 +22,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = SingleEventData.class, name = "singleEventData"),
         @JsonSubTypes.Type(value = SingleLocationData.class, name = "singleLocationData")
 })
+@EqualsAndHashCode
 public abstract class EntityData {
 }
