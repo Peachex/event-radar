@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2024-06-29T12:46:46.381Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.6.4 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="TAgaBq_waQTpJJORooZ3" version="24.6.4" type="device">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.7.17 Chrome/128.0.6613.36 Electron/32.0.1 Safari/537.36" version="24.7.17">
   <diagram name="Page-1" id="askcqmGpLFvvpsK-TSI6">
-    <mxGraphModel dx="1195" dy="548" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" background="none" math="0" shadow="0">
+    <mxGraphModel dx="1395" dy="548" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" background="none" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -121,7 +121,7 @@
             <mxPoint x="440" y="270" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ngcAB32AMKRa3ck-ksib-8" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;EventPersistor&lt;/h1&gt;&lt;p&gt;Single entrypoint for communication with EventsDB databse.&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=left;labelBackgroundColor=none;" parent="1" vertex="1">
+        <mxCell id="ngcAB32AMKRa3ck-ksib-8" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;EventPersistor&lt;/h1&gt;&lt;p&gt;Single entrypoint for communication with EventsDB database.&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=left;labelBackgroundColor=none;" parent="1" vertex="1">
           <mxGeometry x="650" y="320" width="180" height="120" as="geometry" />
         </mxCell>
         <mxCell id="ngcAB32AMKRa3ck-ksib-9" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;MessageBroker&lt;/h1&gt;&lt;p&gt;Allow different modules to interact with EventsDB database.&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;align=left;labelBackgroundColor=none;" parent="1" vertex="1">
