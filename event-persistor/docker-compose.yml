@@ -2,11 +2,7 @@ version: '3'
 
 services:
   event-persistor:
-<<<<<<< HEAD
-    build: ./
-=======
     image: 'peachex/event-persistor-application:latest'
->>>>>>> event-persistor
     container_name: 'event-persistor-application'
     environment:
       - 'APPLICATION_PORT=8082'
