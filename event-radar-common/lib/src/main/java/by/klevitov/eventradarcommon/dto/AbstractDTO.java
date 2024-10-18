@@ -1,7 +1,5 @@
 package by.klevitov.eventradarcommon.dto;
 
-import by.klevitov.eventradarcommon.messaging.response.ErrorMessageResponse;
-import by.klevitov.eventradarcommon.messaging.response.SuccessfulMessageResponse;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
