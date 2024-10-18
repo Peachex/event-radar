@@ -16,15 +16,6 @@ spring:
       socket-timeout: '${MONGODB_SOCKET_TIMEOUT:10000}'
       max-wait-time: '${MONGODB_MAX_WAIT_TIME:3000}'
       server-selection-timeout: '${MONGODB_SERVER_SELECTION_TIMEOUT:3000}'
-  rabbitmq:
-    host: '${RABBITMQ_HOST:localhost}'
-    port: '${RABBITMQ_PORT:5673}'
-    username: '${RABBITMQ_USERNAME:rabbitmq_user}'
-    password: '${RABBITMQ_PASSWORD:rabbitmq_password}'
-    reply-timeout: '${RABBITMQ_REPLY_TIMEOUT:5000}'
-
-queue:
-  single-queue: '${QUEUE_SINGLE_QUEUE:singleQueue}'
 
 logging:
   level:
