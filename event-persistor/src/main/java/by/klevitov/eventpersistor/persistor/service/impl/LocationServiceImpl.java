@@ -120,15 +120,19 @@ public class LocationServiceImpl implements LocationService {
         return locationRepository.save(updatedLocation);
     }
 
-    private void throwExceptionInCaseOfLocationAlreadyExists(final Location location) {
-        final String country = location.getCountry();
-        final String city = location.getCity();
-        final String id = location.getId();
-        if (locationRepository.findByCountryAndCityIgnoreCase(country, city).isPresent()) {
-            final String exceptionMessage = String.format(LOCATION_ALREADY_EXISTS, country, city, id);
+    private void throwExceptionInCaseOfLocationAlreadyExists(final Location updatedLocation) {
+        if (updatedLocationAlreadyExists(updatedLocation)) {
+            final String exceptionMessage = String.format(LOCATION_ALREADY_EXISTS, updatedLocation.getCountry(),
+                    updatedLocation.getCity(), updatedLocation.getId());
             log.error(exceptionMessage);
             throw new LocationServiceException(exceptionMessage);
         }
+    }
+
+    private boolean updatedLocationAlreadyExists(final Location updatedLocation) {
+        final Optional<Location> existentLocation = locationRepository.findByCountryAndCityIgnoreCase(
+                updatedLocation.getCountry(), updatedLocation.getCity());
+        return (existentLocation.isPresent() && !existentLocation.get().getId().equals(updatedLocation.getId()));
     }
 
     @Override
