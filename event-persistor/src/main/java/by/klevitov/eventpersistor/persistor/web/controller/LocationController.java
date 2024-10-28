@@ -1,7 +1,10 @@
 package by.klevitov.eventpersistor.persistor.web.controller;
 
 import by.klevitov.eventpersistor.persistor.entity.Location;
+import by.klevitov.eventpersistor.persistor.service.ConverterService;
 import by.klevitov.eventpersistor.persistor.service.LocationService;
+import by.klevitov.eventradarcommon.dto.LocationDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,45 +21,52 @@ import java.util.Map;
 @RestController
 @RequestMapping("locations")
 public class LocationController {
-    private final LocationService service;
+    private final LocationService locationService;
+    private final ConverterService<Location, LocationDTO> converterService;
 
-    public LocationController(LocationService service) {
-        this.service = service;
+    @Autowired
+    public LocationController(LocationService locationService,
+                              ConverterService<Location, LocationDTO> converterService) {
+        this.locationService = locationService;
+        this.converterService = converterService;
     }
 
     @PostMapping
-    public Location create(@RequestBody final Location location) {
-        return service.create(location);
+    public LocationDTO create(@RequestBody final LocationDTO locationDTO) {
+        Location location = converterService.convertFromDTO(locationDTO);
+        return converterService.convertToDTO(locationService.create(location));
     }
 
     @PostMapping("/multiple")
-    public List<Location> create(@RequestBody final List<Location> locations) {
-        return service.create(locations);
+    public List<LocationDTO> create(@RequestBody final List<LocationDTO> locationsDTO) {
+        List<Location> locations = converterService.convertFromDTO(locationsDTO);
+        return converterService.convertToDTO(locationService.create(locations));
     }
 
     @GetMapping
-    public List<Location> findAll() {
-        return service.findAll();
+    public List<LocationDTO> findAll() {
+        return converterService.convertToDTO(locationService.findAll());
     }
 
     @PostMapping("/search")
-    public List<Location> findByFields(@RequestBody final Map<String, Object> fields) {
-        return service.findByFields(fields);
+    public List<LocationDTO> findByFields(@RequestBody final Map<String, Object> fields) {
+        return converterService.convertToDTO(locationService.findByFields(fields));
     }
 
     @GetMapping("/{id}")
-    public Location findById(@PathVariable final String id) {
-        return service.findById(id);
+    public LocationDTO findById(@PathVariable final String id) {
+        return converterService.convertToDTO(locationService.findById(id));
     }
 
     @PutMapping
-    public Location update(@RequestBody final Location location) {
-        return service.update(location);
+    public LocationDTO update(@RequestBody final LocationDTO locationDTO) {
+        Location location = converterService.convertFromDTO(locationDTO);
+        return converterService.convertToDTO(locationService.update(location));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable final String id) {
-        service.delete(id);
+        locationService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

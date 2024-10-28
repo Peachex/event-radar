@@ -19,6 +19,11 @@ public final class PersistorExceptionMessage {
             "already exists. Event id: '%s'.";
     public static final String LOCATION_IS_IN_USE = "Location with id: '%s' cannot be deleted because it is in use.";
     public static final String INVALID_EVENT_CLASS = "Invalid event class: %s for event %s";
+    public static final String ENTITY_CONVERTER_NOT_FOUND = "No entity converter found for: %s";
+    public static final String REQUEST_HANDLER_NOT_FOUND = "No request handler found for entity type '%s' and "
+            + "request type '%s'.";
+    public static final String NULL_DTO = "DTO cannot be null.";
+    public static final String NULL_ENTITY = "Entity cannot be null.";
 
     private PersistorExceptionMessage() {
     }

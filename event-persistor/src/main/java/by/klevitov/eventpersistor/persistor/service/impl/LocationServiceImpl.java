@@ -1,9 +1,12 @@
 package by.klevitov.eventpersistor.persistor.service.impl;
 
 import by.klevitov.eventpersistor.persistor.entity.Location;
-import by.klevitov.eventpersistor.persistor.exception.LocationServiceException;
+import by.klevitov.eventpersistor.persistor.exception.LocationAlreadyExistsException;
+import by.klevitov.eventpersistor.persistor.exception.LocationInUseException;
+import by.klevitov.eventpersistor.persistor.exception.LocationNotFoundException;
 import by.klevitov.eventpersistor.persistor.repository.EventMongoRepository;
 import by.klevitov.eventpersistor.persistor.repository.LocationMongoRepository;
+import by.klevitov.eventpersistor.persistor.service.ConverterService;
 import by.klevitov.eventpersistor.persistor.service.LocationService;
 import by.klevitov.eventpersistor.persistor.util.LocationValidator;
 import lombok.extern.log4j.Log4j2;
@@ -100,10 +103,10 @@ public class LocationServiceImpl implements LocationService {
         return (isNotEmpty(fields) ? locationRepository.findByFields(fields) : new ArrayList<>());
     }
 
-    private LocationServiceException createAndLogLocationNotFoundException(final String id) {
+    private LocationNotFoundException createAndLogLocationNotFoundException(final String id) {
         final String exceptionMessage = String.format(LOCATION_NOT_FOUND, id);
         log.error(exceptionMessage);
-        return new LocationServiceException(exceptionMessage);
+        return new LocationNotFoundException(exceptionMessage);
     }
 
     @Override
@@ -125,7 +128,7 @@ public class LocationServiceImpl implements LocationService {
             final String exceptionMessage = String.format(LOCATION_ALREADY_EXISTS, updatedLocation.getCountry(),
                     updatedLocation.getCity(), updatedLocation.getId());
             log.error(exceptionMessage);
-            throw new LocationServiceException(exceptionMessage);
+            throw new LocationAlreadyExistsException(exceptionMessage);
         }
     }
 
@@ -146,7 +149,7 @@ public class LocationServiceImpl implements LocationService {
         if (eventRepository.countByLocation(location) != 0) {
             final String exceptionMessage = String.format(LOCATION_IS_IN_USE, location.getId());
             log.error(exceptionMessage);
-            throw new LocationServiceException(exceptionMessage);
+            throw new LocationInUseException(exceptionMessage);
         }
     }
 }
