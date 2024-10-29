@@ -1,6 +1,9 @@
 package by.klevitov.eventpersistor.persistor.service.impl;
 
 import by.klevitov.eventpersistor.persistor.entity.Location;
+import by.klevitov.eventpersistor.persistor.exception.LocationAlreadyExistsException;
+import by.klevitov.eventpersistor.persistor.exception.LocationInUseException;
+import by.klevitov.eventpersistor.persistor.exception.LocationNotFoundException;
 import by.klevitov.eventpersistor.persistor.exception.LocationValidatorException;
 import by.klevitov.eventpersistor.persistor.repository.EventMongoRepository;
 import by.klevitov.eventpersistor.persistor.repository.LocationMongoRepository;
@@ -202,15 +205,15 @@ public class LocationServiceImplTest {
 
     //fixme Fix tests.
 
-//    @Test
-//    public void test_findById_withValidIdAndNonExistentLocation() {
-//        when(locationRepository.findById(anyString()))
-//                .thenReturn(Optional.empty());
-//        Exception exception = assertThrows(LocationServiceException.class, () -> service.findById("id"));
-//        String expectedMessage = "Cannot find location with id: 'id'";
-//        String actualMessage = exception.getMessage();
-//        assertEquals(expectedMessage, actualMessage);
-//    }
+    @Test
+    public void test_findById_withValidIdAndNonExistentLocation() {
+        when(locationRepository.findById(anyString()))
+                .thenReturn(Optional.empty());
+        Exception exception = assertThrows(LocationNotFoundException.class, () -> service.findById("id"));
+        String expectedMessage = "Cannot find location with id: 'id'";
+        String actualMessage = exception.getMessage();
+        assertEquals(expectedMessage, actualMessage);
+    }
 
     @Test
     public void test_findById_withInvalidId() {
@@ -281,26 +284,26 @@ public class LocationServiceImplTest {
         }
     }
 
-//    @Test
-//    public void test_update_withValidNonExistentLocation() {
-//        try (MockedStatic<LocationValidator> validator = Mockito.mockStatic(LocationValidator.class)) {
-//            validator.when(() -> LocationValidator.validateLocationBeforeUpdating(any(Location.class)))
-//                    .then(invocationOnMock -> null);
-//            when(locationRepository.findById(anyString()))
-//                    .thenReturn(Optional.empty());
-//
-//            Location updatedLocation = new Location("nonExistentLocationId", "newCountry", null);
-//            Exception exception = assertThrows(LocationServiceException.class, () -> service.update(updatedLocation));
-//            String expectedMessage = "Cannot find location with id: 'nonExistentLocationId'";
-//            String actualMessage = exception.getMessage();
-//
-//            assertEquals(expectedMessage, actualMessage);
-//            verify(locationRepository, times(1)).findById(anyString());
-//            verify(locationRepository, never()).save(any());
-//            verify(locationRepository, never()).findByCountryAndCityIgnoreCase(anyString(),
-//                    anyString());
-//        }
-//    }
+    @Test
+    public void test_update_withValidNonExistentLocation() {
+        try (MockedStatic<LocationValidator> validator = Mockito.mockStatic(LocationValidator.class)) {
+            validator.when(() -> LocationValidator.validateLocationBeforeUpdating(any(Location.class)))
+                    .then(invocationOnMock -> null);
+            when(locationRepository.findById(anyString()))
+                    .thenReturn(Optional.empty());
+
+            Location updatedLocation = new Location("nonExistentLocationId", "newCountry", null);
+            Exception exception = assertThrows(LocationNotFoundException.class, () -> service.update(updatedLocation));
+            String expectedMessage = "Cannot find location with id: 'nonExistentLocationId'";
+            String actualMessage = exception.getMessage();
+
+            assertEquals(expectedMessage, actualMessage);
+            verify(locationRepository, times(1)).findById(anyString());
+            verify(locationRepository, never()).save(any());
+            verify(locationRepository, never()).findByCountryAndCityIgnoreCase(anyString(),
+                    anyString());
+        }
+    }
 
     @Test
     public void test_update_withInvalidLocation() {
@@ -321,29 +324,30 @@ public class LocationServiceImplTest {
         }
     }
 
-//    @Test
-//    public void test_update_withValidLocationThatAlreadyExistsAfterUpdating() {
-//        try (MockedStatic<LocationValidator> validator = Mockito.mockStatic(LocationValidator.class)) {
-//            validator.when(() -> LocationValidator.validateLocationBeforeUpdating(any(Location.class)))
-//                    .then(invocationOnMock -> null);
-//            when(locationRepository.findById(anyString()))
-//                    .thenReturn(Optional.of(new Location("id", "country", "city")));
-//            when(locationRepository.findByCountryAndCityIgnoreCase(anyString(), anyString()))
-//                    .thenReturn(Optional.of(new Location("id", "updatedCountry", "city")));
-//
-//            Location updatedLocation = new Location("id", "updatedCountry", "city");
-//            Exception exception = assertThrows(LocationServiceException.class, () -> service.update(updatedLocation));
-//            String expectedMessage = "Location with country: 'updatedCountry', city: 'city' already exists. "
-//                    + "Location id: 'id'.";
-//            String actualMessage = exception.getMessage();
-//
-//            assertEquals(expectedMessage, actualMessage);
-//            verify(locationRepository, times(1)).findById(anyString());
-//            verify(locationRepository, never()).save(any());
-//            verify(locationRepository, times(1)).findByCountryAndCityIgnoreCase(anyString(),
-//                    anyString());
-//        }
-//    }
+    @Test
+    public void test_update_withValidLocationThatAlreadyExistsAfterUpdating() {
+        try (MockedStatic<LocationValidator> validator = Mockito.mockStatic(LocationValidator.class)) {
+            validator.when(() -> LocationValidator.validateLocationBeforeUpdating(any(Location.class)))
+                    .then(invocationOnMock -> null);
+            when(locationRepository.findById(anyString()))
+                    .thenReturn(Optional.of(new Location("id", "country", "city")));
+            when(locationRepository.findByCountryAndCityIgnoreCase(anyString(), anyString()))
+                    .thenReturn(Optional.of(new Location("other_id", "updatedCountry", "city")));
+
+            Location updatedLocation = new Location("id", "updatedCountry", "city");
+            Exception exception = assertThrows(LocationAlreadyExistsException.class,
+                    () -> service.update(updatedLocation));
+            String expectedMessage = "Location with country: 'updatedCountry', city: 'city' already exists. "
+                    + "Location id: 'id'.";
+            String actualMessage = exception.getMessage();
+
+            assertEquals(expectedMessage, actualMessage);
+            verify(locationRepository, times(1)).findById(anyString());
+            verify(locationRepository, never()).save(any());
+            verify(locationRepository, times(1)).findByCountryAndCityIgnoreCase(anyString(),
+                    anyString());
+        }
+    }
 
     @Test
     public void test_delete_withValidExistentLocationIdThatIsNotInUse() {
@@ -359,22 +363,22 @@ public class LocationServiceImplTest {
         verify(locationRepository, times(1)).deleteById(anyString());
     }
 
-//    @Test
-//    public void test_delete_withValidExistentLocationIdThatIsInUse() {
-//        when(locationRepository.findById(anyString()))
-//                .thenReturn(Optional.of(new Location("id", "country", "city")));
-//        when(eventRepository.countByLocation(any()))
-//                .thenReturn(1L);
-//
-//        Exception exception = assertThrows(LocationServiceException.class, () -> service.delete("id"));
-//        String expectedMessage = "Location with id: 'id' cannot be deleted because it is in use.";
-//        String actualMessage = exception.getMessage();
-//
-//        assertEquals(expectedMessage, actualMessage);
-//        verify(locationRepository, times(1)).findById(anyString());
-//        verify(eventRepository, times(1)).countByLocation(any());
-//        verify(locationRepository, never()).deleteById(anyString());
-//    }
+    @Test
+    public void test_delete_withValidExistentLocationIdThatIsInUse() {
+        when(locationRepository.findById(anyString()))
+                .thenReturn(Optional.of(new Location("id", "country", "city")));
+        when(eventRepository.countByLocation(any()))
+                .thenReturn(1L);
+
+        Exception exception = assertThrows(LocationInUseException.class, () -> service.delete("id"));
+        String expectedMessage = "Location with id: 'id' cannot be deleted because it is in use.";
+        String actualMessage = exception.getMessage();
+
+        assertEquals(expectedMessage, actualMessage);
+        verify(locationRepository, times(1)).findById(anyString());
+        verify(eventRepository, times(1)).countByLocation(any());
+        verify(locationRepository, never()).deleteById(anyString());
+    }
 
     @Test
     public void test_delete_withInvalidLocationId() {

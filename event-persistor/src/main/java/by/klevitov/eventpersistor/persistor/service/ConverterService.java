@@ -13,4 +13,6 @@ public interface ConverterService<E extends AbstractEntity, D extends AbstractDT
     D convertToDTO(E entity);
 
     List<D> convertToDTO(List<E> entities);
+
+    //todo Add unit tests.
 }
