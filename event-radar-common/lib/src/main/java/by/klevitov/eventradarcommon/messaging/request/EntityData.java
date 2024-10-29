@@ -24,4 +24,5 @@ import lombok.EqualsAndHashCode;
 })
 @EqualsAndHashCode
 public abstract class EntityData {
+    //todo Modify for the next usage or delete all components related to messaging logic.
 }

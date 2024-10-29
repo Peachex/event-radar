@@ -1,7 +1,5 @@
 package by.klevitov.eventradarcommon.dto;
 
-import by.klevitov.eventradarcommon.messaging.response.ErrorMessageResponse;
-import by.klevitov.eventradarcommon.messaging.response.SuccessfulMessageResponse;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
@@ -11,15 +9,12 @@ import lombok.experimental.SuperBuilder;
 @Data
 @NoArgsConstructor
 @SuperBuilder
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.CLASS,
-        property = "type"
-)
+@JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AbstractEventDTO.class, name = "abstractEventDTO"),
-        @JsonSubTypes.Type(value = AfishaRelaxEventDTO.class, name = "afishaRelaxEventDTO"),
-        @JsonSubTypes.Type(value = ByCardEventDTO.class, name = "byCardEventDTO"),
-        @JsonSubTypes.Type(value = LocationDTO.class, name = "locationDTO")
+        @JsonSubTypes.Type(AbstractEventDTO.class),
+        @JsonSubTypes.Type(value = AfishaRelaxEventDTO.class),
+        @JsonSubTypes.Type(value = ByCardEventDTO.class),
+        @JsonSubTypes.Type(value = LocationDTO.class)
 })
 public abstract class AbstractDTO {
 }
