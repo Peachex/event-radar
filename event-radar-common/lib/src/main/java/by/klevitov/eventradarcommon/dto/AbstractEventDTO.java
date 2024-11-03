@@ -1,11 +1,22 @@
 package by.klevitov.eventradarcommon.dto;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        property = "sourceType",
+        visible = true
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = AfishaRelaxEventDTO.class, name = "AFISHA_RELAX"),
+        @JsonSubTypes.Type(value = ByCardEventDTO.class, name = "BYCARD")
+})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -11,9 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
 @JsonSubTypes({
-        @JsonSubTypes.Type(AbstractEventDTO.class),
-        @JsonSubTypes.Type(value = AfishaRelaxEventDTO.class),
-        @JsonSubTypes.Type(value = ByCardEventDTO.class),
+        @JsonSubTypes.Type(value = AbstractEventDTO.class),
         @JsonSubTypes.Type(value = LocationDTO.class)
 })
 public abstract class AbstractDTO {
