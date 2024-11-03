@@ -6,7 +6,6 @@ import by.klevitov.eventpersistor.persistor.exception.LocationInUseException;
 import by.klevitov.eventpersistor.persistor.exception.LocationNotFoundException;
 import by.klevitov.eventpersistor.persistor.repository.EventMongoRepository;
 import by.klevitov.eventpersistor.persistor.repository.LocationMongoRepository;
-import by.klevitov.eventpersistor.persistor.service.ConverterService;
 import by.klevitov.eventpersistor.persistor.service.LocationService;
 import by.klevitov.eventpersistor.persistor.util.LocationValidator;
 import lombok.extern.log4j.Log4j2;

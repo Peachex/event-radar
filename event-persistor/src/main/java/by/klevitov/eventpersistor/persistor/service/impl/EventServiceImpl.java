@@ -2,12 +2,12 @@ package by.klevitov.eventpersistor.persistor.service.impl;
 
 import by.klevitov.eventpersistor.persistor.entity.AbstractEvent;
 import by.klevitov.eventpersistor.persistor.entity.Location;
-import by.klevitov.eventpersistor.persistor.exception.EventServiceException;
+import by.klevitov.eventpersistor.persistor.exception.EventAlreadyExistsException;
+import by.klevitov.eventpersistor.persistor.exception.EventNotFoundException;
 import by.klevitov.eventpersistor.persistor.repository.EventMongoRepository;
 import by.klevitov.eventpersistor.persistor.service.EventService;
 import by.klevitov.eventpersistor.persistor.service.LocationService;
 import by.klevitov.eventpersistor.persistor.util.EventValidator;
-import by.klevitov.eventradarcommon.dto.EventSourceType;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -119,10 +119,10 @@ public class EventServiceImpl implements EventService {
         return (isNotEmpty(fields) ? repository.findByFields(fields) : new ArrayList<>());
     }
 
-    private EventServiceException createAndLogEventNotFoundException(final String id) {
+    private EventNotFoundException createAndLogEventNotFoundException(final String id) {
         final String exceptionMessage = String.format(EVENT_NOT_FOUND, id);
         log.error(exceptionMessage);
-        return new EventServiceException(exceptionMessage);
+        return new EventNotFoundException(exceptionMessage);
     }
 
     @Override
@@ -141,16 +141,19 @@ public class EventServiceImpl implements EventService {
         return repository.save(updatedEvent);
     }
 
-    private void throwExceptionInCaseOfEventAlreadyExists(final AbstractEvent event) {
-        final String title = event.getTitle();
-        final String category = event.getCategory();
-        final EventSourceType sourceType = event.getSourceType();
-        final String id = event.getId();
-        if (repository.findFirstByTitleAndCategoryIgnoreCaseAndSourceType(title, category, sourceType).isPresent()) {
-            final String exceptionMessage = String.format(EVENT_ALREADY_EXISTS, title, category, sourceType, id);
+    private void throwExceptionInCaseOfEventAlreadyExists(final AbstractEvent updatedEvent) {
+        if (updatedEventAlreadyExists(updatedEvent)) {
+            final String exceptionMessage = String.format(EVENT_ALREADY_EXISTS, updatedEvent.getTitle(),
+                    updatedEvent.getCategory(), updatedEvent.getSourceType(), updatedEvent.getId());
             log.error(exceptionMessage);
-            throw new EventServiceException(exceptionMessage);
+            throw new EventAlreadyExistsException(exceptionMessage);
         }
+    }
+
+    private boolean updatedEventAlreadyExists(final AbstractEvent updatedEvent) {
+        final Optional<AbstractEvent> existentEvent = repository.findFirstByTitleAndCategoryIgnoreCaseAndSourceType(
+                updatedEvent.getTitle(), updatedEvent.getCategory(), updatedEvent.getSourceType());
+        return (existentEvent.isPresent() && !existentEvent.get().getId().equals(updatedEvent.getId()));
     }
 
     @Override

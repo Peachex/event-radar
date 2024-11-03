@@ -4,7 +4,8 @@ import by.klevitov.eventpersistor.persistor.entity.AbstractEvent;
 import by.klevitov.eventpersistor.persistor.entity.AfishaRelaxEvent;
 import by.klevitov.eventpersistor.persistor.entity.ByCardEvent;
 import by.klevitov.eventpersistor.persistor.entity.Location;
-import by.klevitov.eventpersistor.persistor.exception.EventServiceException;
+import by.klevitov.eventpersistor.persistor.exception.EventAlreadyExistsException;
+import by.klevitov.eventpersistor.persistor.exception.EventNotFoundException;
 import by.klevitov.eventpersistor.persistor.exception.EventValidatorException;
 import by.klevitov.eventpersistor.persistor.repository.EventMongoRepository;
 import by.klevitov.eventpersistor.persistor.service.EventService;
@@ -244,7 +245,7 @@ public class EventServiceImplTest {
     public void test_findById_withValidIdAndNonExistentEvent() {
         when(repository.findById(anyString()))
                 .thenReturn(Optional.empty());
-        Exception exception = assertThrows(EventServiceException.class, () -> eventService.findById("id"));
+        Exception exception = assertThrows(EventNotFoundException.class, () -> eventService.findById("id"));
         String expectedMessage = "Cannot find event with id: 'id'";
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
@@ -323,7 +324,7 @@ public class EventServiceImplTest {
 
             AbstractEvent updatedEvent = createTestEvent(AFISHA_RELAX);
             updatedEvent.setId("nonExistentEventId");
-            Exception exception = assertThrows(EventServiceException.class, () -> eventService.update(updatedEvent));
+            Exception exception = assertThrows(EventNotFoundException.class, () -> eventService.update(updatedEvent));
             String expectedMessage = "Cannot find event with id: 'nonExistentEventId'";
             String actualMessage = exception.getMessage();
 
@@ -367,6 +368,7 @@ public class EventServiceImplTest {
                     any(EventSourceType.class)))
                     .thenAnswer(invocationOnMock -> {
                         AbstractEvent event = createTestEvent(BYCARD);
+                        event.setId("other_id");
                         event.setTitle(updatedTitle);
                         return Optional.of(event);
                     });
@@ -374,7 +376,8 @@ public class EventServiceImplTest {
             AbstractEvent updatedEvent = createTestEvent(BYCARD);
             updatedEvent.setTitle(updatedTitle);
 
-            Exception exception = assertThrows(EventServiceException.class, () -> eventService.update(updatedEvent));
+            Exception exception = assertThrows(EventAlreadyExistsException.class,
+                    () -> eventService.update(updatedEvent));
             String expectedMessage = "Event with title: 'Updated title', category: 'category', source type: 'BYCARD' "
                     + "already exists. Event id: 'id'.";
             String actualMessage = exception.getMessage();
