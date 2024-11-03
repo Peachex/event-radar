@@ -37,7 +37,4 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), e);
         return ResponseEntity.badRequest().body(exceptionResponse);
     }
-
-    //todo Verify that handleValidatorException also will work for EventValidator exception.
-//    @ExceptionHandler(value = { IllegalArgumentException.class, IllegalStateException.class })
 }

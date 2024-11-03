@@ -203,8 +203,6 @@ public class LocationServiceImplTest {
         assertEquals(expected, actual);
     }
 
-    //fixme Fix tests.
-
     @Test
     public void test_findById_withValidIdAndNonExistentLocation() {
         when(locationRepository.findById(anyString()))
