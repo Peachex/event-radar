@@ -15,9 +15,10 @@ public class LocationConverter implements EntityConverter {
     @Override
     public AbstractEntity convertFromDTO(final AbstractDTO dto) {
         throwExceptionInCaseOfNullDTO(dto);
+        String id = ((LocationDTO) dto).getId();
         String country = ((LocationDTO) dto).getCountry();
         String city = ((LocationDTO) dto).getCity();
-        return new Location(country, city);
+        return new Location(id, country, city);
     }
 
     @Override
