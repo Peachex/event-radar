@@ -24,6 +24,8 @@ public class EventController {
     private final EventService eventService;
     private final ConverterService<AbstractEvent, AbstractEventDTO> converterService;
 
+    //fixme Fix issue with duplicated sourceType.
+
     @Autowired
     public EventController(EventService eventService,
                            ConverterService<AbstractEvent, AbstractEventDTO> converterService) {

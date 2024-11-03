@@ -6,6 +6,7 @@ import by.klevitov.eventradarcommon.dto.EventSourceType;
 import lombok.extern.log4j.Log4j2;
 
 import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.NULL_EVENT;
+import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.NULL_OR_EMPTY_EVENT_CATEGORY;
 import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.NULL_OR_EMPTY_EVENT_DATE_STR;
 import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.NULL_OR_EMPTY_EVENT_ID;
 import static by.klevitov.eventpersistor.persistor.constant.PersistorExceptionMessage.NULL_OR_EMPTY_EVENT_SOURCE_TYPE;
@@ -21,6 +22,7 @@ public final class EventValidator {
         throwExceptionInCaseOfNullOrEmptyEvent(event);
         throwExceptionInCaseOfEmptyTitle(event.getTitle());
         throwExceptionInCaseOfEmptyDateStr(event.getDateStr());
+        throwExceptionInCaseOfEmptyCategory(event.getCategory());
         throwExceptionInCaseOfEmptySourceType(event.getSourceType());
         event.setId(null);
     }
@@ -43,6 +45,13 @@ public final class EventValidator {
         if (isEmpty(dateStr)) {
             log.error(NULL_OR_EMPTY_EVENT_DATE_STR);
             throw new EventValidatorException(NULL_OR_EMPTY_EVENT_DATE_STR);
+        }
+    }
+
+    private static void throwExceptionInCaseOfEmptyCategory(final String category) {
+        if (isEmpty(category)) {
+            log.error(NULL_OR_EMPTY_EVENT_CATEGORY);
+            throw new EventValidatorException(NULL_OR_EMPTY_EVENT_CATEGORY);
         }
     }
 

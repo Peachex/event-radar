@@ -2,6 +2,7 @@ package by.klevitov.eventpersistor.persistor.web.handler;
 
 import by.klevitov.eventpersistor.persistor.exception.AbstractValidatorException;
 import by.klevitov.eventpersistor.persistor.exception.EntityAlreadyExistsException;
+import by.klevitov.eventpersistor.persistor.exception.EntityConverterException;
 import by.klevitov.eventpersistor.persistor.exception.EntityNotFoundException;
 import by.klevitov.eventpersistor.persistor.exception.LocationInUseException;
 import org.springframework.http.HttpStatus;
@@ -26,9 +27,17 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @ExceptionHandler(value = {EntityAlreadyExistsException.class, LocationInUseException.class})
     protected ResponseEntity<ExceptionResponse> handleEntityConflictException(final RuntimeException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.CONFLICT.value(), e);
+        final HttpStatus httpStatus = HttpStatus.CONFLICT;
+        ExceptionResponse exceptionResponse = new ExceptionResponse(httpStatus.value(), e);
+        return ResponseEntity.status(httpStatus).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(value = EntityConverterException.class)
+    protected ResponseEntity<ExceptionResponse> handleEntityConverterException(final EntityConverterException e) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), e);
         return ResponseEntity.badRequest().body(exceptionResponse);
     }
+
     //todo Verify that handleValidatorException also will work for EventValidator exception.
 //    @ExceptionHandler(value = { IllegalArgumentException.class, IllegalStateException.class })
 }

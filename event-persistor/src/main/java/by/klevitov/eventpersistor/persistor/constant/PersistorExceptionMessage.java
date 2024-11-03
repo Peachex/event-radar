@@ -12,6 +12,7 @@ public final class PersistorExceptionMessage {
     public static final String NULL_EVENT = "Event cannot be null.";
     public static final String NULL_OR_EMPTY_EVENT_TITLE = "Event title cannot be null or empty.";
     public static final String NULL_OR_EMPTY_EVENT_DATE_STR = "Event dateStr cannot be null or empty.";
+    public static final String NULL_OR_EMPTY_EVENT_CATEGORY = "Event category cannot be null or empty.";
     public static final String NULL_OR_EMPTY_EVENT_SOURCE_TYPE = "Event sourceType cannot be null or empty.";
     public static final String NULL_OR_EMPTY_EVENT_ID = "Event id cannot be null or empty.";
     public static final String EVENT_NOT_FOUND = "Cannot find event with id: '%s'";

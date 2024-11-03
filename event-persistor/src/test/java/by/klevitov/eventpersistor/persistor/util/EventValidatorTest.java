@@ -35,7 +35,8 @@ public class EventValidatorTest {
                 Pair.of(null, false),
                 Pair.of(new AfishaRelaxEvent(), false),
                 Pair.of(AfishaRelaxEvent.builder().title("title").build(), false),
-                Pair.of(ByCardEvent.builder().title("title").dateStr("dateStr").sourceType(BYCARD).build(), true)
+                Pair.of(ByCardEvent.builder().title("title").dateStr("dateStr").category("category")
+                        .sourceType(BYCARD).build(), true)
         );
     }
 
