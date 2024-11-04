@@ -5,6 +5,7 @@ import by.klevitov.eventpersistor.persistor.exception.EntityAlreadyExistsExcepti
 import by.klevitov.eventpersistor.persistor.exception.EntityConverterException;
 import by.klevitov.eventpersistor.persistor.exception.EntityNotFoundException;
 import by.klevitov.eventpersistor.persistor.exception.LocationInUseException;
+import by.klevitov.eventradarcommon.exception.ExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
