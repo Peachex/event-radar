@@ -2,9 +2,7 @@ version: '3'
 
 services:
   application:
-    build: ./
-    # todo Replace build with image when module is ready.
-    # image: 'peachex/event-persistor-application:latest'
+    image: 'peachex/event-persistor-application:latest'
     container_name: 'event-persistor-application'
     environment:
       - 'APPLICATION_PORT=8082'
