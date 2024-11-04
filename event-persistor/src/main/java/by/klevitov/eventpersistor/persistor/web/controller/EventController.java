@@ -1,7 +1,7 @@
 package by.klevitov.eventpersistor.persistor.web.controller;
 
 import by.klevitov.eventpersistor.persistor.entity.AbstractEvent;
-import by.klevitov.eventpersistor.persistor.service.ConverterService;
+import by.klevitov.eventpersistor.persistor.service.EntityConverterService;
 import by.klevitov.eventpersistor.persistor.service.EventService;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +22,11 @@ import java.util.Map;
 @RequestMapping("events")
 public class EventController {
     private final EventService eventService;
-    private final ConverterService<AbstractEvent, AbstractEventDTO> converterService;
+    private final EntityConverterService<AbstractEvent, AbstractEventDTO> converterService;
 
     @Autowired
     public EventController(EventService eventService,
-                           ConverterService<AbstractEvent, AbstractEventDTO> converterService) {
+                           EntityConverterService<AbstractEvent, AbstractEventDTO> converterService) {
         this.eventService = eventService;
         this.converterService = converterService;
     }

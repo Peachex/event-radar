@@ -1,7 +1,7 @@
 package by.klevitov.eventpersistor.persistor.web.controller;
 
 import by.klevitov.eventpersistor.persistor.entity.Location;
-import by.klevitov.eventpersistor.persistor.service.ConverterService;
+import by.klevitov.eventpersistor.persistor.service.EntityConverterService;
 import by.klevitov.eventpersistor.persistor.service.LocationService;
 import by.klevitov.eventradarcommon.dto.LocationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +22,11 @@ import java.util.Map;
 @RequestMapping("locations")
 public class LocationController {
     private final LocationService locationService;
-    private final ConverterService<Location, LocationDTO> converterService;
+    private final EntityConverterService<Location, LocationDTO> converterService;
 
     @Autowired
     public LocationController(LocationService locationService,
-                              ConverterService<Location, LocationDTO> converterService) {
+                              EntityConverterService<Location, LocationDTO> converterService) {
         this.locationService = locationService;
         this.converterService = converterService;
     }

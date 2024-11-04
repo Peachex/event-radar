@@ -3,14 +3,14 @@ package by.klevitov.eventpersistor.persistor.service.impl;
 import by.klevitov.eventpersistor.persistor.converter.EntityConverter;
 import by.klevitov.eventpersistor.persistor.entity.AbstractEvent;
 import by.klevitov.eventpersistor.persistor.factory.EntityConverterFactory;
-import by.klevitov.eventpersistor.persistor.service.ConverterService;
+import by.klevitov.eventpersistor.persistor.service.EntityConverterService;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class EventConverterService implements ConverterService<AbstractEvent, AbstractEventDTO> {
+public class EventConverterService implements EntityConverterService<AbstractEvent, AbstractEventDTO> {
     private final EntityConverterFactory converterFactory;
 
     public EventConverterService(EntityConverterFactory converterFactory) {

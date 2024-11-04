@@ -5,7 +5,7 @@ import by.klevitov.eventradarcommon.dto.AbstractDTO;
 
 import java.util.List;
 
-public interface ConverterService<E extends AbstractEntity, D extends AbstractDTO> {
+public interface EntityConverterService<E extends AbstractEntity, D extends AbstractDTO> {
     E convertFromDTO(D dto);
 
     List<E> convertFromDTO(List<D> dto);
