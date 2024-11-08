@@ -5,7 +5,7 @@
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"/>
         </Console>
         <RollingFile name="FileLogger" fileName="sync_task_scheduler_logs/app.log" append="true"
-                     filePattern="event_persistor_logs/%d{yyyy-MM-dd}/app_%d{yyyy-MM-dd_HH-mm}.log">
+                     filePattern="sync_task_scheduler_logs/%d{yyyy-MM-dd}/app_%d{yyyy-MM-dd_HH-mm}.log">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
@@ -15,7 +15,7 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Logger name="eventpersistor.logger" level="info" additivity="false">
+        <Logger name="synctaskscheduler.logger" level="info" additivity="false">
             <AppenderRef ref="ConsoleLogger"/>
             <AppenderRef ref="FileLogger" level="warn"/>
         </Logger>
