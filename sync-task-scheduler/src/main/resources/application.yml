@@ -1,0 +1,4 @@
+server:
+  servlet:
+    context-path: '${APPLICATION_CONTEXT_PATH:/SyncTaskScheduler}'
+  port: '${APPLICATION_PORT:8088}'
