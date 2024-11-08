@@ -1,0 +1,1 @@
+CREATE DATABASE sync_task_scheduler;

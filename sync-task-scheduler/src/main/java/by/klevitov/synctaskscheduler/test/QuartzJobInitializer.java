@@ -46,7 +46,7 @@ public class QuartzJobInitializer {
                         .repeatForever())
                 .build();
 
-        scheduler.scheduleJob(syncJob, syncJobTrigger);
-        scheduler.scheduleJob(cleanJob, cleanJobTrigger);
+//        scheduler.scheduleJob(syncJob, syncJobTrigger);
+//        scheduler.scheduleJob(cleanJob, cleanJobTrigger);
     }
 }
