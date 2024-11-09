@@ -1,6 +1,7 @@
 package by.klevitov.synctaskscheduler.taskscheduler.web.controller;
 
 import by.klevitov.synctaskscheduler.taskscheduler.entity.Task;
+import by.klevitov.synctaskscheduler.taskscheduler.service.SchedulerService;
 import by.klevitov.synctaskscheduler.taskscheduler.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,46 +20,53 @@ import java.util.Map;
 @RestController
 @RequestMapping("tasks")
 public class TaskController {
-    private final TaskService service;
+    private final TaskService taskService;
+    private final SchedulerService schedulerService;
 
     @Autowired
-    public TaskController(TaskService service) {
-        this.service = service;
+    public TaskController(TaskService taskService, SchedulerService schedulerService) {
+        this.taskService = taskService;
+        this.schedulerService = schedulerService;
     }
 
     @PostMapping
     public Task create(@RequestBody final Task task) {
-        return service.create(task);
+        Task createdTask = taskService.create(task);
+        return schedulerService.scheduleTask(createdTask);
     }
 
     @PostMapping("/multiple")
     public List<Task> create(@RequestBody final List<Task> tasks) {
-        return service.create(tasks);
+        List<Task> createdTasks = taskService.create(tasks);
+        return schedulerService.scheduleTask(createdTasks);
     }
 
     @GetMapping
     public List<Task> findAll() {
-        return service.findAll();
+        return taskService.findAll();
     }
 
     @PostMapping("/search")
     public List<Task> findByFields(@RequestBody final Map<String, Object> fields) {
-        return service.findByFields(fields);
+        return taskService.findByFields(fields);
     }
 
     @GetMapping("/{id}")
     public Task findById(@PathVariable final long id) {
-        return service.findById(id);
+        return taskService.findById(id);
     }
 
     @PutMapping
     public Task update(@RequestBody final Task task) {
-        return service.update(task);
+        Task updatedTask = taskService.update(task);
+        return schedulerService.rescheduleTask(updatedTask);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable final long id) {
-        service.delete(id);
+        Task taskToDelete = taskService.findById(id);
+        schedulerService.deleteTask(taskToDelete);
+        taskService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

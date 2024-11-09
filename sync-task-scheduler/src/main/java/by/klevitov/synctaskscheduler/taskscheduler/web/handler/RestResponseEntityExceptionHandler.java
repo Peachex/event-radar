@@ -4,6 +4,7 @@ import by.klevitov.eventradarcommon.exception.ExceptionResponse;
 import by.klevitov.synctaskscheduler.taskscheduler.exception.AbstractValidatorException;
 import by.klevitov.synctaskscheduler.taskscheduler.exception.EntityAlreadyExistsException;
 import by.klevitov.synctaskscheduler.taskscheduler.exception.EntityNotFoundException;
+import by.klevitov.synctaskscheduler.taskscheduler.exception.SchedulerServiceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -24,9 +25,16 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse);
     }
 
-    @ExceptionHandler(value = {EntityAlreadyExistsException.class})
-    protected ResponseEntity<ExceptionResponse> handleEntityConflictException(final RuntimeException e) {
+    @ExceptionHandler(EntityAlreadyExistsException.class)
+    protected ResponseEntity<ExceptionResponse> handleEntityConflictException(final EntityAlreadyExistsException e) {
         final HttpStatus httpStatus = HttpStatus.CONFLICT;
+        ExceptionResponse exceptionResponse = new ExceptionResponse(httpStatus.value(), e);
+        return ResponseEntity.status(httpStatus).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(SchedulerServiceException.class)
+    protected ResponseEntity<ExceptionResponse> handleSchedulerServiceException(final SchedulerServiceException e) {
+        final HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         ExceptionResponse exceptionResponse = new ExceptionResponse(httpStatus.value(), e);
         return ResponseEntity.status(httpStatus).body(exceptionResponse);
     }

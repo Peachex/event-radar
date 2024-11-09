@@ -22,6 +22,10 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 @EqualsAndHashCode(exclude = "id")
 @ToString
 public class Task {
+    private static final String TASK_POSTFIX = "task";
+    private static final String TRIGGER_POSTFIX = "trigger";
+    private static final String IDENTITY_FORMAT = "%s_%s_%s";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -43,5 +47,13 @@ public class Task {
         description = (isEmpty(description) ? source.getDescription() : description);
         taskIdToExecute = (isEmpty(taskIdToExecute) ? source.taskIdToExecute : taskIdToExecute);
         cronExpression = (isEmpty(cronExpression) ? source.cronExpression : cronExpression);
+    }
+
+    public String createTaskIdentityName() {
+        return String.format(IDENTITY_FORMAT, name, id, TASK_POSTFIX);
+    }
+
+    public String createTriggerIdentityName() {
+        return String.format(IDENTITY_FORMAT, name, id, TRIGGER_POSTFIX);
     }
 }

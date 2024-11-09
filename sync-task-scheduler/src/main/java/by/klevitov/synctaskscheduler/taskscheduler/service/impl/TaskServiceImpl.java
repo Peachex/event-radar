@@ -38,12 +38,10 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task create(Task task) {
         validateTaskBeforeCreation(task);
-        //todo Add task scheduling.
         return createTaskOrGetExistingOne(task);
     }
 
     private Task createTaskOrGetExistingOne(final Task task) {
-        //todo Add task scheduling.
         return repository.findByNameIgnoreCase(task.getName()).orElseGet(() -> repository.save(task));
     }
 
@@ -107,7 +105,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task update(Task updatedTask) {
-        //todo Reschedule task.
         validateTaskBeforeUpdating(updatedTask);
         Task existentTask = findById(updatedTask.getId());
         updatedTask.copyValuesForNullOrEmptyFieldsFromTask(existentTask);
@@ -138,7 +135,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void delete(long id) {
-        //todo Remove task from schedule.
         findById(id);
         repository.deleteById(id);
     }
