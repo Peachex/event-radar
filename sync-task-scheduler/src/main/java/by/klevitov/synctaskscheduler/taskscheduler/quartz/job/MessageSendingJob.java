@@ -1,4 +1,4 @@
-package by.klevitov.synctaskscheduler.taskscheduler.job;
+package by.klevitov.synctaskscheduler.taskscheduler.quartz.job;
 
 import org.quartz.Job;
 import org.quartz.JobDataMap;
@@ -12,7 +12,8 @@ public class MessageSendingJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobDataMap dataMap = jobExecutionContext.getJobDetail().getJobDataMap();
         String taskId = dataMap.getString("taskId");
-        System.out.println("[" + LocalDateTime.now() + "] The task with id=" + taskId + " has been triggered.");
+        System.out.println("[" + LocalDateTime.now() + "] The task with id=" + taskId + " has been triggered."
+                + "Job id=" + jobExecutionContext.getJobDetail().getKey());
     }
 
     //todo Add message broker logic.

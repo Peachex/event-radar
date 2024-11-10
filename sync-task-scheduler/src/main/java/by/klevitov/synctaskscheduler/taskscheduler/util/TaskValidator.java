@@ -10,6 +10,7 @@ import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskScheduler
 import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.NULL_OR_EMPTY_TASK_ID;
 import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.NULL_OR_EMPTY_TASK_ID_TO_EXECUTE;
 import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.NULL_TASK;
+import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.NULL_TASK_STATUS;
 import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.REQUIRED_TASK_FIELDS_ARE_EMPTY;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
@@ -24,7 +25,7 @@ public final class TaskValidator {
         throwExceptionInCaseOfNullTask(task);
         throwExceptionInCaseOfEmptyTaskName(task.getName());
         throwExceptionInCaseOfEmptyTaskIdToExecute(task.getTaskIdToExecute());
-        validateCronExpressionBeforeTaskCreation(task.getCronExpression());
+        validateCronExpression(task.getCronExpression());
         task.setId(0);
         task.setStatus(TaskStatus.ACTIVE);
     }
@@ -50,7 +51,7 @@ public final class TaskValidator {
         }
     }
 
-    private static void validateCronExpressionBeforeTaskCreation(final String cronExpression) {
+    public static void validateCronExpression(final String cronExpression) {
         throwExceptionInCaseOfEmptyCronExpression(cronExpression);
         throwExceptionInCaseOfInvalidCronExpression(cronExpression);
     }
@@ -83,7 +84,7 @@ public final class TaskValidator {
         }
     }
 
-    private static void throwExceptionInCaseOfInvalidCronExpression(final String cronExpression) {
+    public static void throwExceptionInCaseOfInvalidCronExpression(final String cronExpression) {
         if (cronExpressionIsNotValid(cronExpression)) {
             String exceptionMessage = String.format(INVALID_CRON_EXPRESSION, cronExpression);
             log.error(exceptionMessage);
@@ -93,5 +94,12 @@ public final class TaskValidator {
 
     private static boolean cronExpressionIsNotValid(final String cronExpression) {
         return !isValidExpression(cronExpression);
+    }
+
+    public static void throwExceptionInCaseOfNullStatus(final TaskStatus status) {
+        if (status == null) {
+            log.error(NULL_TASK_STATUS);
+            throw new TaskValidatorException(NULL_TASK_STATUS);
+        }
     }
 }

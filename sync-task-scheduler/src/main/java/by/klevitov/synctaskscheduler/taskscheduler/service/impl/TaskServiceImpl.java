@@ -21,6 +21,7 @@ import java.util.Set;
 
 import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.TASK_ALREADY_EXISTS;
 import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.TASK_NOT_FOUND;
+import static by.klevitov.synctaskscheduler.taskscheduler.util.TaskValidator.throwExceptionInCaseOfNullStatus;
 import static by.klevitov.synctaskscheduler.taskscheduler.util.TaskValidator.validateTaskBeforeCreation;
 import static by.klevitov.synctaskscheduler.taskscheduler.util.TaskValidator.validateTaskBeforeUpdating;
 import static org.apache.commons.collections4.MapUtils.isNotEmpty;
@@ -101,6 +102,12 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<Task> findAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public List<Task> findByStatus(TaskStatus status) {
+        throwExceptionInCaseOfNullStatus(status);
+        return repository.findByStatus(status);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package by.klevitov.synctaskscheduler.taskscheduler.service.impl;
 
 import by.klevitov.synctaskscheduler.taskscheduler.entity.Task;
-import by.klevitov.synctaskscheduler.taskscheduler.entity.TaskStatus;
 import by.klevitov.synctaskscheduler.taskscheduler.exception.SchedulerServiceException;
 import by.klevitov.synctaskscheduler.taskscheduler.service.SchedulerService;
 import by.klevitov.synctaskscheduler.taskscheduler.service.TaskService;
@@ -23,9 +22,12 @@ import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskScheduler
 import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.RESUMING_JOB_ERROR;
 import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.SCHEDULING_JOB_ERROR;
 import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.TRIGGERING_JOB_ERROR;
-import static by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil.JOB_GROUP;
+import static by.klevitov.synctaskscheduler.taskscheduler.entity.TaskStatus.ACTIVE;
+import static by.klevitov.synctaskscheduler.taskscheduler.entity.TaskStatus.PAUSED;
 import static by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil.createJobDetail;
+import static by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil.createJobKeyBasedOnTask;
 import static by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil.createTrigger;
+import static by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil.createTriggerKeyBasedOnTask;
 
 @Log4j2
 @Service
@@ -44,7 +46,7 @@ public class SchedulerServiceImpl implements SchedulerService {
         JobDetail jobDetail = createJobDetail(task);
         Trigger trigger = createTrigger(jobDetail, task);
         scheduleJob(jobDetail, trigger);
-        return task;
+        return (task.getStatus().equals(ACTIVE) ? task : taskService.updateStatus(task.getId(), ACTIVE));
     }
 
     @Override
@@ -54,7 +56,7 @@ public class SchedulerServiceImpl implements SchedulerService {
             Trigger trigger = createTrigger(jobDetail, task);
             scheduleJob(jobDetail, trigger);
         }
-        return tasks;
+        return retrieveTasksWithUpdatedStatus(tasks);
     }
 
     private void scheduleJob(final JobDetail jobDetail, final Trigger trigger) {
@@ -67,11 +69,23 @@ public class SchedulerServiceImpl implements SchedulerService {
         }
     }
 
+    private List<Task> retrieveTasksWithUpdatedStatus(final List<Task> tasks) {
+        tasks.stream()
+                .filter(t -> t.getStatus().equals(PAUSED))
+                .forEach(t -> {
+                    taskService.updateStatus(t.getId(), ACTIVE);
+                    t.setStatus(ACTIVE);
+                });
+        return tasks;
+    }
+
     @Override
     public Task rescheduleTask(Task task) {
-        JobDetail jobDetail = createJobDetail(task);
-        Trigger trigger = createTrigger(jobDetail, task);
-        rescheduleJob(TriggerKey.triggerKey(task.createTriggerIdentityName()), trigger);
+        if (task.getStatus().equals(ACTIVE)) {
+            JobDetail jobDetail = createJobDetail(task);
+            Trigger trigger = createTrigger(jobDetail, task);
+            rescheduleJob(createTriggerKeyBasedOnTask(task), trigger);
+        }
         return task;
     }
 
@@ -87,9 +101,9 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     @Override
     public Task pauseTask(Task task) {
-        JobKey key = JobKey.jobKey(task.createTaskIdentityName(), JOB_GROUP);
+        JobKey key = createJobKeyBasedOnTask(task);
         pauseJob(key);
-        return taskService.updateStatus(task.getId(), TaskStatus.PAUSED);
+        return taskService.updateStatus(task.getId(), PAUSED);
     }
 
     private void pauseJob(final JobKey jobKey) {
@@ -104,14 +118,18 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     @Override
     public Task resumeTask(Task task) {
-        JobKey key = JobKey.jobKey(task.createTaskIdentityName(), JOB_GROUP);
-        resumeJob(key);
-        return taskService.updateStatus(task.getId(), TaskStatus.ACTIVE);
+        resumeJob(task);
+        return taskService.updateStatus(task.getId(), ACTIVE);
     }
 
-    private void resumeJob(final JobKey jobKey) {
+    private void resumeJob(final Task task) {
+        JobKey jobKey = createJobKeyBasedOnTask(task);
         try {
-            scheduler.resumeJob(jobKey);
+            if (jobWasPreviouslyScheduled(jobKey)) {
+                scheduler.resumeJob(jobKey);
+            } else {
+                scheduleTask(task);
+            }
         } catch (SchedulerException e) {
             String exceptionMessage = String.format(RESUMING_JOB_ERROR, jobKey);
             log.error(exceptionMessage);
@@ -119,21 +137,34 @@ public class SchedulerServiceImpl implements SchedulerService {
         }
     }
 
+    private boolean jobWasPreviouslyScheduled(final JobKey jobKey) throws SchedulerException {
+        JobDetail jobDetail = scheduler.getJobDetail(jobKey);
+        return (jobDetail != null);
+    }
+
     @Override
     public boolean deleteTask(Task task) {
-        JobKey key = JobKey.jobKey(task.createTaskIdentityName(), JOB_GROUP);
+        JobKey key = createJobKeyBasedOnTask(task);
         return deleteJob(key);
     }
 
     @Override
     public void triggerTask(Task task) {
-        JobKey key = JobKey.jobKey(task.createTaskIdentityName());
+        JobKey key = createJobKeyBasedOnTask(task);
         try {
+            scheduleJobAndPauseIfNeeded(task, key);
             scheduler.triggerJob(key);
         } catch (SchedulerException e) {
             String exceptionMessage = String.format(TRIGGERING_JOB_ERROR, key);
             log.error(exceptionMessage);
             throw new SchedulerServiceException(exceptionMessage, e);
+        }
+    }
+
+    private void scheduleJobAndPauseIfNeeded(final Task task, final JobKey jobKey) throws SchedulerException {
+        if (!jobWasPreviouslyScheduled(jobKey)) {
+            scheduleTask(task);
+            pauseTask(task);
         }
     }
 

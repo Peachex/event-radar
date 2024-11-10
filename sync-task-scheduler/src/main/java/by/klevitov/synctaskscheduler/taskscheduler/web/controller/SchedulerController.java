@@ -29,15 +29,12 @@ public class SchedulerController {
 
     @GetMapping("/resume/{taskId}")
     public Task resumeTask(@PathVariable long taskId) {
-        //fixme Check why does resumed task run 3 times before it get to normal schedule.
         Task task = taskService.findById(taskId);
         return schedulerService.resumeTask(task);
     }
 
     @GetMapping("/run/{taskId}")
     public void startTask(@PathVariable long taskId) {
-        //fixme Fix issue with missing trigger. It might be fixed after scheduling tasks from database
-        // when starting the server.
         Task task = taskService.findById(taskId);
         schedulerService.triggerTask(task);
     }

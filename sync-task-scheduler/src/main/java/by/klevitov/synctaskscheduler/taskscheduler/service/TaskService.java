@@ -17,6 +17,8 @@ public interface TaskService {
 
     List<Task> findAll();
 
+    List<Task> findByStatus(final TaskStatus status);
+
     Task update(final Task updatedTask);
 
     Task updateStatus(final long id, final TaskStatus updatedStatus);
