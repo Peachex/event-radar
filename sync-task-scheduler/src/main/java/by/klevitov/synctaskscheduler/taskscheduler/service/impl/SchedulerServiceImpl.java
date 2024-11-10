@@ -81,11 +81,10 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     @Override
     public Task rescheduleTask(Task task) {
-        if (task.getStatus().equals(ACTIVE)) {
-            JobDetail jobDetail = createJobDetail(task);
-            Trigger trigger = createTrigger(jobDetail, task);
-            rescheduleJob(createTriggerKeyBasedOnTask(task), trigger);
-        }
+        JobDetail jobDetail = createJobDetail(task);
+        Trigger trigger = createTrigger(jobDetail, task);
+        rescheduleJob(createTriggerKeyBasedOnTask(task), trigger);
+        pauseJobIfTaskWasPaused(task);
         return task;
     }
 
@@ -96,6 +95,12 @@ public class SchedulerServiceImpl implements SchedulerService {
             String exceptionMessage = String.format(RESCHEDULING_JOB_ERROR, triggerKey);
             log.error(exceptionMessage);
             throw new SchedulerServiceException(exceptionMessage, e);
+        }
+    }
+
+    private void pauseJobIfTaskWasPaused(final Task task) {
+        if (task.getStatus().equals(PAUSED)) {
+            pauseTask(task);
         }
     }
 
