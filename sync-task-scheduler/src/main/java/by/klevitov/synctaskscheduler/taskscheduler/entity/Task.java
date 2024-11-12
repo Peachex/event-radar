@@ -24,7 +24,7 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 public class Task {
     private static final String TASK_POSTFIX = "task";
     private static final String TRIGGER_POSTFIX = "trigger";
-    private static final String IDENTITY_FORMAT = "%s_%s_%s";
+    private static final String IDENTITY_FORMAT = "%s_%s";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,10 +50,10 @@ public class Task {
     }
 
     public String createTaskIdentityName() {
-        return String.format(IDENTITY_FORMAT, name, id, TASK_POSTFIX);
+        return String.format(IDENTITY_FORMAT, id, TASK_POSTFIX);
     }
 
     public String createTriggerIdentityName() {
-        return String.format(IDENTITY_FORMAT, name, id, TRIGGER_POSTFIX);
+        return String.format(IDENTITY_FORMAT, id, TRIGGER_POSTFIX);
     }
 }

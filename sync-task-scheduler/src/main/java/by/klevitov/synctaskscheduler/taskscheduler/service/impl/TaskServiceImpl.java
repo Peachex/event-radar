@@ -37,7 +37,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task create(Task task) {
+    public Task create(final Task task) {
         validateTaskBeforeCreation(task);
         return createTaskOrGetExistingOne(task);
     }
@@ -47,7 +47,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> create(List<Task> tasks) {
+    public List<Task> create(final List<Task> tasks) {
         tasks.forEach(TaskValidator::validateTaskBeforeCreation);
         return createTasksWithoutDuplication(tasks);
     }
@@ -83,7 +83,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task findById(long id) {
+    public Task findById(final long id) {
         Optional<Task> task = repository.findById(id);
         return task.orElseThrow(() -> createAndLogTaskNotFoundException(id));
     }
@@ -95,7 +95,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> findByFields(Map<String, Object> fields) {
+    public List<Task> findByFields(final Map<String, Object> fields) {
         return (isNotEmpty(fields) ? repository.findByFields(fields) : new ArrayList<>());
     }
 
@@ -105,13 +105,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> findByStatus(TaskStatus status) {
+    public List<Task> findByStatus(final TaskStatus status) {
         throwExceptionInCaseOfNullStatus(status);
         return repository.findByStatus(status);
     }
 
     @Override
-    public Task update(Task updatedTask) {
+    public Task update(final Task updatedTask) {
         validateTaskBeforeUpdating(updatedTask);
         Task existentTask = findById(updatedTask.getId());
         updatedTask.copyValuesForNullOrEmptyFieldsFromTask(existentTask);
@@ -120,7 +120,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task updateStatus(long id, TaskStatus updatedStatus) {
+    public Task updateStatus(final long id, final TaskStatus updatedStatus) {
         Task updatedTask = findById(id);
         updatedTask.setStatus(updatedStatus);
         return repository.save(updatedTask);
@@ -141,7 +141,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(final long id) {
         findById(id);
         repository.deleteById(id);
     }
