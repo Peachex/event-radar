@@ -1,4 +1,4 @@
-package by.klevitov.synctaskscheduler.taskscheduler.job;
+package by.klevitov.synctaskscheduler.taskscheduler.quartz.job;
 
 import org.quartz.Job;
 import org.quartz.JobDataMap;
