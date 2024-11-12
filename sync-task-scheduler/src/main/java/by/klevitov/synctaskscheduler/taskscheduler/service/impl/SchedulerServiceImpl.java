@@ -2,6 +2,7 @@ package by.klevitov.synctaskscheduler.taskscheduler.service.impl;
 
 import by.klevitov.synctaskscheduler.taskscheduler.entity.Task;
 import by.klevitov.synctaskscheduler.taskscheduler.exception.SchedulerServiceException;
+import by.klevitov.synctaskscheduler.taskscheduler.quartz.creator.QuartzEntityCreator;
 import by.klevitov.synctaskscheduler.taskscheduler.service.SchedulerService;
 import by.klevitov.synctaskscheduler.taskscheduler.service.TaskService;
 import lombok.extern.log4j.Log4j2;
@@ -24,27 +25,27 @@ import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskScheduler
 import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.TRIGGERING_JOB_ERROR;
 import static by.klevitov.synctaskscheduler.taskscheduler.entity.TaskStatus.ACTIVE;
 import static by.klevitov.synctaskscheduler.taskscheduler.entity.TaskStatus.PAUSED;
-import static by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil.createJobDetail;
 import static by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil.createJobKeyBasedOnTask;
-import static by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil.createTrigger;
 import static by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil.createTriggerKeyBasedOnTask;
 
 @Log4j2
 @Service
 public class SchedulerServiceImpl implements SchedulerService {
     private final Scheduler scheduler;
+    private final QuartzEntityCreator quartzCreator;
     private final TaskService taskService;
 
     @Autowired
-    public SchedulerServiceImpl(Scheduler scheduler, TaskService taskService) {
+    public SchedulerServiceImpl(Scheduler scheduler, QuartzEntityCreator quartzCreator, TaskService taskService) {
         this.scheduler = scheduler;
+        this.quartzCreator = quartzCreator;
         this.taskService = taskService;
     }
 
     @Override
     public Task scheduleTask(final Task task) {
-        JobDetail jobDetail = createJobDetail(task);
-        Trigger trigger = createTrigger(jobDetail, task);
+        JobDetail jobDetail = quartzCreator.createJobDetail(task);
+        Trigger trigger = quartzCreator.createTrigger(jobDetail, task);
         scheduleJob(jobDetail, trigger);
         return (task.getStatus().equals(ACTIVE) ? task : taskService.updateStatus(task.getId(), ACTIVE));
     }
@@ -52,8 +53,8 @@ public class SchedulerServiceImpl implements SchedulerService {
     @Override
     public List<Task> scheduleTask(final List<Task> tasks) {
         for (Task task : tasks) {
-            JobDetail jobDetail = createJobDetail(task);
-            Trigger trigger = createTrigger(jobDetail, task);
+            JobDetail jobDetail = quartzCreator.createJobDetail(task);
+            Trigger trigger = quartzCreator.createTrigger(jobDetail, task);
             scheduleJob(jobDetail, trigger);
         }
         return retrieveTasksWithUpdatedStatus(tasks);
@@ -87,8 +88,8 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     @Override
     public Task rescheduleTask(final Task task) {
-        JobDetail jobDetail = createJobDetail(task);
-        Trigger trigger = createTrigger(jobDetail, task);
+        JobDetail jobDetail = quartzCreator.createJobDetail(task);
+        Trigger trigger = quartzCreator.createTrigger(jobDetail, task);
         rescheduleJob(createTriggerKeyBasedOnTask(task), trigger);
         pauseJobIfTaskWasPaused(task);
         return task;
