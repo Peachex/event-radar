@@ -1,14 +1,15 @@
 package by.klevitov.synctaskscheduler.taskscheduler.util;
 
 import by.klevitov.synctaskscheduler.taskscheduler.entity.Task;
-import by.klevitov.synctaskscheduler.taskscheduler.quartz.job.MessageSendingJob;
-import by.klevitov.synctaskscheduler.taskscheduler.quartz.trigger.PauseAwareCronTrigger;
+import by.klevitov.synctaskscheduler.taskscheduler.job.MessageSendingJob;
 import lombok.extern.log4j.Log4j2;
 import org.quartz.CronExpression;
+import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 
 import java.text.ParseException;
@@ -32,10 +33,11 @@ public final class SchedulerUtil {
     }
 
     public static Trigger createTrigger(final JobDetail jobDetail, final Task task) {
-        TriggerKey triggerKey = createTriggerKeyBasedOnTask(task);
-        CronExpression cronExpression = createCronExpression(task.getCronExpression());
-        JobKey jobKey = jobDetail.getKey();
-        return new PauseAwareCronTrigger(triggerKey, cronExpression, jobKey);
+        return TriggerBuilder.newTrigger()
+                .withIdentity(task.createTriggerIdentityName(), TRIGGER_GROUP)
+                .withSchedule(CronScheduleBuilder.cronSchedule(task.getCronExpression()))
+                .forJob(jobDetail)
+                .build();
     }
 
     private static CronExpression createCronExpression(String cronExpressionStr) {
