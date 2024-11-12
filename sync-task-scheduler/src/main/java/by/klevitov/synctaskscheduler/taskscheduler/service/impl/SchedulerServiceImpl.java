@@ -42,7 +42,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     @Override
-    public Task scheduleTask(Task task) {
+    public Task scheduleTask(final Task task) {
         JobDetail jobDetail = createJobDetail(task);
         Trigger trigger = createTrigger(jobDetail, task);
         scheduleJob(jobDetail, trigger);
@@ -50,7 +50,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     @Override
-    public List<Task> scheduleTask(List<Task> tasks) {
+    public List<Task> scheduleTask(final List<Task> tasks) {
         for (Task task : tasks) {
             JobDetail jobDetail = createJobDetail(task);
             Trigger trigger = createTrigger(jobDetail, task);
@@ -61,12 +61,18 @@ public class SchedulerServiceImpl implements SchedulerService {
 
     private void scheduleJob(final JobDetail jobDetail, final Trigger trigger) {
         try {
-            scheduler.scheduleJob(jobDetail, trigger);
+            if (jobWasNotPreviouslyScheduled(jobDetail.getKey())) {
+                scheduler.scheduleJob(jobDetail, trigger);
+            }
         } catch (SchedulerException e) {
             String exceptionMessage = String.format(SCHEDULING_JOB_ERROR, jobDetail.getKey());
             log.error(exceptionMessage);
             throw new SchedulerServiceException(exceptionMessage, e);
         }
+    }
+
+    private boolean jobWasNotPreviouslyScheduled(final JobKey jobKey) throws SchedulerException {
+        return !scheduler.checkExists(jobKey);
     }
 
     private List<Task> retrieveTasksWithUpdatedStatus(final List<Task> tasks) {
@@ -80,7 +86,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     @Override
-    public Task rescheduleTask(Task task) {
+    public Task rescheduleTask(final Task task) {
         JobDetail jobDetail = createJobDetail(task);
         Trigger trigger = createTrigger(jobDetail, task);
         rescheduleJob(createTriggerKeyBasedOnTask(task), trigger);
@@ -105,7 +111,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     @Override
-    public Task pauseTask(Task task) {
+    public Task pauseTask(final Task task) {
         JobKey key = createJobKeyBasedOnTask(task);
         pauseJob(key);
         return taskService.updateStatus(task.getId(), PAUSED);
@@ -122,7 +128,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     @Override
-    public Task resumeTask(Task task) {
+    public Task resumeTask(final Task task) {
         resumeJob(task);
         return taskService.updateStatus(task.getId(), ACTIVE);
     }
@@ -143,18 +149,17 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     private boolean jobWasPreviouslyScheduled(final JobKey jobKey) throws SchedulerException {
-        JobDetail jobDetail = scheduler.getJobDetail(jobKey);
-        return (jobDetail != null);
+        return scheduler.checkExists(jobKey);
     }
 
     @Override
-    public boolean deleteTask(Task task) {
+    public boolean deleteTask(final Task task) {
         JobKey key = createJobKeyBasedOnTask(task);
         return deleteJob(key);
     }
 
     @Override
-    public void triggerTask(Task task) {
+    public void triggerTask(final Task task) {
         JobKey key = createJobKeyBasedOnTask(task);
         try {
             scheduleJobAndPauseIfNeeded(task, key);
