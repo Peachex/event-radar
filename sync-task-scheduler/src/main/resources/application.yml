@@ -10,6 +10,15 @@ spring:
     password: postgres
     driver-class-name: org.postgresql.Driver
 
+  rabbitmq:
+    host: '${RABBITMQ_HOST:localhost}'
+    port: '${RABBITMQ_PORT:5673}'
+    username: '${RABBITMQ_USERNAME:rabbitmq_user}'
+    password: '${RABBITMQ_PASSWORD:rabbitmq_password}'
+
+queue:
+  task-scheduler: '${TASK_SCHEDULER_QUEUE:task-scheduler-queue}'
+
   jpa:
     hibernate:
       ddl-auto: update

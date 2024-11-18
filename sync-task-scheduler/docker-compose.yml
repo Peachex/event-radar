@@ -15,8 +15,25 @@ services:
     networks:
       - 'eventradar-network'
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: 'rabbitmq'
+    ports:
+      - "5673:5672"     # RabbitMQ main port
+      - "15673:15672"   # RabbitMQ Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: 'rabbitmq_user'
+      RABBITMQ_DEFAULT_PASS: 'rabbitmq_password'
+    volumes:
+      - 'rabbitmq-data:/var/lib/rabbitmq'
+    networks:
+      - 'eventradar-network'
+
 volumes:
   postgres-data:
+    driver: 'local'
+
+  rabbitmq-data:
     driver: 'local'
 
 networks:
