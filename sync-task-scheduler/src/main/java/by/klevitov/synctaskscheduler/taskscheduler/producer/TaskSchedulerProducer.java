@@ -1,6 +1,6 @@
 package by.klevitov.synctaskscheduler.taskscheduler.producer;
 
-import by.klevitov.synctaskscheduler.taskscheduler.entity.Task;
+import by.klevitov.eventradarcommon.messaging.TaskSchedulerMessage;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,12 +8,16 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TaskSchedulerProducer {
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-    @Autowired
-    private Queue taskSchedulerQueue;
+    private final RabbitTemplate rabbitTemplate;
+    private final Queue taskSchedulerQueue;
 
-    public void send(final Task message) {
+    @Autowired
+    public TaskSchedulerProducer(RabbitTemplate rabbitTemplate, Queue taskSchedulerQueue) {
+        this.rabbitTemplate = rabbitTemplate;
+        this.taskSchedulerQueue = taskSchedulerQueue;
+    }
+
+    public void send(final TaskSchedulerMessage message) {
         rabbitTemplate.convertAndSend(taskSchedulerQueue.getName(), message);
     }
 

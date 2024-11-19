@@ -17,8 +17,8 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Entity(name = "tasks")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(exclude = "id")
 @ToString
 public class Task {

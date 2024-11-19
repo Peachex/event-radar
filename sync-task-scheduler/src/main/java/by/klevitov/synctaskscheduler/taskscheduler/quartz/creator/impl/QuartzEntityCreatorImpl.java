@@ -18,7 +18,7 @@ import static by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil.TRI
 
 @Component
 public class QuartzEntityCreatorImpl implements QuartzEntityCreator {
-    public static final String TASK_ID_KEY = "taskId";
+    public static final String TASK_ID_TO_EXECUTE_KEY = "taskIdToExecute";
     public static final String PRODUCER_KEY = "taskSchedulerProducer";
     private final TaskSchedulerProducer producer;
 
@@ -31,14 +31,14 @@ public class QuartzEntityCreatorImpl implements QuartzEntityCreator {
     public JobDetail createJobDetail(final Task task) {
         return JobBuilder.newJob(MessageSendingJob.class)
                 .withIdentity(task.createTaskIdentityName(), JOB_GROUP)
-                .usingJobData(TASK_ID_KEY, task.getTaskIdToExecute())
-                .usingJobData(createJobDataMapWithProducer())
+                .usingJobData(createJobDataMap(task.getTaskIdToExecute()))
                 .build();
     }
 
-    private JobDataMap createJobDataMapWithProducer() {
+    private JobDataMap createJobDataMap(final String taskIdToExecute) {
         final JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put(PRODUCER_KEY, producer);
+        jobDataMap.put(TASK_ID_TO_EXECUTE_KEY, taskIdToExecute);
         return jobDataMap;
     }
 
