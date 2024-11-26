@@ -2,7 +2,6 @@ package by.klevitov.synctaskscheduler.healthcheck.service.impl;
 
 import by.klevitov.synctaskscheduler.healthcheck.service.ResourceCheckService;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -22,6 +21,7 @@ import static by.klevitov.synctaskscheduler.healthcheck.constant.HealthCheckMess
 @Log4j2
 @Service
 public class ResourceCheckServiceImpl implements ResourceCheckService {
+    private static final String DATABASE_HEALTH_CHECK_SQL_QUERY = "SELECT 1;";
     private final EntityManager entityManager;
     private final ConnectionFactory connectionFactory;
     @Value("${spring.datasource.database}")
@@ -49,8 +49,7 @@ public class ResourceCheckServiceImpl implements ResourceCheckService {
     private boolean isDatabaseAvailable() {
         boolean isAvailable = true;
         try {
-            Query query = entityManager.createNativeQuery("SELECT 1");
-            query.getSingleResult();
+            entityManager.createNativeQuery(DATABASE_HEALTH_CHECK_SQL_QUERY).getSingleResult();
         } catch (Exception e) {
             isAvailable = false;
             log.error(String.format(DATABASE_IS_NOT_AVAILABLE, databaseName));
