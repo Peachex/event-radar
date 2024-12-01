@@ -84,7 +84,7 @@ public final class TaskValidator {
         }
     }
 
-    public static void throwExceptionInCaseOfInvalidCronExpression(final String cronExpression) {
+    private static void throwExceptionInCaseOfInvalidCronExpression(final String cronExpression) {
         if (cronExpressionIsNotValid(cronExpression)) {
             String exceptionMessage = String.format(INVALID_CRON_EXPRESSION, cronExpression);
             log.error(exceptionMessage);
