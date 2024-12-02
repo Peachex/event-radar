@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static by.klevitov.synctaskscheduler.taskscheduler.entity.TaskStatus.ACTIVE;
@@ -22,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -156,5 +159,73 @@ public class TaskServiceTest {
         when(mockedRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
         assertThrows(TaskNotFoundException.class, () -> service.findById(-1));
+    }
+
+    @Test
+    public void test_findByFields_withExistentFields() {
+        when(mockedRepository.findByFields(anyMap()))
+                .thenReturn(List.of(new Task(), new Task()));
+        List<Task> expected = List.of(new Task(), new Task());
+        List<Task> actual = service.findByFields(Map.of("name", "taskName"));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_findByFields_withNonExistentFields() {
+        when(mockedRepository.findByFields(anyMap()))
+                .thenReturn(new ArrayList<>());
+        List<Task> actual = service.findByFields(Map.of("nonExistentField", "fieldValue"));
+        assertEquals(0, actual.size());
+    }
+
+    @Test
+    public void test_findAll() {
+        when(mockedRepository.findAll())
+                .thenReturn(createTasksWithId());
+        List<Task> expected = createTasksWithId();
+        List<Task> actual = service.findAll();
+        assertEquals(expected, actual);
+        verifyTasksId(expected, actual);
+    }
+
+    @Test
+    public void test_update_withValidExistentTask() {
+        try (MockedStatic<TaskValidator> validator = Mockito.mockStatic(TaskValidator.class)) {
+            validator.when(() -> TaskValidator.validateTaskBeforeUpdating(any(Task.class)))
+                    .then(invocationOnMock -> null);
+            when(mockedRepository.findById(anyLong()))
+                    .thenReturn(Optional.of(new Task(1, ACTIVE, "taskName1", null, "taskIdToExecute",
+                            "cronExpression")));
+            when(mockedRepository.findByNameIgnoreCase(anyString()))
+                    .thenReturn(Optional.empty());
+
+            Task updatedTask = new Task(1, PAUSED, "updatedTaskName", null, null, null);
+            when(mockedRepository.save(updatedTask))
+                    .thenReturn(new Task(1, updatedTask.getStatus(), updatedTask.getName(), null,
+                            "taskIdToExecute", "cronExpression"));
+
+            Task expected = new Task(1, updatedTask.getStatus(), updatedTask.getName(), null,
+                    "taskIdToExecute", "cronExpression");
+            Task actual = service.update(updatedTask);
+            assertEquals(expected, actual);
+        }
+    }
+
+    @Test
+    public void test_update_withValidNonExistentTask() {
+        try (MockedStatic<TaskValidator> validator = Mockito.mockStatic(TaskValidator.class)) {
+            validator.when(() -> TaskValidator.validateTaskBeforeUpdating(any(Task.class)))
+                    .then(invocationOnMock -> null);
+            when(mockedRepository.findById(anyLong()))
+                    .thenReturn(Optional.empty());
+
+            Task updatedTask = new Task(-1, PAUSED, "updatedTaskName", null, null, null);
+
+            assertThrows(TaskNotFoundException.class, () -> service.update(updatedTask));
+
+            verify(mockedRepository, times(1)).findById(anyLong());
+            verify(mockedRepository, never()).save(any());
+            verify(mockedRepository, never()).findByNameIgnoreCase(anyString());
+        }
     }
 }
