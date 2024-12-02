@@ -19,8 +19,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class MessageSendingJobTest {
-    private static Job messageSendingJob;
-    private static JobExecutionContext mockedJobExecutionContext;
+    private Job messageSendingJob;
+    private JobExecutionContext mockedJobExecutionContext;
 
     @BeforeEach
     public void setUp() {

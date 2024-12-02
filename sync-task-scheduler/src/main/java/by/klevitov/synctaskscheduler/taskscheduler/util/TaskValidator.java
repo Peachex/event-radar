@@ -7,7 +7,7 @@ import lombok.extern.log4j.Log4j2;
 
 import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.INVALID_CRON_EXPRESSION;
 import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.NULL_OR_EMPTY_CRON_EXPRESSION;
-import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.NULL_OR_EMPTY_TASK_ID;
+import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.NULL_OR_EMPTY_TASK_NAME;
 import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.NULL_OR_EMPTY_TASK_ID_TO_EXECUTE;
 import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.NULL_TASK;
 import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskSchedulerExceptionMessage.NULL_TASK_STATUS;
@@ -39,8 +39,8 @@ public final class TaskValidator {
 
     private static void throwExceptionInCaseOfEmptyTaskName(final String name) {
         if (isEmpty(name)) {
-            log.error(NULL_OR_EMPTY_TASK_ID);
-            throw new TaskValidatorException(NULL_OR_EMPTY_TASK_ID);
+            log.error(NULL_OR_EMPTY_TASK_NAME);
+            throw new TaskValidatorException(NULL_OR_EMPTY_TASK_NAME);
         }
     }
 

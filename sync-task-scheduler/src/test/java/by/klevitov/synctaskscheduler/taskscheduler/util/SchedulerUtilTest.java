@@ -14,7 +14,7 @@ import static by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil.cre
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SchedulerUtilTest {
-    private static Task mockedTask;
+    private Task mockedTask;
 
     @BeforeEach
     public void setUp() {

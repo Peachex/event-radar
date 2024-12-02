@@ -23,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 public class QuartzEntityCreatorImplTest {
-    private static QuartzEntityCreator creator;
-    private static TaskSchedulerProducer mockedProducer;
-    private static Task mockedTask;
+    private QuartzEntityCreator creator;
+    private TaskSchedulerProducer mockedProducer;
+    private Task mockedTask;
 
     @BeforeEach
     public void setUp() {
@@ -49,7 +49,7 @@ public class QuartzEntityCreatorImplTest {
         assertEquals(expected, actual);
     }
 
-    private static JobDataMap createJobDataMap() {
+    private JobDataMap createJobDataMap() {
         final JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put(PRODUCER_KEY, mockedProducer);
         jobDataMap.put(TASK_ID_TO_EXECUTE_KEY, "taskIdToExecute");

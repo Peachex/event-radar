@@ -15,9 +15,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class TaskSchedulerProducerTest {
-    private static TaskSchedulerProducer producer;
-    private static RabbitTemplate mockedRabbitTemplate;
-    private static Queue mockedTaskSchedulerQueue;
+    private TaskSchedulerProducer producer;
+    private RabbitTemplate mockedRabbitTemplate;
+    private Queue mockedTaskSchedulerQueue;
 
     @BeforeEach
     public void setUp() {

@@ -16,9 +16,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class TaskSchedulerStartupListenerTest {
-    private static TaskSchedulerStartupListener taskSchedulerStartupListener;
-    private static SchedulerService mockedSchedulerService;
-    private static TaskService mockedTaskService;
+    private TaskSchedulerStartupListener taskSchedulerStartupListener;
+    private SchedulerService mockedSchedulerService;
+    private TaskService mockedTaskService;
 
     @BeforeEach
     public void setUp() {
