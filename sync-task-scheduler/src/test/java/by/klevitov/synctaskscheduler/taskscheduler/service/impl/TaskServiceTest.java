@@ -1,6 +1,7 @@
 package by.klevitov.synctaskscheduler.taskscheduler.service.impl;
 
 import by.klevitov.synctaskscheduler.taskscheduler.entity.Task;
+import by.klevitov.synctaskscheduler.taskscheduler.exception.TaskAlreadyExistsException;
 import by.klevitov.synctaskscheduler.taskscheduler.exception.TaskNotFoundException;
 import by.klevitov.synctaskscheduler.taskscheduler.exception.TaskValidatorException;
 import by.klevitov.synctaskscheduler.taskscheduler.repository.TaskJpaRepository;
@@ -227,5 +228,37 @@ public class TaskServiceTest {
             verify(mockedRepository, never()).save(any());
             verify(mockedRepository, never()).findByNameIgnoreCase(anyString());
         }
+    }
+
+    @Test
+    public void test_update_withValidTaskThatAlreadyExistsAfterUpdating() {
+        try (MockedStatic<TaskValidator> validator = Mockito.mockStatic(TaskValidator.class)) {
+            validator.when(() -> TaskValidator.validateTaskBeforeUpdating(any(Task.class)))
+                    .then(invocationOnMock -> null);
+            when(mockedRepository.findById(anyLong()))
+                    .thenReturn(Optional.of(new Task(1, ACTIVE, "taskName1", null, "taskIdToExecute",
+                            "cronExpression")));
+            when(mockedRepository.findByNameIgnoreCase(anyString()))
+                    .thenReturn(Optional.of(new Task(2, ACTIVE, "updatedTaskName1", null, "taskIdToExecute",
+                            "cronExpression")));
+
+            Task updatedTask = new Task(1, ACTIVE, "updatedTaskName1", null, null, null);
+            updatedTask.setId(1);
+
+            assertThrows(TaskAlreadyExistsException.class, () -> service.update(updatedTask));
+
+            verify(mockedRepository, times(1)).findById(anyLong());
+            verify(mockedRepository, never()).save(any());
+            verify(mockedRepository, times(1)).findByNameIgnoreCase(anyString());
+        }
+    }
+
+    @Test
+    public void test_delete_withValidExistentTaskId() {
+        when(mockedRepository.findById(anyLong()))
+                .thenReturn(Optional.of(new Task()));
+        service.delete(1);
+        verify(mockedRepository, times(1)).findById(anyLong());
+        verify(mockedRepository, times(1)).deleteById(anyLong());
     }
 }
