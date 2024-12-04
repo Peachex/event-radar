@@ -31,7 +31,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class TaskServiceTest {
+public class TaskServiceImplTest {
     private TaskService service;
     private TaskJpaRepository mockedRepository;
 
