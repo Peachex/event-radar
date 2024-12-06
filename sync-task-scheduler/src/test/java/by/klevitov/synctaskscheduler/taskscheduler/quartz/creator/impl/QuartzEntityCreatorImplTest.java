@@ -17,8 +17,8 @@ import org.quartz.TriggerBuilder;
 
 import static by.klevitov.synctaskscheduler.taskscheduler.quartz.creator.impl.QuartzEntityCreatorImpl.PRODUCER_KEY;
 import static by.klevitov.synctaskscheduler.taskscheduler.quartz.creator.impl.QuartzEntityCreatorImpl.TASK_ID_TO_EXECUTE_KEY;
+import static by.klevitov.synctaskscheduler.taskscheduler.quartz.creator.impl.QuartzEntityCreatorImpl.TRIGGER_GROUP;
 import static by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil.JOB_GROUP;
-import static by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil.TRIGGER_GROUP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 

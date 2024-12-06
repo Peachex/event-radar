@@ -14,12 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil.JOB_GROUP;
-import static by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil.TRIGGER_GROUP;
 
 @Component
 public class QuartzEntityCreatorImpl implements QuartzEntityCreator {
     public static final String TASK_ID_TO_EXECUTE_KEY = "taskIdToExecute";
     public static final String PRODUCER_KEY = "taskSchedulerProducer";
+    public static final String TRIGGER_GROUP = "sync_t";
     private final TaskSchedulerProducer producer;
 
     @Autowired

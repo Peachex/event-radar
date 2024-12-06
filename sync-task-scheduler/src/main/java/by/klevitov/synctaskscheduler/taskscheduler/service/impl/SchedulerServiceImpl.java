@@ -11,7 +11,6 @@ import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
-import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +25,6 @@ import static by.klevitov.synctaskscheduler.taskscheduler.constant.TaskScheduler
 import static by.klevitov.synctaskscheduler.taskscheduler.entity.TaskStatus.ACTIVE;
 import static by.klevitov.synctaskscheduler.taskscheduler.entity.TaskStatus.PAUSED;
 import static by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil.createJobKeyBasedOnTask;
-import static by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil.createTriggerKeyBasedOnTask;
 
 @Log4j2
 @Service
@@ -90,16 +88,16 @@ public class SchedulerServiceImpl implements SchedulerService {
     public Task rescheduleTask(final Task task) {
         JobDetail jobDetail = quartzCreator.createJobDetail(task);
         Trigger trigger = quartzCreator.createTrigger(jobDetail, task);
-        rescheduleJob(createTriggerKeyBasedOnTask(task), trigger);
+        rescheduleJob(trigger);
         pauseJobIfTaskWasPaused(task);
         return task;
     }
 
-    private void rescheduleJob(final TriggerKey triggerKey, final Trigger trigger) {
+    private void rescheduleJob(final Trigger trigger) {
         try {
-            scheduler.rescheduleJob(triggerKey, trigger);
+            scheduler.rescheduleJob(trigger.getKey(), trigger);
         } catch (SchedulerException e) {
-            String exceptionMessage = String.format(RESCHEDULING_JOB_ERROR, triggerKey);
+            String exceptionMessage = String.format(RESCHEDULING_JOB_ERROR, trigger.getKey());
             log.error(exceptionMessage);
             throw new SchedulerServiceException(exceptionMessage, e);
         }
@@ -115,7 +113,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     public Task pauseTask(final Task task) {
         JobKey key = createJobKeyBasedOnTask(task);
         pauseJob(key);
-        return taskService.updateStatus(task.getId(), PAUSED);
+        return task.getStatus().equals(PAUSED) ? task : taskService.updateStatus(task.getId(), PAUSED);
     }
 
     private void pauseJob(final JobKey jobKey) {

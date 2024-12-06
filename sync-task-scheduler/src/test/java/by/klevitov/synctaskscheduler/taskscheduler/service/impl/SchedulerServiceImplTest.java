@@ -5,12 +5,16 @@ import by.klevitov.synctaskscheduler.taskscheduler.entity.TaskStatus;
 import by.klevitov.synctaskscheduler.taskscheduler.quartz.creator.QuartzEntityCreator;
 import by.klevitov.synctaskscheduler.taskscheduler.service.SchedulerService;
 import by.klevitov.synctaskscheduler.taskscheduler.service.TaskService;
+import by.klevitov.synctaskscheduler.taskscheduler.util.SchedulerUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.Trigger;
+import org.quartz.TriggerKey;
 import org.quartz.impl.JobDetailImpl;
 import org.quartz.impl.triggers.CronTriggerImpl;
 
@@ -216,5 +220,93 @@ public class SchedulerServiceImplTest {
         verify(mockedScheduler, times(3)).checkExists((JobKey) any());
         verify(mockedScheduler, never()).scheduleJob(any(JobDetail.class), any(Trigger.class));
         verify(mockedTaskService, never()).updateStatus(anyLong(), any(TaskStatus.class));
+    }
+
+    @Test
+    public void test_rescheduleTask_withActiveStatus() throws Exception {
+        when(mockedEntityCreator.createJobDetail(any(Task.class)))
+                .thenReturn(new JobDetailImpl());
+        when(mockedEntityCreator.createTrigger(any(JobDetail.class), any(Task.class)))
+                .thenReturn(new CronTriggerImpl());
+        when(mockedScheduler.rescheduleJob(any(TriggerKey.class), any(Trigger.class)))
+                .thenAnswer(invocationOnMock -> null);
+
+        Task task = new Task(1, ACTIVE, "taskName1", null, "taskIdToExecute", "cronExpression");
+
+        Task actual = schedulerService.rescheduleTask(task);
+        Task expected = new Task(1, ACTIVE, "taskName1", null, "taskIdToExecute",
+                "cronExpression");
+        assertEquals(expected, actual);
+
+        verify(mockedEntityCreator, times(1)).createJobDetail(any(Task.class));
+        verify(mockedEntityCreator, times(1)).createTrigger(any(JobDetail.class), any(Task.class));
+        verify(mockedScheduler, times(1)).rescheduleJob(any(), any(Trigger.class));
+        verify(mockedScheduler, never()).pauseJob(any(JobKey.class));
+        verify(mockedTaskService, never()).updateStatus(anyLong(), any(TaskStatus.class));
+    }
+
+    @Test
+    public void test_rescheduleTask_withPausedStatus() throws Exception {
+        when(mockedEntityCreator.createJobDetail(any(Task.class)))
+                .thenReturn(new JobDetailImpl());
+        when(mockedEntityCreator.createTrigger(any(JobDetail.class), any(Task.class)))
+                .thenReturn(new CronTriggerImpl());
+        when(mockedScheduler.rescheduleJob(any(TriggerKey.class), any(Trigger.class)))
+                .thenAnswer(invocationOnMock -> null);
+
+        Task task = new Task(1, PAUSED, "taskName1", null, "taskIdToExecute", "cronExpression");
+
+        Task actual = schedulerService.rescheduleTask(task);
+        Task expected = new Task(1, PAUSED, "taskName1", null, "taskIdToExecute",
+                "cronExpression");
+        assertEquals(expected, actual);
+
+        verify(mockedEntityCreator, times(1)).createJobDetail(any(Task.class));
+        verify(mockedEntityCreator, times(1)).createTrigger(any(JobDetail.class), any(Task.class));
+        verify(mockedScheduler, times(1)).rescheduleJob(any(), any(Trigger.class));
+        verify(mockedScheduler, times(1)).pauseJob(any(JobKey.class));
+        verify(mockedTaskService, never()).updateStatus(anyLong(), any(TaskStatus.class));
+    }
+
+    @Test
+    public void test_pauseTask_withActiveStatus() throws Exception {
+        try (MockedStatic<SchedulerUtil> schedulerUtil = Mockito.mockStatic(SchedulerUtil.class)) {
+            schedulerUtil.when(() -> SchedulerUtil.createJobKeyBasedOnTask((any(Task.class))))
+                    .thenReturn(new JobKey("nameValue", "groupValue"));
+            when(mockedTaskService.updateStatus(anyLong(), any(TaskStatus.class)))
+                    .thenReturn(new Task(1, PAUSED, "taskName1", null, "taskIdToExecute",
+                            "cronExpression"));
+
+            Task task = new Task(1, ACTIVE, "taskName1", null, "taskIdToExecute", "cronExpression");
+
+            Task actual = schedulerService.pauseTask(task);
+            Task expected = new Task(1, PAUSED, "taskName1", null, "taskIdToExecute",
+                    "cronExpression");
+            assertEquals(expected, actual);
+
+            verify(mockedScheduler, times(1)).pauseJob(any(JobKey.class));
+            verify(mockedTaskService, times(1)).updateStatus(anyLong(), any(TaskStatus.class));
+        }
+    }
+
+    @Test
+    public void test_pauseTask_withPausedStatus() throws Exception {
+        try (MockedStatic<SchedulerUtil> schedulerUtil = Mockito.mockStatic(SchedulerUtil.class)) {
+            schedulerUtil.when(() -> SchedulerUtil.createJobKeyBasedOnTask((any(Task.class))))
+                    .thenReturn(new JobKey("nameValue", "groupValue"));
+            when(mockedTaskService.updateStatus(anyLong(), any(TaskStatus.class)))
+                    .thenReturn(new Task(1, PAUSED, "taskName1", null, "taskIdToExecute",
+                            "cronExpression"));
+
+            Task task = new Task(1, PAUSED, "taskName1", null, "taskIdToExecute", "cronExpression");
+
+            Task actual = schedulerService.pauseTask(task);
+            Task expected = new Task(1, PAUSED, "taskName1", null, "taskIdToExecute",
+                    "cronExpression");
+            assertEquals(expected, actual);
+
+            verify(mockedScheduler, times(1)).pauseJob(any(JobKey.class));
+            verify(mockedTaskService, never()).updateStatus(anyLong(), any(TaskStatus.class));
+        }
     }
 }
