@@ -309,4 +309,119 @@ public class SchedulerServiceImplTest {
             verify(mockedTaskService, never()).updateStatus(anyLong(), any(TaskStatus.class));
         }
     }
+
+    @Test
+    public void test_resumeTask_withPreviouslyScheduledJob() throws Exception {
+        try (MockedStatic<SchedulerUtil> schedulerUtil = Mockito.mockStatic(SchedulerUtil.class)) {
+            schedulerUtil.when(() -> SchedulerUtil.createJobKeyBasedOnTask((any(Task.class))))
+                    .thenReturn(new JobKey("nameValue", "groupValue"));
+            when(mockedTaskService.updateStatus(anyLong(), any(TaskStatus.class)))
+                    .thenReturn(new Task(1, ACTIVE, "taskName1", null, "taskIdToExecute",
+                            "cronExpression"));
+            when(mockedScheduler.checkExists((JobKey) any()))
+                    .thenReturn(true);
+
+            Task task = new Task(1, PAUSED, "taskName1", null, "taskIdToExecute", "cronExpression");
+
+            Task actual = schedulerService.resumeTask(task);
+            Task expected = new Task(1, ACTIVE, "taskName1", null, "taskIdToExecute",
+                    "cronExpression");
+            assertEquals(expected, actual);
+
+            verify(mockedScheduler, times(1)).resumeJob(any(JobKey.class));
+            verify(mockedScheduler, times(1)).checkExists((JobKey) any());
+            verify(mockedEntityCreator, never()).createJobDetail(any(Task.class));
+            verify(mockedEntityCreator, never()).createTrigger(any(JobDetail.class), any(Task.class));
+            verify(mockedTaskService, times(1)).updateStatus(anyLong(), any(TaskStatus.class));
+        }
+    }
+
+    @Test
+    public void test_resumeTask_withNotPreviouslyScheduledJob() throws Exception {
+        try (MockedStatic<SchedulerUtil> schedulerUtil = Mockito.mockStatic(SchedulerUtil.class)) {
+            schedulerUtil.when(() -> SchedulerUtil.createJobKeyBasedOnTask((any(Task.class))))
+                    .thenReturn(new JobKey("nameValue", "groupValue"));
+            when(mockedScheduler.checkExists((JobKey) any()))
+                    .thenReturn(false);
+            when(mockedEntityCreator.createJobDetail(any(Task.class)))
+                    .thenReturn(new JobDetailImpl());
+            when(mockedEntityCreator.createTrigger(any(JobDetail.class), any(Task.class)))
+                    .thenReturn(new CronTriggerImpl());
+            when(mockedScheduler.scheduleJob(any(JobDetail.class), any(Trigger.class)))
+                    .thenAnswer(invocationOnMock -> null);
+            when(mockedTaskService.updateStatus(anyLong(), any(TaskStatus.class)))
+                    .thenReturn(new Task(1, ACTIVE, "taskName1", null, "taskIdToExecute",
+                            "cronExpression"));
+
+            Task task = new Task(1, PAUSED, "taskName1", null, "taskIdToExecute", "cronExpression");
+
+            Task actual = schedulerService.resumeTask(task);
+            Task expected = new Task(1, ACTIVE, "taskName1", null, "taskIdToExecute",
+                    "cronExpression");
+            assertEquals(expected, actual);
+
+            verify(mockedScheduler, never()).resumeJob(any(JobKey.class));
+            verify(mockedScheduler, times(1)).checkExists((JobKey) any());
+            verify(mockedEntityCreator, times(1)).createJobDetail(any(Task.class));
+            verify(mockedEntityCreator, times(1)).createTrigger(any(JobDetail.class), any(Task.class));
+            verify(mockedScheduler, times(1)).scheduleJob(any(JobDetail.class), any(Trigger.class));
+            verify(mockedTaskService, times(1)).updateStatus(anyLong(), any(TaskStatus.class));
+        }
+    }
+
+    @Test
+    public void test_deleteTask() throws Exception {
+        try (MockedStatic<SchedulerUtil> schedulerUtil = Mockito.mockStatic(SchedulerUtil.class)) {
+            schedulerUtil.when(() -> SchedulerUtil.createJobKeyBasedOnTask((any(Task.class))))
+                    .thenReturn(new JobKey("nameValue", "groupValue"));
+            when(mockedScheduler.deleteJob(any(JobKey.class)))
+                    .thenAnswer(invocationOnMock -> null);
+            Task task = new Task(1, ACTIVE, "taskName1", null, "taskIdToExecute", "cronExpression");
+            schedulerService.deleteTask(task);
+            verify(mockedScheduler, times(1)).deleteJob(any(JobKey.class));
+        }
+    }
+
+    @Test
+    public void test_triggerTask_withPreviouslyScheduledJob() throws Exception {
+        try (MockedStatic<SchedulerUtil> schedulerUtil = Mockito.mockStatic(SchedulerUtil.class)) {
+            schedulerUtil.when(() -> SchedulerUtil.createJobKeyBasedOnTask((any(Task.class))))
+                    .thenReturn(new JobKey("nameValue", "groupValue"));
+            when(mockedScheduler.checkExists((JobKey) any()))
+                    .thenReturn(true);
+
+            Task task = new Task(1, ACTIVE, "taskName1", null, "taskIdToExecute", "cronExpression");
+            schedulerService.triggerTask(task);
+
+            verify(mockedScheduler, never()).scheduleJob(any(Trigger.class));
+            verify(mockedScheduler, never()).pauseJob(any(JobKey.class));
+            verify(mockedScheduler, times(1)).checkExists((JobKey) any());
+            verify(mockedScheduler, times(1)).triggerJob(any(JobKey.class));
+            verify(mockedTaskService, never()).updateStatus(anyLong(), any(TaskStatus.class));
+        }
+    }
+
+    @Test
+    public void test_triggerTask_withNotPreviouslyScheduledJob() throws Exception {
+        try (MockedStatic<SchedulerUtil> schedulerUtil = Mockito.mockStatic(SchedulerUtil.class)) {
+            schedulerUtil.when(() -> SchedulerUtil.createJobKeyBasedOnTask((any(Task.class))))
+                    .thenReturn(new JobKey("nameValue", "groupValue"));
+            when(mockedScheduler.checkExists((JobKey) any()))
+                    .thenReturn(false);
+            when(mockedEntityCreator.createJobDetail(any(Task.class)))
+                    .thenReturn(new JobDetailImpl());
+            when(mockedEntityCreator.createTrigger(any(JobDetail.class), any(Task.class)))
+                    .thenReturn(new CronTriggerImpl());
+
+            Task task = new Task(1, PAUSED, "taskName1", null, "taskIdToExecute", "cronExpression");
+            schedulerService.triggerTask(task);
+
+            verify(mockedScheduler, times(1)).scheduleJob(any(JobDetail.class),
+                    any(Trigger.class));
+            verify(mockedScheduler, times(1)).pauseJob(any(JobKey.class));
+            verify(mockedScheduler, times(2)).checkExists((JobKey) any());
+            verify(mockedScheduler, times(1)).triggerJob(any(JobKey.class));
+            verify(mockedTaskService, never()).updateStatus(anyLong(), any(TaskStatus.class));
+        }
+    }
 }

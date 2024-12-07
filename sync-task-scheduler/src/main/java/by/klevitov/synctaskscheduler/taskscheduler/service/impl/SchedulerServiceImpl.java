@@ -1,6 +1,7 @@
 package by.klevitov.synctaskscheduler.taskscheduler.service.impl;
 
 import by.klevitov.synctaskscheduler.taskscheduler.entity.Task;
+import by.klevitov.synctaskscheduler.taskscheduler.entity.TaskStatus;
 import by.klevitov.synctaskscheduler.taskscheduler.exception.SchedulerServiceException;
 import by.klevitov.synctaskscheduler.taskscheduler.quartz.creator.QuartzEntityCreator;
 import by.klevitov.synctaskscheduler.taskscheduler.service.SchedulerService;
@@ -45,7 +46,7 @@ public class SchedulerServiceImpl implements SchedulerService {
         JobDetail jobDetail = quartzCreator.createJobDetail(task);
         Trigger trigger = quartzCreator.createTrigger(jobDetail, task);
         scheduleJob(jobDetail, trigger);
-        return (task.getStatus().equals(ACTIVE) ? task : taskService.updateStatus(task.getId(), ACTIVE));
+        return retrieveTaskWithUpdatedStatus(task, ACTIVE);
     }
 
     @Override
@@ -113,7 +114,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     public Task pauseTask(final Task task) {
         JobKey key = createJobKeyBasedOnTask(task);
         pauseJob(key);
-        return task.getStatus().equals(PAUSED) ? task : taskService.updateStatus(task.getId(), PAUSED);
+        return retrieveTaskWithUpdatedStatus(task, PAUSED);
     }
 
     private void pauseJob(final JobKey jobKey) {
@@ -129,7 +130,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     @Override
     public Task resumeTask(final Task task) {
         resumeJob(task);
-        return taskService.updateStatus(task.getId(), ACTIVE);
+        return retrieveTaskWithUpdatedStatus(task, ACTIVE);
     }
 
     private void resumeJob(final Task task) {
@@ -138,7 +139,9 @@ public class SchedulerServiceImpl implements SchedulerService {
             if (jobWasPreviouslyScheduled(jobKey)) {
                 scheduler.resumeJob(jobKey);
             } else {
-                scheduleTask(task);
+                JobDetail jobDetail = quartzCreator.createJobDetail(task);
+                Trigger trigger = quartzCreator.createTrigger(jobDetail, task);
+                scheduler.scheduleJob(jobDetail, trigger);
             }
         } catch (SchedulerException e) {
             String exceptionMessage = String.format(RESUMING_JOB_ERROR, jobKey);
@@ -157,6 +160,16 @@ public class SchedulerServiceImpl implements SchedulerService {
         return deleteJob(key);
     }
 
+    private boolean deleteJob(final JobKey jobKey) {
+        try {
+            return scheduler.deleteJob(jobKey);
+        } catch (SchedulerException e) {
+            String exceptionMessage = String.format(DELETION_JOB_ERROR, jobKey);
+            log.error(exceptionMessage);
+            throw new SchedulerServiceException(exceptionMessage, e);
+        }
+    }
+
     @Override
     public void triggerTask(final Task task) {
         JobKey key = createJobKeyBasedOnTask(task);
@@ -171,19 +184,15 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     private void scheduleJobAndPauseIfNeeded(final Task task, final JobKey jobKey) throws SchedulerException {
-        if (!jobWasPreviouslyScheduled(jobKey)) {
-            scheduleTask(task);
-            pauseTask(task);
+        if (jobWasNotPreviouslyScheduled(jobKey)) {
+            JobDetail jobDetail = quartzCreator.createJobDetail(task);
+            Trigger trigger = quartzCreator.createTrigger(jobDetail, task);
+            scheduleJob(jobDetail, trigger);
+            pauseJob(jobKey);
         }
     }
 
-    private boolean deleteJob(final JobKey jobKey) {
-        try {
-            return scheduler.deleteJob(jobKey);
-        } catch (SchedulerException e) {
-            String exceptionMessage = String.format(DELETION_JOB_ERROR, jobKey);
-            log.error(exceptionMessage);
-            throw new SchedulerServiceException(exceptionMessage, e);
-        }
+    private Task retrieveTaskWithUpdatedStatus(final Task task, final TaskStatus updatedStatus) {
+        return task.getStatus().equals(updatedStatus) ? task : taskService.updateStatus(task.getId(), updatedStatus);
     }
 }
