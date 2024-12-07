@@ -193,6 +193,6 @@ public class SchedulerServiceImpl implements SchedulerService {
     }
 
     private Task retrieveTaskWithUpdatedStatus(final Task task, final TaskStatus updatedStatus) {
-        return task.getStatus().equals(updatedStatus) ? task : taskService.updateStatus(task.getId(), updatedStatus);
+        return (task.getStatus().equals(updatedStatus) ? task : taskService.updateStatus(task.getId(), updatedStatus));
     }
 }
