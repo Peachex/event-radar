@@ -5,21 +5,21 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/sync_task_scheduler
-    database: sync_task_scheduler
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
+    url: '${POSTGRES_HOST:jdbc:postgresql://localhost:5433/sync_task_scheduler}'
+    database: '${DATABASE:sync_task_scheduler}'
+    username: '${POSTGRES_USERNAME:postgres}'
+    password: '${POSTGRES_PASSWORD:postgres}'
+    driver-class-name: '${DRIVER_CLASS_NAME:org.postgresql.Driver}'
 
     hikari:
-      connection-timeout: 3000
-      maximum-pool-size: 10
-      minimum-idle: 5
-      idle-timeout: 600000
-      max-lifetime: 1800000
-      validation-timeout: 3000
-      leak-detection-threshold: 15000
-      pool-name: SyncTaskScheduler-HikariPool
+      connection-timeout: '${HIKARI_CONNECTION_TIMEOUT:3000}'
+      maximum-pool-size: '${HIKARI_MAXIMUM_POOL_SIZE:10}'
+      minimum-idle: '${HIKARI_MINIMUM_IDLE:5}'
+      idle-timeout: '${HIKARI_IDLE_TIMEOUT:600000}'
+      max-lifetime: '${HIKARI_MAX_LIFETIME:1800000}'
+      validation-timeout: '${HIKARI_VALIDATION_TIMEOUT:3000}'
+      leak-detection-threshold: '${HIKARI_LEAK_DETECTION_THRESHOLD:15000}'
+      pool-name: '${HIKARI_POOL_NAME:SyncTaskScheduler-HikariPool}'
 
   rabbitmq:
     host: '${RABBITMQ_HOST:localhost}'
@@ -32,5 +32,5 @@ queue:
 
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: '${JPA_HIBERNATE_DDL_AUTO:update}'
+    show-sql: '${JPA_HIBERNATE_SHOW_SQL:true}'

@@ -1,4 +1,36 @@
 services:
+  application:
+    image: 'peachex/sync-task-scheduler-application:latest'
+    container_name: 'sync-task-scheduler-application'
+    environment:
+      - 'APPLICATION_PORT=8088'
+      - 'APPLICATION_CONTEXT_PATH=/SyncTaskScheduler'
+      - 'POSTGRES_HOST=jdbc:postgresql://postgres:5432/sync_task_scheduler'
+      - 'DATABASE=sync_task_scheduler'
+      - 'POSTGRES_USERNAME=postgres'
+      - 'POSTGRES_PASSWORD=postgres'
+      - 'DRIVER_CLASS_NAME=org.postgresql.Driver'
+      - 'HIKARI_CONNECTION_TIMEOUT=3000'
+      - 'HIKARI_MAXIMUM_POOL_SIZE=10'
+      - 'HIKARI_MINIMUM_IDLE=5'
+      - 'HIKARI_IDLE_TIMEOUT=600000'
+      - 'HIKARI_MAX_LIFETIME=1800000'
+      - 'HIKARI_VALIDATION_TIMEOUT=3000'
+      - 'HIKARI_LEAK_DETECTION_THRESHOLD=3000'
+      - 'HIKARI_POOL_NAME=SyncTaskScheduler-HikariPool'
+      - 'JPA_HIBERNATE_DDL_AUTO=update'
+      - 'JPA_HIBERNATE_SHOW_SQL=true'
+      - 'RABBITMQ_HOST=rabbitmq'
+      - 'RABBITMQ_PORT=5672'
+      - 'RABBITMQ_USERNAME=rabbitmq_user'
+      - 'RABBITMQ_PASSWORD=rabbitmq_password'
+      - 'QUEUE_TASK_SCHEDULER=task-scheduler-queue'
+    ports:
+      - '8089:8088'
+    restart: 'on-failure'
+    networks:
+      - 'eventradar-network'
+
   postgres:
     image: postgres
     container_name: 'pg-database'
