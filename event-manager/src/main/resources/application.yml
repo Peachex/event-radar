@@ -2,3 +2,13 @@ server:
   servlet:
     context-path: '${APPLICATION_CONTEXT_PATH:/EventManger}'
   port: '${APPLICATION_PORT:8090}'
+
+spring:
+  rabbitmq:
+    host: '${RABBITMQ_HOST:localhost}'
+    port: '${RABBITMQ_PORT:5673}'
+    username: '${RABBITMQ_USERNAME:rabbitmq_user}'
+    password: '${RABBITMQ_PASSWORD:rabbitmq_password}'
+
+queue:
+  task-scheduler: '${TASK_SCHEDULER_QUEUE:task-scheduler-queue}'
