@@ -1,0 +1,4 @@
+server:
+  servlet:
+    context-path: '${APPLICATION_CONTEXT_PATH:/EventManger}'
+  port: '${APPLICATION_PORT:8090}'
