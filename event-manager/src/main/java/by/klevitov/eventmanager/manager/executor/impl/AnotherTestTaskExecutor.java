@@ -7,29 +7,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Component
-public class TestSyncTaskExecutor implements SyncTaskExecutor {
-    private static final String executorId = "taskId2";
+public class AnotherTestTaskExecutor implements SyncTaskExecutor {
     private final EventPersistorClient eventPersistorClient;
 
     @Autowired
-    public TestSyncTaskExecutor(EventPersistorClient eventPersistorClient) {
+    public AnotherTestTaskExecutor(EventPersistorClient eventPersistorClient) {
         this.eventPersistorClient = eventPersistorClient;
     }
 
     @Override
     public void execute() {
-        System.out.println(LocalDateTime.now() + ": executing test task.");
-        List<AbstractEventDTO> events = eventPersistorClient.getEvents();
-        System.out.println(events);
+        System.out.println(LocalDateTime.now() + ": executing another test task.");
+        AbstractEventDTO event = eventPersistorClient.getById("66e4a6a352a245767fcefc2e_");
+        System.out.println(event);
     }
 
     @Override
     public String retrieveExecutorId() {
-        return executorId;
+        return "testTask";
     }
-
-    //todo Delete this class.
 }
