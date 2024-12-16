@@ -1,7 +1,9 @@
 package by.klevitov.eventmanager.manager.client;
 
+import by.klevitov.eventmanager.manager.exception.EventPersistorClientException;
+import by.klevitov.eventmanager.manager.exception.ResponseDeserializationException;
+import by.klevitov.eventmanager.manager.util.EventPersistorClientUtil;
 import by.klevitov.eventradarcommon.exception.ExceptionResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import lombok.extern.log4j.Log4j2;
@@ -9,31 +11,43 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.io.InputStream;
+
+import static by.klevitov.eventmanager.manager.constant.ManagerExceptionMessage.EVENT_PERSISTOR_CLIENT_EXCEPTION;
+import static by.klevitov.eventmanager.manager.constant.ManagerExceptionMessage.RESPONSE_DESERIALIZATION_FAILED;
 
 @Log4j2
 @Component
 public class EventPersistorClientErrorDecoder implements ErrorDecoder {
-    @Autowired
-    private ObjectMapper objectMapper;
+    private static final Class<ExceptionResponse> EXCEPTION_RESPONSE_CLASS = ExceptionResponse.class;
 
-    @Override
-    public Exception decode(String methodKey, Response response) {
-        ExceptionResponse exceptionResponse;
-        try {
-            exceptionResponse = objectMapper.readValue(response.body().asInputStream(), ExceptionResponse.class);
-            log.error(exceptionResponse);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return new Exception(String.format("Status code: %s, time: %s, exception message: %s, exception class: %s,"
-                        + " root stack trace: %s",
-                exceptionResponse.getStatus(),
-                exceptionResponse.getTimestamp(),
-                exceptionResponse.getExceptionMessage(),
-                exceptionResponse.getExceptionClass(),
-                exceptionResponse.getRootStackTrace()));
+    private final EventPersistorClientUtil clientUtil;
+
+    @Autowired
+    public EventPersistorClientErrorDecoder(EventPersistorClientUtil clientUtil) {
+        this.clientUtil = clientUtil;
     }
 
-    //todo Add appropriate exception handling. May be throw custom exception or just log response or parse response to
-    // common exception object (event-radar-common). Move mapper logic to separate class (may be common module).
+    @Override
+    public Exception decode(final String methodKey, final Response response) {
+        try {
+            final InputStream body = response.body().asInputStream();
+            ExceptionResponse exceptionResponse = clientUtil.extractResponseFromBody(body, EXCEPTION_RESPONSE_CLASS);
+            return createClientExceptionBasedOnExceptionResponse(exceptionResponse);
+        } catch (IOException e) {
+            final String exceptionMessage = String.format(RESPONSE_DESERIALIZATION_FAILED, EXCEPTION_RESPONSE_CLASS);
+            log.error(exceptionMessage);
+            throw new ResponseDeserializationException(exceptionMessage, e);
+        }
+    }
+
+    private EventPersistorClientException createClientExceptionBasedOnExceptionResponse(ExceptionResponse response) {
+        return new EventPersistorClientException(
+                String.format(EVENT_PERSISTOR_CLIENT_EXCEPTION,
+                        response.getStatus(),
+                        response.getTimestamp(),
+                        response.getExceptionMessage(),
+                        response.getExceptionClass(),
+                        response.getRootStackTrace()));
+    }
 }
