@@ -40,5 +40,5 @@ public interface EventPersistorClient {
     AbstractEventDTO update(@RequestBody final AbstractEventDTO eventDTO) throws EventPersistorClientException;
 
     @DeleteMapping("/events/{id}")
-    AbstractEventDTO delete(@PathVariable final String id) throws EventPersistorClientException;
+    void delete(@PathVariable final String id) throws EventPersistorClientException;
 }

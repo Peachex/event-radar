@@ -38,4 +38,8 @@ public class SyncTaskExecutorFactory {
             throw new SyncTaskExecutorFactoryException(exceptionMessage);
         }
     }
+
+    public Map<String, SyncTaskExecutor> getTaskExecutorsMapWithKey() {
+        return taskExecutorsMapWithKey;
+    }
 }

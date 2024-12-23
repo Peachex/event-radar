@@ -7,6 +7,9 @@ import by.klevitov.eventmanager.manager.service.TaskManagerService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static by.klevitov.eventmanager.manager.constant.ManagerExceptionMessage.NULL_OR_EMPTY_TASK_TO_EXECUTE;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
@@ -31,5 +34,10 @@ public class TaskManagerServiceImpl implements TaskManagerService {
             log.error(NULL_OR_EMPTY_TASK_TO_EXECUTE);
             throw new TaskManagerServiceException(NULL_OR_EMPTY_TASK_TO_EXECUTE);
         }
+    }
+
+    @Override
+    public List<String> retrieveTaskExecutorIds() {
+        return new ArrayList<>(taskRegistry.getTaskExecutorsMapWithKey().keySet());
     }
 }
