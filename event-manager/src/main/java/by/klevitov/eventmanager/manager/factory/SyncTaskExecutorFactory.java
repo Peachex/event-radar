@@ -2,6 +2,7 @@ package by.klevitov.eventmanager.manager.factory;
 
 import by.klevitov.eventmanager.manager.exception.SyncTaskExecutorFactoryException;
 import by.klevitov.eventmanager.manager.executor.SyncTaskExecutor;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.util.Map;
 import static by.klevitov.eventmanager.manager.constant.ManagerExceptionMessage.TASK_EXECUTOR_NOT_FOUND;
 
 @Log4j2
+@Getter
 @Component
 public class SyncTaskExecutorFactory {
     private final Map<String, SyncTaskExecutor> taskExecutorsMapWithKey;
@@ -37,9 +39,5 @@ public class SyncTaskExecutorFactory {
             log.error(exceptionMessage);
             throw new SyncTaskExecutorFactoryException(exceptionMessage);
         }
-    }
-
-    public Map<String, SyncTaskExecutor> getTaskExecutorsMapWithKey() {
-        return taskExecutorsMapWithKey;
     }
 }
