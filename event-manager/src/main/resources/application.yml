@@ -1,6 +1,6 @@
 server:
   servlet:
-    context-path: '${APPLICATION_CONTEXT_PATH:/EventManger}'
+    context-path: '${APPLICATION_CONTEXT_PATH:/EventManager}'
   port: '${APPLICATION_PORT:8090}'
 
 spring:
