@@ -57,7 +57,7 @@ public class RemoveExpiredEventsTaskExecutor implements SyncTaskExecutor {
         Predicate<AbstractEventDTO> startDateIsNull = e -> e.getDate().getStartDate() == null;
         Predicate<AbstractEventDTO> endDateIsNull = e -> e.getDate().getEndDate() == null;
         return events.stream()
-                .filter(eventDateIsNull.or(startDateIsNull).or(endDateIsNull))
+                .filter(eventDateIsNull.or((startDateIsNull).and(endDateIsNull)))
                 .toList();
     }
 
@@ -68,25 +68,23 @@ public class RemoveExpiredEventsTaskExecutor implements SyncTaskExecutor {
 
     private List<AbstractEventDTO> findExpiredEventsUsingEventsWithNonNullDate(final List<AbstractEventDTO>
                                                                                        eventsWithNonNullDate) {
+        final Predicate<AbstractEventDTO> isEventExpired = createExpiredPredicateForEventsWithDate();
+        return eventsWithNonNullDate.stream()
+                .filter(isEventExpired)
+                .toList();
+    }
+
+    private Predicate<AbstractEventDTO> createExpiredPredicateForEventsWithDate() {
         Predicate<AbstractEventDTO> expiredByEndDate = event -> {
             EventDate date = event.getDate();
             return date.getEndDate() != null && now().isAfter(date.getEndDate());
         };
-
         Predicate<AbstractEventDTO> expiredByStartDate = event -> {
             EventDate date = event.getDate();
             return date.getStartDate() != null && now().minusMonths(MONTHS_AFTER_START_DATE_UNTIL_EVENT_EXPIRES)
                     .isAfter(date.getStartDate());
         };
-
-        Predicate<AbstractEventDTO> isExpired = expiredByEndDate.or(expiredByStartDate);
-        final List<AbstractEventDTO> expiredEvents = new ArrayList<>();
-        for (AbstractEventDTO event : eventsWithNonNullDate) {
-            if (isExpired.test(event)) {
-                expiredEvents.add(event);
-            }
-        }
-        return expiredEvents;
+        return expiredByEndDate.or(expiredByStartDate);
     }
 
     private List<AbstractEventDTO> findExpiredEventsUsingEventsWithNullDate(final List<AbstractEventDTO>
