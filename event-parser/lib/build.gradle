@@ -21,6 +21,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+            artifactId = 'parser'
         }
     }
     repositories {
@@ -29,7 +30,7 @@ publishing {
 }
 
 dependencies {
-    implementation group: 'event-radar-common', name: 'lib', version: '1.0'
+    implementation group: 'event-radar-common', name: 'common', version: '1.0'
 
     implementation 'org.jsoup:jsoup:1.17.2'
 
@@ -57,6 +58,7 @@ java {
 }
 
 jar {
+    archiveBaseName = 'event-parser'
     manifest {
         attributes('Implementation-Title': project.name,
                 'Implementation-Version': project.version)

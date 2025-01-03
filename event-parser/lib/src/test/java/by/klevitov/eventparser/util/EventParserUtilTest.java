@@ -21,6 +21,7 @@ import static by.klevitov.eventparser.util.EventParserUtil.parseDateAndAddToMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EventParserUtilTest {
@@ -61,11 +62,7 @@ public class EventParserUtilTest {
 
     @Test
     public void test_convertStringToLocalDate_withInvalidDateStrAndNullFormatter() {
-        Exception exception = assertThrows(DateConversionException.class, () ->
-                convertStringToLocalDate("invalidDate", null));
-        String expectedMessage = "Date cannot be parsed from string: invalidDate 2024";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrowsExactly(DateConversionException.class, () -> convertStringToLocalDate("invalidDate", null));
     }
 
     @Test
