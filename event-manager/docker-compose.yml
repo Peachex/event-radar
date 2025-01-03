@@ -1,7 +1,6 @@
 services:
   application:
-    #    image: 'peachex/sync-task-scheduler-application:latest'
-    build: ./
+    image: 'peachex/event-manager-application:latest'
     container_name: 'event-manager-application'
     environment:
       - 'APPLICATION_PORT=8090'
