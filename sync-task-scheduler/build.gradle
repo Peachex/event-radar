@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'event-radar-common', name: 'lib', version: '1.0'
+    implementation group: 'event-radar-common', name: 'common', version: '1.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
