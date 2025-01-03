@@ -17,11 +17,11 @@
     <Loggers>
         <Logger name="eventmanager.logger" level="info" additivity="false">
             <AppenderRef ref="ConsoleLogger"/>
-            <AppenderRef ref="FileLogger" level="warn"/>
+            <AppenderRef ref="FileLogger"/>
         </Logger>
         <Root level="info">
             <AppenderRef ref="ConsoleLogger"/>
-            <AppenderRef ref="FileLogger" level="warn"/>
+            <AppenderRef ref="FileLogger"/>
         </Root>
     </Loggers>
 </Configuration>
