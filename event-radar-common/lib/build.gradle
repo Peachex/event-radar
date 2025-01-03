@@ -20,6 +20,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+            artifactId = 'common'
         }
     }
     repositories {
@@ -48,6 +49,7 @@ java {
 }
 
 jar {
+    archiveBaseName = 'event-radar-common'
     manifest {
         attributes('Implementation-Title': project.name,
                 'Implementation-Version': project.version)
