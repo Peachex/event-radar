@@ -23,5 +23,3 @@ feign:
         connectTimeout: '${EVENT_PERSISTOR_CLIENT_CONNECT_TIMEOUT:3000}'
         readTimeout: '${EVENT_PERSISTOR_CLIENT_READ_TIMEOUT:11000}'
         errorDecoder: by.klevitov.eventmanager.manager.client.EventPersistorClientErrorDecoder
-        # retryer: com.example.SimpleRetryer
-        # decode404: false

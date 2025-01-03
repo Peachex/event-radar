@@ -33,11 +33,14 @@ public class TaskManagerServiceImplTest {
     }
 
     @Test
-    public void test_executeTask_withNotNullExistentTaskId() {
+    public void test_executeTask_withNotNullExistentTaskId() throws InterruptedException {
         when(mockedTaskRegistry.getTaskExecutor(anyString()))
                 .thenReturn(mockedTaskExecutor);
         taskManagerService.executeTask("taskId");
         verify(mockedTaskRegistry, times(1)).getTaskExecutor(anyString());
+
+        // Sleep is needed for successful verification, since task is executed in a separate thread.
+        Thread.sleep(500);
         verify(mockedTaskExecutor, times(1)).execute();
     }
 

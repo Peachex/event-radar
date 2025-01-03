@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'by.klevitov'
-version = '0.0.1-SNAPSHOT'
+version = '1.0'
 
 java {
     toolchain {
@@ -19,15 +19,14 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'event-radar-common', name: 'lib', version: '1.0'
-    implementation group: 'event-parser', name: 'lib', version: '1.0'
+    implementation group: 'event-radar-common', name: 'common', version: '1.0'
+    implementation group: 'event-parser', name: 'parser', version: '1.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.2'
 
-    //todo Delete unused dependencies
     implementation 'org.apache.commons:commons-lang3:3.14.0'
     implementation 'org.apache.commons:commons-collections4:4.5.0-M2'
 
