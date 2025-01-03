@@ -26,7 +26,7 @@ public class TaskManagerServiceImpl implements TaskManagerService {
     public void executeTask(final String taskIdToExecute) {
         throwExceptionInCaseOfEmptyTaskIdToExecute(taskIdToExecute);
         SyncTaskExecutor taskExecutor = taskRegistry.getTaskExecutor(taskIdToExecute);
-        taskExecutor.execute();
+        executeTaskInSeparateThread(taskExecutor);
     }
 
     private void throwExceptionInCaseOfEmptyTaskIdToExecute(final String taskIdToExecute) {
@@ -34,6 +34,11 @@ public class TaskManagerServiceImpl implements TaskManagerService {
             log.error(NULL_OR_EMPTY_TASK_TO_EXECUTE);
             throw new TaskManagerServiceException(NULL_OR_EMPTY_TASK_TO_EXECUTE);
         }
+    }
+
+    private void executeTaskInSeparateThread(final SyncTaskExecutor taskExecutor) {
+        Thread taskInSeparateThread = new Thread(taskExecutor::execute);
+        taskInSeparateThread.start();
     }
 
     @Override
