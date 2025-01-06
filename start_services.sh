@@ -17,7 +17,7 @@ function wait_for_service() {
     # Check the status using docker-compose ps
     while true; do
         # Check if all containers are running
-        docker-compose -f "$service_name/docker-compose.yml" ps -q | xargs docker inspect -f '{{.State.Running}}' | grep -q "true" && break
+        docker compose -f "$service_name/docker-compose.yml" ps -q | xargs docker inspect -f '{{.State.Running}}' | grep -q "true" && break
         echo "$service_name is not yet running. Retrying..."
         sleep 5
     done
@@ -100,7 +100,7 @@ for service in "${services[@]}"; do
 
     # Navigate to the service's directory and run docker-compose up -d
     cd "$service" || exit
-    docker-compose up -d
+    docker compose up -d
     cd - || exit
 
     # Wait for the service to be fully up before continuing to the next one
