@@ -1,6 +1,6 @@
 services:
   application:
-    image: 'peachex/event-manager-application:latest'
+    image: 'peachex/event-web-application:latest'
     container_name: 'application'
     environment:
       - 'APPLICATION_PORT=8095'
