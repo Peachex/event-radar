@@ -1,0 +1,15 @@
+server:
+  servlet:
+    context-path: '${APPLICATION_CONTEXT_PATH:/EventWebApp}'
+  port: '${APPLICATION_PORT:8095}'
+
+feign:
+  client:
+    config:
+      event-persistor:
+        name: '${EVENT_PERSISTOR_CLIENT_NAME:event-persistor}'
+        url: '${EVENT_PERSISTOR_CLIENT_URL:localhost:8083}'
+        context-path: '${EVENT_PERSISTOR_CLIENT_CONTEXT_PATH:/EventPersistor}'
+        connectTimeout: '${EVENT_PERSISTOR_CLIENT_CONNECT_TIMEOUT:3000}'
+        readTimeout: '${EVENT_PERSISTOR_CLIENT_READ_TIMEOUT:11000}'
+        errorDecoder: by.klevitov.eventwebapp.eventapp.client.EventPersistorClientErrorDecoder
