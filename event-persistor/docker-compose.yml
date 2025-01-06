@@ -16,8 +16,6 @@ services:
       - 'MONGODB_MAX_WAIT_TIME=3000'
       - 'MONGODB_SERVER_SELECTION_TIMEOUT=3000'
       - 'MONGO_TEMPLATE_LOGGING=DEBUG'
-    ports:
-      - '8083:8082'
     restart: 'on-failure'
     networks:
       - 'eventradar-network'
