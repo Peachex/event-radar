@@ -21,6 +21,11 @@ spring:
       leak-detection-threshold: '${HIKARI_LEAK_DETECTION_THRESHOLD:15000}'
       pool-name: '${HIKARI_POOL_NAME:SyncTaskScheduler-HikariPool}'
 
+  jpa:
+    hibernate:
+      ddl-auto: '${JPA_HIBERNATE_DDL_AUTO:update}'
+    show-sql: '${JPA_HIBERNATE_SHOW_SQL:true}'
+
   rabbitmq:
     host: '${RABBITMQ_HOST:localhost}'
     port: '${RABBITMQ_PORT:5673}'
@@ -29,8 +34,3 @@ spring:
 
 queue:
   task-scheduler: '${TASK_SCHEDULER_QUEUE:task-scheduler-queue}'
-
-  jpa:
-    hibernate:
-      ddl-auto: '${JPA_HIBERNATE_DDL_AUTO:update}'
-    show-sql: '${JPA_HIBERNATE_SHOW_SQL:true}'
