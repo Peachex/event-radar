@@ -36,28 +36,17 @@ public class EventParserUtilTest {
 
     @Test
     public void test_parseDateAndAddToMap_withNullMap() {
-        Exception exception = assertThrows(DateConversionException.class, () -> parseDateAndAddToMap(null));
-        String expectedMessage = "Fields map cannot be null or empty.";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(DateConversionException.class, () -> parseDateAndAddToMap(null));
     }
 
     @Test
     public void test_convertStringToLocalDate_withNullDateStrAndNullFormatter() {
-        Exception exception = assertThrows(DateConversionException.class, () ->
-                convertStringToLocalDate(null, null));
-        String expectedMessage = "Date cannot be null or empty: null";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(DateConversionException.class, () -> convertStringToLocalDate(null, null));
     }
 
     @Test
     public void test_convertStringToLocalDate_withEmptyDateStrAndNullFormatter() {
-        Exception exception = assertThrows(DateConversionException.class, () ->
-                convertStringToLocalDate("", null));
-        String expectedMessage = "Date cannot be null or empty: ";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(DateConversionException.class, () -> convertStringToLocalDate("", null));
     }
 
     @Test

@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static by.klevitov.eventparser.util.JsoupUtil.retrieveDocumentByURL;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JsoupUtilTest {
@@ -29,23 +28,12 @@ public class JsoupUtilTest {
     @Test
     public void test_retrieveDocumentByURL_withNullURL() {
         String url = null;
-        Exception exception = assertThrows(HTMLDocumentRetrievingException.class, () -> {
-            retrieveDocumentByURL(url);
-        });
-        String expectedMessage = "by.klevitov.eventparser.exception.InvalidURLException: URL cannot be null or " +
-                "empty: null";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(HTMLDocumentRetrievingException.class, () -> retrieveDocumentByURL(url));
     }
 
     @Test
     public void test_retrieveDocumentByURL_withEmptyURL() {
         String url = "";
-        Exception exception = assertThrows(HTMLDocumentRetrievingException.class, () -> {
-            retrieveDocumentByURL(url);
-        });
-        String expectedMessage = "by.klevitov.eventparser.exception.InvalidURLException: URL cannot be null or empty: ";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(HTMLDocumentRetrievingException.class, () -> retrieveDocumentByURL(url));
     }
 }

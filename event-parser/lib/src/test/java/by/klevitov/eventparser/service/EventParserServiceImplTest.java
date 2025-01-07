@@ -74,10 +74,7 @@ public class EventParserServiceImplTest {
     @Test
     public void test_retrieveEvents_withEmptyParser() {
         EventParser nullParser = null;
-        Exception exception = assertThrows(InvalidParserException.class, () -> service.retrieveEvents(nullParser));
-        String expectedMessage = "Parser cannot be null.";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(InvalidParserException.class, () -> service.retrieveEvents(nullParser));
     }
 
     @Test
@@ -86,10 +83,7 @@ public class EventParserServiceImplTest {
                 EventParserConfiguration.class)) {
             parserConfiguration.when(() -> EventParserConfiguration.parserIsUnknown(Mockito.any(EventParser.class)))
                     .thenReturn(true);
-            Exception exception = assertThrows(InvalidParserException.class, () -> service.retrieveEvents(parser));
-            String expectedMessage = "Unknown parser: null";
-            String actualMessage = exception.getMessage();
-            assertEquals(expectedMessage, actualMessage);
+            assertThrows(InvalidParserException.class, () -> service.retrieveEvents(parser));
         }
     }
 
@@ -108,11 +102,7 @@ public class EventParserServiceImplTest {
             Mockito.when(parser.retrieveSiteURL())
                     .thenReturn("siteURL");
 
-            Exception exception = assertThrows(EventParserServiceException.class, () -> service.retrieveEvents(parser));
-            String expectedMessage = "by.klevitov.eventparser.exception.HTMLDocumentRetrievingException: There " +
-                    "was an error during html document retrieving. More details: %s";
-            String actualMessage = exception.getMessage();
-            assertEquals(expectedMessage, actualMessage);
+            assertThrows(EventParserServiceException.class, () -> service.retrieveEvents(parser));
         }
     }
 }

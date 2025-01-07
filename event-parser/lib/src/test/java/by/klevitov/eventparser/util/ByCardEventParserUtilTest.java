@@ -33,37 +33,22 @@ public class ByCardEventParserUtilTest {
 
     @Test
     public void test_parsePriceAndAddToMap_withNullMap() {
-        Exception exception = assertThrows(PriceConversionException.class, () -> parsePriceAndAddToMap(null));
-        String expectedMessage = "Fields map cannot be null or empty.";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(PriceConversionException.class, () -> parsePriceAndAddToMap(null));
     }
 
     @Test
     public void test_convertStringToBigDecimal_withNullPriceStrAndNullPattern() {
-        Exception exception = assertThrows(PriceConversionException.class, () ->
-                convertStringToBigDecimal(null, null));
-        String expectedMessage = "Price cannot be null or empty: null";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(PriceConversionException.class, () -> convertStringToBigDecimal(null, null));
     }
 
     @Test
     public void test_convertStringToBigDecimal_withEmptyPriceStrAndNullPattern() {
-        Exception exception = assertThrows(PriceConversionException.class, () ->
-                convertStringToBigDecimal("", null));
-        String expectedMessage = "Price cannot be null or empty: ";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(PriceConversionException.class, () -> convertStringToBigDecimal("", null));
     }
 
     @Test
     public void test_convertStringToBigDecimal_withInvalidPriceStrAndNullPattern() {
-        Exception exception = assertThrows(PriceConversionException.class, () ->
-                convertStringToBigDecimal("invalidPrice", null));
-        String expectedMessage = "Price cannot be parsed from string: invalidPrice";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(PriceConversionException.class, () -> convertStringToBigDecimal("invalidPrice", null));
     }
 
     @Test

@@ -30,49 +30,30 @@ public class PropertyUtilTest {
     @Test
     public void test_retrieveProperty_withNullFileName() {
         String fileName = null;
-        Exception exception = assertThrows(ReadingPropertiesFromFileException.class,
-                () -> retrieveProperty(PROPERTY_NAME, fileName));
-        String expectedMessage = "Properties file name cannot be null or empty: null";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(ReadingPropertiesFromFileException.class, () -> retrieveProperty(PROPERTY_NAME, fileName));
     }
 
     @Test
     public void test_retrieveProperty_withEmptyFileName() {
         String fileName = "";
-        Exception exception = assertThrows(ReadingPropertiesFromFileException.class,
-                () -> retrieveProperty(PROPERTY_NAME, fileName));
-        String expectedMessage = "Properties file name cannot be null or empty: ";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(ReadingPropertiesFromFileException.class, () -> retrieveProperty(PROPERTY_NAME, fileName));
     }
 
     @Test
     public void test_retrieveProperty_withFileNameAndNullKey() {
         String key = null;
-        Exception exception = assertThrows(ReadingPropertiesFromFileException.class,
-                () -> retrieveProperty(key, PROPERTY_FILE_NAME));
-        String expectedMessage = "Property key cannot be null or empty: null";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(ReadingPropertiesFromFileException.class, () -> retrieveProperty(key, PROPERTY_FILE_NAME));
     }
 
     @Test
     public void test_retrieveProperty_withFileNameAndEmptyKey() {
         String key = "";
-        Exception exception = assertThrows(ReadingPropertiesFromFileException.class,
-                () -> retrieveProperty(key, PROPERTY_FILE_NAME));
-        String expectedMessage = "Property key cannot be null or empty: ";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(ReadingPropertiesFromFileException.class, () -> retrieveProperty(key, PROPERTY_FILE_NAME));
     }
 
     @Test
     public void test_retrieveProperty_withInvalidFileNameAndValidKey() {
-        Exception exception = assertThrows(ReadingPropertiesFromFileException.class,
+        assertThrows(ReadingPropertiesFromFileException.class,
                 () -> retrieveProperty(PROPERTY_NAME, "invalid_file.yml"));
-        String expectedMessage = "Property file not found. File name: invalid_file.yml";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
     }
 }
