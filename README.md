@@ -45,7 +45,7 @@ The `event-radar` project is composed of several modules, each responsible for s
 
 To start the `event-radar` application, you can use the provided `start_services.sh` script. This script will automatically set up all required services, including databases, message brokers, and other necessary containers.
 
-### Steps to Run:
+### Steps to Run
 To start the Event-Radar application, follow these steps:
 
 1. **Clone the repository**:
