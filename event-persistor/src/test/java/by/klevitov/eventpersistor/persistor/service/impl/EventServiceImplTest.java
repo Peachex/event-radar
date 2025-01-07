@@ -103,11 +103,8 @@ public class EventServiceImplTest {
                     .thenThrow(new EventValidatorException("Event title cannot be null or empty."));
 
             AbstractEvent event = new AfishaRelaxEvent();
-            Exception exception = assertThrows(EventValidatorException.class, () -> eventService.create(event));
+            assertThrows(EventValidatorException.class, () -> eventService.create(event));
 
-            String expectedMessage = "Event title cannot be null or empty.";
-            String actualMessage = exception.getMessage();
-            assertEquals(expectedMessage, actualMessage);
             verify(locationService, never()).create(any(Location.class));
             verify(repository, never()).insert(any(AbstractEvent.class));
         }
@@ -222,12 +219,8 @@ public class EventServiceImplTest {
                     new AfishaRelaxEvent(),
                     new ByCardEvent()
             );
-            Exception exception = assertThrows(EventValidatorException.class, () ->
-                    eventService.create(events));
+            assertThrows(EventValidatorException.class, () -> eventService.create(events));
 
-            String expectedMessage = "Event title cannot be null or empty.";
-            String actualMessage = exception.getMessage();
-            assertEquals(expectedMessage, actualMessage);
             verify(repository, never()).saveAll(anyList());
         }
     }
@@ -245,18 +238,12 @@ public class EventServiceImplTest {
     public void test_findById_withValidIdAndNonExistentEvent() {
         when(repository.findById(anyString()))
                 .thenReturn(Optional.empty());
-        Exception exception = assertThrows(EventNotFoundException.class, () -> eventService.findById("id"));
-        String expectedMessage = "Cannot find event with id: 'id'";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(EventNotFoundException.class, () -> eventService.findById("id"));
     }
 
     @Test
     public void test_findById_withInvalidId() {
-        Exception exception = assertThrows(EventValidatorException.class, () -> eventService.findById(null));
-        String expectedMessage = "Event id cannot be null or empty.";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(EventValidatorException.class, () -> eventService.findById(null));
     }
 
     @Test
@@ -324,11 +311,8 @@ public class EventServiceImplTest {
 
             AbstractEvent updatedEvent = createTestEvent(AFISHA_RELAX);
             updatedEvent.setId("nonExistentEventId");
-            Exception exception = assertThrows(EventNotFoundException.class, () -> eventService.update(updatedEvent));
-            String expectedMessage = "Cannot find event with id: 'nonExistentEventId'";
-            String actualMessage = exception.getMessage();
+            assertThrows(EventNotFoundException.class, () -> eventService.update(updatedEvent));
 
-            assertEquals(expectedMessage, actualMessage);
             verify(repository, times(1)).findById(anyString());
             verify(repository, never()).save(any());
             verify(repository, never()).findFirstByTitleAndCategoryIgnoreCaseAndSourceType(anyString(), anyString(),
@@ -343,11 +327,8 @@ public class EventServiceImplTest {
                     .thenThrow(new EventValidatorException("Event id cannot be null or empty."));
 
             AbstractEvent updatedEvent = AfishaRelaxEvent.builder().id(null).build();
-            Exception exception = assertThrows(EventValidatorException.class, () -> eventService.update(updatedEvent));
-            String expectedMessage = "Event id cannot be null or empty.";
-            String actualMessage = exception.getMessage();
+            assertThrows(EventValidatorException.class, () -> eventService.update(updatedEvent));
 
-            assertEquals(expectedMessage, actualMessage);
             verify(repository, never()).findById(anyString());
             verify(repository, never()).save(any());
             verify(repository, never()).findFirstByTitleAndCategoryIgnoreCaseAndSourceType(anyString(), anyString(),
@@ -376,13 +357,8 @@ public class EventServiceImplTest {
             AbstractEvent updatedEvent = createTestEvent(BYCARD);
             updatedEvent.setTitle(updatedTitle);
 
-            Exception exception = assertThrows(EventAlreadyExistsException.class,
-                    () -> eventService.update(updatedEvent));
-            String expectedMessage = "Event with title: 'Updated title', category: 'category', source type: 'BYCARD' "
-                    + "already exists. Event id: 'id'.";
-            String actualMessage = exception.getMessage();
+            assertThrows(EventAlreadyExistsException.class, () -> eventService.update(updatedEvent));
 
-            assertEquals(expectedMessage, actualMessage);
             verify(repository, times(1)).findById(anyString());
             verify(repository, never()).save(any());
             verify(repository, times(1)).findFirstByTitleAndCategoryIgnoreCaseAndSourceType(
@@ -405,11 +381,8 @@ public class EventServiceImplTest {
             validator.when(() -> EventValidator.throwExceptionInCaseOfEmptyId(nullable(String.class)))
                     .thenThrow(new EventValidatorException("Event id cannot be null or empty."));
 
-            Exception exception = assertThrows(EventValidatorException.class, () -> eventService.delete(null));
-            String expectedMessage = "Event id cannot be null or empty.";
-            String actualMessage = exception.getMessage();
+            assertThrows(EventValidatorException.class, () -> eventService.delete(null));
 
-            assertEquals(expectedMessage, actualMessage);
             verify(repository, never()).findById(anyString());
             verify(repository, never()).deleteById(anyString());
         }

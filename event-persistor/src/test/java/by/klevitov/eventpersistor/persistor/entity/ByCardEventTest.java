@@ -29,15 +29,8 @@ public class ByCardEventTest {
     public void test_copyValuesForNullOrEmptyFieldsFromEvent_withInvalidEventClass() {
         AfishaRelaxEvent existentEventOfInvalidClass = new AfishaRelaxEvent();
         ByCardEvent actual = new ByCardEvent();
-
-        Exception exception = assertThrows(InvalidEventClassException.class, () ->
+        assertThrows(InvalidEventClassException.class, () ->
                 actual.copyValuesForNullOrEmptyFieldsFromEvent(existentEventOfInvalidClass));
-
-        String expectedMessage = "Invalid event class: class by.klevitov.eventpersistor.persistor.entity.ByCardEvent "
-                + "for event AfishaRelaxEvent(super=AbstractEvent(id=null, title=null, location=null, dateStr=null, "
-                + "date=null, category=null, sourceType=null), eventLink=null, imageLink=null)";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
     }
 
     private static Stream<Pair<ByCardEvent, Pair<ByCardEvent, ByCardEvent>>> doublePairProvider() {

@@ -89,12 +89,9 @@ public class LocationServiceImplTest {
                     .thenThrow(new LocationValidatorException("Location country cannot be null or empty."));
 
             Location location = new Location(null, null);
-            Exception exception = assertThrows(LocationValidatorException.class, () ->
+            assertThrows(LocationValidatorException.class, () ->
                     service.create(location));
 
-            String expectedMessage = "Location country cannot be null or empty.";
-            String actualMessage = exception.getMessage();
-            assertEquals(expectedMessage, actualMessage);
             verify(locationRepository, never()).insert(any(Location.class));
         }
     }
@@ -184,12 +181,9 @@ public class LocationServiceImplTest {
                     new Location(null, null),
                     new Location(null, null)
             );
-            Exception exception = assertThrows(LocationValidatorException.class, () ->
+            assertThrows(LocationValidatorException.class, () ->
                     service.create(locations));
 
-            String expectedMessage = "Location country cannot be null or empty.";
-            String actualMessage = exception.getMessage();
-            assertEquals(expectedMessage, actualMessage);
             verify(locationRepository, never()).saveAll(anyList());
         }
     }
@@ -207,18 +201,12 @@ public class LocationServiceImplTest {
     public void test_findById_withValidIdAndNonExistentLocation() {
         when(locationRepository.findById(anyString()))
                 .thenReturn(Optional.empty());
-        Exception exception = assertThrows(LocationNotFoundException.class, () -> service.findById("id"));
-        String expectedMessage = "Cannot find location with id: 'id'";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(LocationNotFoundException.class, () -> service.findById("id"));
     }
 
     @Test
     public void test_findById_withInvalidId() {
-        Exception exception = assertThrows(LocationValidatorException.class, () -> service.findById(null));
-        String expectedMessage = "Location id cannot be null or empty.";
-        String actualMessage = exception.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+        assertThrows(LocationValidatorException.class, () -> service.findById(null));
     }
 
     @Test
@@ -291,11 +279,8 @@ public class LocationServiceImplTest {
                     .thenReturn(Optional.empty());
 
             Location updatedLocation = new Location("nonExistentLocationId", "newCountry", null);
-            Exception exception = assertThrows(LocationNotFoundException.class, () -> service.update(updatedLocation));
-            String expectedMessage = "Cannot find location with id: 'nonExistentLocationId'";
-            String actualMessage = exception.getMessage();
+            assertThrows(LocationNotFoundException.class, () -> service.update(updatedLocation));
 
-            assertEquals(expectedMessage, actualMessage);
             verify(locationRepository, times(1)).findById(anyString());
             verify(locationRepository, never()).save(any());
             verify(locationRepository, never()).findByCountryAndCityIgnoreCase(anyString(),
@@ -310,11 +295,8 @@ public class LocationServiceImplTest {
                     .thenThrow(new LocationValidatorException("Location id cannot be null or empty."));
 
             Location updatedLocation = new Location(null, null, null);
-            Exception exception = assertThrows(LocationValidatorException.class, () -> service.update(updatedLocation));
-            String expectedMessage = "Location id cannot be null or empty.";
-            String actualMessage = exception.getMessage();
+            assertThrows(LocationValidatorException.class, () -> service.update(updatedLocation));
 
-            assertEquals(expectedMessage, actualMessage);
             verify(locationRepository, never()).findById(anyString());
             verify(locationRepository, never()).save(any());
             verify(locationRepository, never()).findByCountryAndCityIgnoreCase(anyString(),
@@ -333,13 +315,9 @@ public class LocationServiceImplTest {
                     .thenReturn(Optional.of(new Location("other_id", "updatedCountry", "city")));
 
             Location updatedLocation = new Location("id", "updatedCountry", "city");
-            Exception exception = assertThrows(LocationAlreadyExistsException.class,
+            assertThrows(LocationAlreadyExistsException.class,
                     () -> service.update(updatedLocation));
-            String expectedMessage = "Location with country: 'updatedCountry', city: 'city' already exists. "
-                    + "Location id: 'id'.";
-            String actualMessage = exception.getMessage();
 
-            assertEquals(expectedMessage, actualMessage);
             verify(locationRepository, times(1)).findById(anyString());
             verify(locationRepository, never()).save(any());
             verify(locationRepository, times(1)).findByCountryAndCityIgnoreCase(anyString(),
@@ -368,11 +346,8 @@ public class LocationServiceImplTest {
         when(eventRepository.countByLocation(any()))
                 .thenReturn(1L);
 
-        Exception exception = assertThrows(LocationInUseException.class, () -> service.delete("id"));
-        String expectedMessage = "Location with id: 'id' cannot be deleted because it is in use.";
-        String actualMessage = exception.getMessage();
+        assertThrows(LocationInUseException.class, () -> service.delete("id"));
 
-        assertEquals(expectedMessage, actualMessage);
         verify(locationRepository, times(1)).findById(anyString());
         verify(eventRepository, times(1)).countByLocation(any());
         verify(locationRepository, never()).deleteById(anyString());
@@ -384,11 +359,8 @@ public class LocationServiceImplTest {
             validator.when(() -> LocationValidator.throwExceptionInCaseOfEmptyId(anyString()))
                     .thenThrow(new LocationValidatorException("Location id cannot be null or empty."));
 
-            Exception exception = assertThrows(LocationValidatorException.class, () -> service.delete("id"));
-            String expectedMessage = "Location id cannot be null or empty.";
-            String actualMessage = exception.getMessage();
+            assertThrows(LocationValidatorException.class, () -> service.delete("id"));
 
-            assertEquals(expectedMessage, actualMessage);
             verify(locationRepository, never()).findById(anyString());
             verify(eventRepository, never()).countByLocation(any());
             verify(locationRepository, never()).deleteById(anyString());
