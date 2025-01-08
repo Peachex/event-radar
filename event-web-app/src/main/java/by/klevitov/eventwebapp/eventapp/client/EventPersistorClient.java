@@ -41,4 +41,7 @@ public interface EventPersistorClient {
 
     @DeleteMapping("/events/{id}")
     void delete(@PathVariable final String id) throws EventPersistorClientException;
+
+    @GetMapping("/healthcheck")
+    void healthCheck() throws EventPersistorClientException;
 }
