@@ -1,8 +1,12 @@
 package by.klevitov.eventmanager.healthcheck.service.impl;
 
-import by.klevitov.eventmanager.healthcheck.service.ResourceCheckService;
-import by.klevitov.eventmanager.manager.client.EventPersistorClient;
-import by.klevitov.eventmanager.manager.exception.EventPersistorClientException;
+import by.klevitov.eventradarcommon.client.EventPersistorClient;
+import by.klevitov.eventradarcommon.client.exception.EventPersistorClientException;
+import by.klevitov.eventradarcommon.healthcheck.checker.ResourceChecker;
+import by.klevitov.eventradarcommon.healthcheck.checker.impl.EventPersistorClientResourceChecker;
+import by.klevitov.eventradarcommon.healthcheck.checker.impl.RabbitMQResourceChecker;
+import by.klevitov.eventradarcommon.healthcheck.service.ResourceCheckService;
+import by.klevitov.eventradarcommon.healthcheck.service.impl.ResourceCheckServiceImpl;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,18 +16,19 @@ import org.springframework.amqp.rabbit.connection.Connection;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 
 import java.net.ConnectException;
+import java.util.List;
 
-import static by.klevitov.eventmanager.healthcheck.constant.HealthCheckMessage.EVENT_PERSISTOR_HEALTH_DOWN_VALUE;
-import static by.klevitov.eventmanager.healthcheck.constant.HealthCheckMessage.EVENT_PERSISTOR_HEALTH_KEY;
-import static by.klevitov.eventmanager.healthcheck.constant.HealthCheckMessage.EVENT_PERSISTOR_HEALTH_UP_VALUE;
-import static by.klevitov.eventmanager.healthcheck.constant.HealthCheckMessage.MESSAGE_BROKER_HEALTH_DOWN_VALUE;
-import static by.klevitov.eventmanager.healthcheck.constant.HealthCheckMessage.MESSAGE_BROKER_HEALTH_KEY;
-import static by.klevitov.eventmanager.healthcheck.constant.HealthCheckMessage.MESSAGE_BROKER_HEALTH_UP_VALUE;
+import static by.klevitov.eventradarcommon.healthcheck.constant.HealthCheckMessage.EVENT_PERSISTOR_HEALTH_KEY;
+import static by.klevitov.eventradarcommon.healthcheck.constant.HealthCheckMessage.HEALTH_DOWN_VALUE;
+import static by.klevitov.eventradarcommon.healthcheck.constant.HealthCheckMessage.HEALTH_UP_VALUE;
+import static by.klevitov.eventradarcommon.healthcheck.constant.HealthCheckMessage.MESSAGE_BROKER_HEALTH_KEY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 public class ResourceCheckServiceImplTest {
+    //todo Move healthcheck tests to event-radar-common.
+
     private static ResourceCheckService service;
     private static ConnectionFactory mockedConnectionFactory;
     private static Connection mockedBrokerConnection;
@@ -34,40 +39,56 @@ public class ResourceCheckServiceImplTest {
         mockedConnectionFactory = Mockito.mock(ConnectionFactory.class);
         mockedBrokerConnection = Mockito.mock(Connection.class);
         mockedEventPersistorClient = Mockito.mock(EventPersistorClient.class);
-        service = new ResourceCheckServiceImpl(mockedConnectionFactory, mockedEventPersistorClient);
+        List<ResourceChecker> resourceCheckers = List.of(
+                new RabbitMQResourceChecker(mockedConnectionFactory),
+                new EventPersistorClientResourceChecker(mockedEventPersistorClient)
+        );
+        service = new ResourceCheckServiceImpl(resourceCheckers);
     }
 
     @Test
-    public void test_checkMessageBrokerAvailabilityAndGetResult_withAvailableBroker() {
+    public void test_checkMessageBrokerAvailability_withAvailableBroker() {
         when(mockedConnectionFactory.createConnection())
                 .thenReturn(mockedBrokerConnection);
-        Pair<String, String> expected = Pair.of(MESSAGE_BROKER_HEALTH_KEY, MESSAGE_BROKER_HEALTH_UP_VALUE);
-        Pair<String, String> actual = service.checkMessageBrokerAvailabilityAndGetResult();
+        Pair<String, String> expected = Pair.of(MESSAGE_BROKER_HEALTH_KEY, HEALTH_UP_VALUE);
+        Pair<String, String> actual = service.checkResources().stream()
+                .filter(t -> t.getLeft().equals(MESSAGE_BROKER_HEALTH_KEY))
+                .findFirst()
+                .get();
         assertEquals(expected, actual);
     }
 
     @Test
-    public void test_checkMessageBrokerAvailabilityAndGetResult_withNotAvailableBroker() {
+    public void test_checkMessageBrokerAvailability_withNotAvailableBroker() {
         when(mockedConnectionFactory.createConnection())
                 .thenThrow(new AmqpConnectException(new ConnectException("java.net.ConnectException: "
                         + "Connection refused: getsockopt")));
-        Pair<String, String> expected = Pair.of(MESSAGE_BROKER_HEALTH_KEY, MESSAGE_BROKER_HEALTH_DOWN_VALUE);
-        Pair<String, String> actual = service.checkMessageBrokerAvailabilityAndGetResult();
+        Pair<String, String> expected = Pair.of(MESSAGE_BROKER_HEALTH_KEY, HEALTH_DOWN_VALUE);
+        Pair<String, String> actual = service.checkResources().stream()
+                .filter(t -> t.getLeft().equals(MESSAGE_BROKER_HEALTH_KEY))
+                .findFirst()
+                .get();
         assertEquals(expected, actual);
     }
 
     @Test
-    public void test_checkEventPersistorAvailabilityAndGetResult_withAvailablePersistor() {
-        Pair<String, String> expected = Pair.of(EVENT_PERSISTOR_HEALTH_KEY, EVENT_PERSISTOR_HEALTH_UP_VALUE);
-        Pair<String, String> actual = service.checkEventPersistorAvailabilityAndGetResult();
+    public void test_checkEventPersistorAvailability_withAvailablePersistor() {
+        Pair<String, String> expected = Pair.of(EVENT_PERSISTOR_HEALTH_KEY, HEALTH_UP_VALUE);
+        Pair<String, String> actual = service.checkResources().stream()
+                .filter(t -> t.getLeft().equals(EVENT_PERSISTOR_HEALTH_KEY))
+                .findFirst()
+                .get();
         assertEquals(expected, actual);
     }
 
     @Test
-    public void test_checkEventPersistorAvailabilityAndGetResult_withNotAvailablePersistor() {
+    public void test_checkEventPersistorAvailability_withNotAvailablePersistor() {
         doThrow(EventPersistorClientException.class).when(mockedEventPersistorClient).healthCheck();
-        Pair<String, String> expected = Pair.of(EVENT_PERSISTOR_HEALTH_KEY, EVENT_PERSISTOR_HEALTH_DOWN_VALUE);
-        Pair<String, String> actual = service.checkEventPersistorAvailabilityAndGetResult();
+        Pair<String, String> expected = Pair.of(EVENT_PERSISTOR_HEALTH_KEY, HEALTH_DOWN_VALUE);
+        Pair<String, String> actual = service.checkResources().stream()
+                .filter(t -> t.getLeft().equals(EVENT_PERSISTOR_HEALTH_KEY))
+                .findFirst()
+                .get();
         assertEquals(expected, actual);
     }
 }

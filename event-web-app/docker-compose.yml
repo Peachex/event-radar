@@ -4,6 +4,7 @@ services:
     container_name: 'application'
     environment:
       - 'APPLICATION_PORT=8095'
+      - 'SPRING_ACTIVE_PROFILE=eventPersistorFeignClient'
       - 'APPLICATION_CONTEXT_PATH=/EventWebApp'
       - 'EVENT_PERSISTOR_CLIENT_NAME=event-persistor'
       - 'EVENT_PERSISTOR_CLIENT_URL=event-persistor-application:8082'

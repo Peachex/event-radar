@@ -19,7 +19,9 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'event-radar-common', name: 'common', version: '1.0'
+    implementation('event-radar-common:common:1.0') {
+        exclude group: 'org.springframework.cloud', module: 'spring-cloud-starter-openfeign'
+    }
 
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'

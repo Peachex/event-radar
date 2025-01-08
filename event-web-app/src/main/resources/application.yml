@@ -3,6 +3,10 @@ server:
     context-path: '${APPLICATION_CONTEXT_PATH:/EventWebApp}'
   port: '${APPLICATION_PORT:8095}'
 
+spring:
+  profiles:
+    active: '${SPRING_ACTIVE_PROFILE:eventPersistorFeignClient}'
+
 feign:
   client:
     config:
@@ -12,4 +16,3 @@ feign:
         context-path: '${EVENT_PERSISTOR_CLIENT_CONTEXT_PATH:/EventPersistor}'
         connectTimeout: '${EVENT_PERSISTOR_CLIENT_CONNECT_TIMEOUT:3000}'
         readTimeout: '${EVENT_PERSISTOR_CLIENT_READ_TIMEOUT:3000}'
-        errorDecoder: by.klevitov.eventwebapp.eventapp.client.EventPersistorClientErrorDecoder

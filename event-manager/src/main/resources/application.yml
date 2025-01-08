@@ -4,6 +4,8 @@ server:
   port: '${APPLICATION_PORT:8090}'
 
 spring:
+  profiles:
+    active: '${SPRING_ACTIVE_PROFILE:eventPersistorFeignClient}'
   rabbitmq:
     host: '${RABBITMQ_HOST:localhost}'
     port: '${RABBITMQ_PORT:5673}'
@@ -22,4 +24,3 @@ feign:
         context-path: '${EVENT_PERSISTOR_CLIENT_CONTEXT_PATH:/EventPersistor}'
         connectTimeout: '${EVENT_PERSISTOR_CLIENT_CONNECT_TIMEOUT:3000}'
         readTimeout: '${EVENT_PERSISTOR_CLIENT_READ_TIMEOUT:3000}'
-        errorDecoder: by.klevitov.eventmanager.manager.client.EventPersistorClientErrorDecoder
