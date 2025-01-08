@@ -18,8 +18,8 @@ feign:
     config:
       event-persistor:
         name: '${EVENT_PERSISTOR_CLIENT_NAME:event-persistor}'
-        url: '${EVENT_PERSISTOR_CLIENT_URL:localhost:8083}'
+        url: '${EVENT_PERSISTOR_CLIENT_URL:localhost:8082}'
         context-path: '${EVENT_PERSISTOR_CLIENT_CONTEXT_PATH:/EventPersistor}'
         connectTimeout: '${EVENT_PERSISTOR_CLIENT_CONNECT_TIMEOUT:3000}'
-        readTimeout: '${EVENT_PERSISTOR_CLIENT_READ_TIMEOUT:11000}'
+        readTimeout: '${EVENT_PERSISTOR_CLIENT_READ_TIMEOUT:3000}'
         errorDecoder: by.klevitov.eventmanager.manager.client.EventPersistorClientErrorDecoder

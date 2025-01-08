@@ -14,7 +14,7 @@ services:
       - 'EVENT_PERSISTOR_CLIENT_URL=event-persistor-application:8082'
       - 'EVENT_PERSISTOR_CLIENT_CONTEXT_PATH=/EventPersistor'
       - 'EVENT_PERSISTOR_CLIENT_CONNECT_TIMEOUT=3000'
-      - 'EVENT_PERSISTOR_CLIENT_READ_TIMEOUT=11000'
+      - 'EVENT_PERSISTOR_CLIENT_READ_TIMEOUT=3000'
     ports:
       - '8091:8090'
     restart: 'on-failure'

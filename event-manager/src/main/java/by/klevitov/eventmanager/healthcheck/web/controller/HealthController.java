@@ -29,6 +29,7 @@ public class HealthController {
     public List<Pair<String, String>> checkResource() {
         //todo Try Spring Boot actuator.
         Pair<String, String> messageBrokerAvailabilityResult = service.checkMessageBrokerAvailabilityAndGetResult();
-        return List.of(messageBrokerAvailabilityResult);
+        Pair<String, String> eventPersistorAvailabilityResult = service.checkEventPersistorAvailabilityAndGetResult();
+        return List.of(messageBrokerAvailabilityResult, eventPersistorAvailabilityResult);
     }
 }
