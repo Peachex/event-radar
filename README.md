@@ -38,9 +38,9 @@ The `event-radar` project is composed of several modules, each responsible for s
 
 ### Prerequisites
 
-- Docker & Docker Compose (necessary for the **automatic startup** of the application via the `start_services.sh` script).
-- Java 17 (necessary for the **manual startup** of the application).
-- Gradle (optional). All modules include a Gradle Wrapper, which can be used to perform tasks.
+- Docker & Docker Compose (**necessary** for the **automatic startup** of the application via the `start_services.sh` script).
+- Java 17 (**necessary** for the **manual startup** of the application).
+- Gradle (**optional**). All modules include a Gradle Wrapper, which can be used to perform tasks.
 
 
 To start the `event-radar` application, you can use the provided `start_services.sh` script. This script will automatically set up all required services, including databases, message brokers, and other necessary containers.
