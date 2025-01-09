@@ -4,7 +4,6 @@ services:
     container_name: 'event-manager-application'
     environment:
       - 'APPLICATION_PORT=8090'
-      - 'SPRING_ACTIVE_PROFILE=eventPersistorFeignClient'
       - 'APPLICATION_CONTEXT_PATH=/EventManager'
       - 'RABBITMQ_HOST=rabbitmq'
       - 'RABBITMQ_PORT=5672'

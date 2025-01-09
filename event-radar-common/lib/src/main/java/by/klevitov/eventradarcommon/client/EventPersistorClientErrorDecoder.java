@@ -8,7 +8,6 @@ import feign.Response;
 import feign.codec.ErrorDecoder;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -19,7 +18,6 @@ import static by.klevitov.eventradarcommon.client.constant.ClientExceptionMessag
 
 @Log4j2
 @Component
-@Profile("eventPersistorFeignClient")
 public class EventPersistorClientErrorDecoder implements ErrorDecoder {
     private static final Class<ExceptionResponse> EXCEPTION_RESPONSE_CLASS = ExceptionResponse.class;
 

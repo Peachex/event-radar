@@ -4,8 +4,6 @@ server:
   port: '${APPLICATION_PORT:8090}'
 
 spring:
-  profiles:
-    active: '${SPRING_ACTIVE_PROFILE:eventPersistorFeignClient}'
   rabbitmq:
     host: '${RABBITMQ_HOST:localhost}'
     port: '${RABBITMQ_PORT:5673}'

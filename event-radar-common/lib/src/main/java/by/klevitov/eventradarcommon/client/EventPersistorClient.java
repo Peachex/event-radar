@@ -3,7 +3,6 @@ package by.klevitov.eventradarcommon.client;
 import by.klevitov.eventradarcommon.client.exception.EventPersistorClientException;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +18,6 @@ import java.util.Map;
         url = "${feign.client.config.event-persistor.url}",
         path = "${feign.client.config.event-persistor.context-path}"
 )
-@Profile("eventPersistorFeignClient")
 public interface EventPersistorClient {
     @GetMapping("/events")
     List<AbstractEventDTO> findAll() throws EventPersistorClientException;

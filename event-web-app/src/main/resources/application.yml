@@ -3,10 +3,6 @@ server:
     context-path: '${APPLICATION_CONTEXT_PATH:/EventWebApp}'
   port: '${APPLICATION_PORT:8095}'
 
-spring:
-  profiles:
-    active: '${SPRING_ACTIVE_PROFILE:eventPersistorFeignClient}'
-
 feign:
   client:
     config:
