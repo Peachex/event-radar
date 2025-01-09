@@ -3,6 +3,7 @@ package by.klevitov.eventwebapp.web.handler;
 import by.klevitov.eventradarcommon.client.exception.EventPersistorClientException;
 import by.klevitov.eventradarcommon.client.exception.ResponseDeserializationException;
 import by.klevitov.eventradarcommon.exception.ExceptionResponse;
+import feign.RetryableException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,6 +20,12 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @ExceptionHandler(ResponseDeserializationException.class)
     protected ResponseEntity<ExceptionResponse> handleClientException(final ResponseDeserializationException e) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exceptionResponse);
+    }
+
+    @ExceptionHandler(RetryableException.class)
+    protected ResponseEntity<ExceptionResponse> handleClientException(final RetryableException e) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exceptionResponse);
     }
