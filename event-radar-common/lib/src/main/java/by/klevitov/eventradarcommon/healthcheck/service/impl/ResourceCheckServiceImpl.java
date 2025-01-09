@@ -13,7 +13,7 @@ public class ResourceCheckServiceImpl implements ResourceCheckService {
     private final List<ResourceChecker> resourceCheckers;
 
     public ResourceCheckServiceImpl(List<ResourceChecker> resourceCheckers) {
-        this.resourceCheckers = resourceCheckers;
+        this.resourceCheckers = (resourceCheckers != null ? resourceCheckers : new ArrayList<>());
     }
 
     @Override
