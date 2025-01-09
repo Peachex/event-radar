@@ -1,4 +1,4 @@
-package by.klevitov.eventmanager.web;
+package by.klevitov.eventmanager.web.controller;
 
 import by.klevitov.eventmanager.service.TaskManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
