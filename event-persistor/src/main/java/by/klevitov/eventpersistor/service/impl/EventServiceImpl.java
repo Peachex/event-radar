@@ -11,6 +11,7 @@ import by.klevitov.eventpersistor.util.EventValidator;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +40,7 @@ public class EventServiceImpl implements EventService {
         this.repository = repository;
     }
 
-    //@Transactional
+    @Transactional
     @Override
     public AbstractEvent create(final AbstractEvent event) {
         validateEventBeforeCreation(event);
@@ -60,10 +61,9 @@ public class EventServiceImpl implements EventService {
                 .orElseGet(() -> repository.insert(event));
     }
 
-    //@Transactional
+    @Transactional
     @Override
     public List<AbstractEvent> create(final List<AbstractEvent> events) {
-        //todo Add transaction to save event and location in one operation.
         events.forEach(EventValidator::validateEventBeforeCreation);
         processLocationsCreation(events);
         return createEventsWithoutDuplication(events);
@@ -130,9 +130,9 @@ public class EventServiceImpl implements EventService {
         return repository.findAll();
     }
 
+    @Transactional
     @Override
     public AbstractEvent update(final AbstractEvent updatedEvent) {
-        //todo Add transaction to update event and location in one operation.
         validateEventBeforeUpdating(updatedEvent);
         AbstractEvent existentEvent = findById(updatedEvent.getId());
         updatedEvent.copyValuesForNullOrEmptyFieldsFromEvent(existentEvent);

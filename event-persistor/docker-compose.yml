@@ -5,12 +5,10 @@ services:
     environment:
       - 'APPLICATION_PORT=8082'
       - 'APPLICATION_CONTEXT_PATH=/EventPersistor'
-      - 'MONGODB_HOST=mongodb-1'
-      - 'MONGODB_PORT=27017'
+      - 'MONGODB_CONNECTION_STR=mongodb://mongodb-1:27017,mongodb-2:27018,mongodb-3:27019/event_radar?replicaSet=rs0'
       - 'MONGODB_DATABASE=event_radar'
       - 'MONGODB_USERNAME=root'
       - 'MONGODB_PASSWORD=root'
-      - 'MONGODB_AUTHENTICATION_DATABASE=admin'
       - 'MONGODB_CONNECTION_TIMEOUT=3000'
       - 'MONGODB_SOCKET_TIMEOUT=10000'
       - 'MONGODB_MAX_WAIT_TIME=3000'

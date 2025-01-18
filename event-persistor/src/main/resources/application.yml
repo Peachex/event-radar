@@ -6,12 +6,10 @@ server:
 spring:
   data:
     mongodb:
-      host: '${MONGODB_HOST:localhost}'
-      port: '${MONGODB_PORT:27018}'
+      connectionStr: '${MONGODB_CONNECTION_STR:mongodb://localhost:27018,localhost:27019,localhost:27020/event_radar?replicaSet=rs0}'
       database: '${MONGODB_DATABASE:event_radar}'
       username: '${MONGODB_USERNAME:root}'
       password: '${MONGODB_PASSWORD:root}'
-      authentication-database: '${MONGODB_AUTHENTICATION_DATABASE:admin}'
       connection-timeout: '${MONGODB_CONNECTION_TIMEOUT:3000}'
       socket-timeout: '${MONGODB_SOCKET_TIMEOUT:10000}'
       max-wait-time: '${MONGODB_MAX_WAIT_TIME:3000}'
