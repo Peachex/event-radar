@@ -14,6 +14,11 @@ services:
       - 'MONGODB_MAX_WAIT_TIME=3000'
       - 'MONGODB_SERVER_SELECTION_TIMEOUT=3000'
       - 'MONGO_TEMPLATE_LOGGING=DEBUG'
+    depends_on:
+      mongodb-1:
+        condition: 'service_healthy'
+      mongo-init:
+        condition: 'service_completed_successfully'
     restart: 'on-failure'
     networks:
       - 'eventradar-network'
@@ -73,7 +78,7 @@ services:
 
   mongo-init:
     image: mongo
-    container_name: mongo-init
+    container_name: 'mongo-init'
     command: [ 'bash', '-c', '/mongodb-scripts/mongo-create-user.sh && exit 0' ]
     environment:
       - 'MONGO_HOST=mongodb-1'
@@ -81,7 +86,8 @@ services:
       - 'MONGO_USER=root'
       - 'MONGO_PASSWORD=root'
     depends_on:
-      - 'mongodb-1'
+      mongodb-1:
+        condition: 'service_healthy'
     volumes:
       - './mongodb-scripts/mongo-create-user.sh:/mongodb-scripts/mongo-create-user.sh'
     networks:
@@ -101,6 +107,11 @@ services:
       - 'ME_CONFIG_BASICAUTH_PASSWORD=mongo_express_password'
       - 'ME_CONFIG_MONGODB_SERVER=mongodb-1'
       - 'ME_CONFIG_MONGODB_PORT=27017'
+    depends_on:
+      mongodb-1:
+        condition: 'service_healthy'
+      mongo-init:
+        condition: 'service_completed_successfully'
     networks:
       - 'eventradar-network'
 
