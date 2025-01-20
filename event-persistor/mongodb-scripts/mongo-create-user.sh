@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Ensure that the script is available for execution.
+chmod +x "$0"
+
 # Ensure that required environment variables are set.
 if [ -z "$MONGO_HOST" ] || [ -z "$MONGO_PORT" ] || [ -z "$MONGO_DATABASE" ] || [ -z "$MONGO_USER" ] || [ -z "$MONGO_PASSWORD" ]; then
   echo "Please set MONGO_HOST, MONGO_PORT, MONGO_DATABASE, MONGO_USER, and MONGO_PASSWORD environment variables."
