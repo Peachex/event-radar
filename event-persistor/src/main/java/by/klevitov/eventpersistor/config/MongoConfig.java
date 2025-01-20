@@ -16,12 +16,17 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @EnableTransactionManagement
 public class MongoConfig {
-    @Value("${spring.data.mongodb.connectionStr}")
-    private String connectionStr;
+    private static final String CONNECTION_STRING_FORMAT = "mongodb://%s:%s@%s/%s?replicaSet=%s";
+    @Value("${spring.data.mongodb.hosts}")
+    private String hosts;
+    @Value("${spring.data.mongodb.database}")
+    private String database;
     @Value("${spring.data.mongodb.username}")
     private String username;
     @Value("${spring.data.mongodb.password}")
     private String password;
+    @Value("${spring.data.mongodb.replica-set}")
+    private String replicaSet;
     @Value("${spring.data.mongodb.connection-timeout}")
     private int connectionTimeout;
     @Value("${spring.data.mongodb.socket-timeout}")
@@ -33,6 +38,8 @@ public class MongoConfig {
 
     @Bean
     public MongoClient mongoClient() {
+        final String connectionStr = String.format(CONNECTION_STRING_FORMAT, username, password, hosts, database,
+                replicaSet);
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(connectionStr))
                 .applyToConnectionPoolSettings(builder ->
