@@ -80,7 +80,7 @@ services:
   mongo-init:
     image: 'mongo'
     container_name: 'mongo-init'
-    command: [ 'bash', '-c', '/mongodb-scripts/mongo-create-user.sh && exit 0' ]
+    command: [ 'bash', '-c', 'chmod +x ./mongodb-scripts/mongo-create-user.sh && /mongodb-scripts/mongo-create-user.sh && exit 0' ]
     environment:
       - 'MONGO_HOST=mongodb-1'
       - 'MONGO_PORT=27017'
