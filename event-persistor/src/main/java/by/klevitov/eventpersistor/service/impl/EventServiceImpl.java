@@ -75,7 +75,7 @@ public class EventServiceImpl implements EventService {
     }
 
     private List<AbstractEvent> createEventsWithoutDuplication(final List<AbstractEvent> events) {
-        List<AbstractEvent> existentEvents = repository.findAll();
+        List<AbstractEvent> existentEvents = repository.findFirstByTitleAndCategoryIgnoreCaseAndSourceType(events);
         List<AbstractEvent> nonExistentEvents = createNonExistentEventsList(events, existentEvents);
         existentEvents.addAll(repository.saveAll(nonExistentEvents));
         Map<String, AbstractEvent> existentEventsWithKey = createEventsMapWithTitleAndSourceTypeKey(existentEvents);

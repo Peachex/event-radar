@@ -58,7 +58,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     private List<Location> createLocationsWithoutDuplication(final List<Location> locations) {
-        List<Location> existentLocations = locationRepository.findAll();
+        List<Location> existentLocations = locationRepository.findByCountryAndCityIgnoreCase(locations);
         List<Location> nonExistentLocations = createNonExistentLocationsList(locations, existentLocations);
         existentLocations.addAll(locationRepository.saveAll(nonExistentLocations));
         Map<String, Location> existentLocationsWithKey = createLocationsMapWithCountryCityKey(existentLocations);

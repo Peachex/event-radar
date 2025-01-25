@@ -134,7 +134,7 @@ public class LocationServiceImplTest {
         try (MockedStatic<LocationValidator> validator = Mockito.mockStatic(LocationValidator.class)) {
             validator.when(() -> LocationValidator.validateLocationBeforeCreation(any(Location.class)))
                     .then(invocationOnMock -> null);
-            when(locationRepository.findAll())
+            when(locationRepository.findByCountryAndCityIgnoreCase(anyList()))
                     .thenAnswer(invocationOnMock -> {
                         List<Location> existentLocations = new ArrayList<>();
                         existentLocations.add(new Location("id1", "country1", "city1"));

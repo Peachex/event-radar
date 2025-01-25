@@ -167,7 +167,7 @@ public class EventServiceImplTest {
                     ByCardEvent.builder().title("title2").dateStr("dateStr2").sourceType(BYCARD).build(),
                     AfishaRelaxEvent.builder().title("title3").dateStr("dateStr3").sourceType(AFISHA_RELAX).build()
             );
-            when(repository.findAll())
+            when(repository.findFirstByTitleAndCategoryIgnoreCaseAndSourceType(anyList()))
                     .thenAnswer(invocationOnMock -> {
                         List<AbstractEvent> existentEvents = new ArrayList<>();
                         existentEvents.add(AfishaRelaxEvent.builder().id("id1").title(events.get(0).getTitle()).

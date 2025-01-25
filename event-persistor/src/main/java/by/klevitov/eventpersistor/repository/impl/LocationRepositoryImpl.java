@@ -15,6 +15,8 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Repository
 public class LocationRepositoryImpl implements LocationRepository {
+    private static final String COUNTRY_FIELD_NAME = "country";
+    private static final String CITY_FIELD_NAME = "city";
     private final MongoTemplate mongoTemplate;
 
     public LocationRepositoryImpl(MongoTemplate mongoTemplate) {
@@ -22,7 +24,20 @@ public class LocationRepositoryImpl implements LocationRepository {
     }
 
     @Override
-    public List<Location> findByFields(Map<String, Object> fields) {
+    public List<Location> findByCountryAndCityIgnoreCase(final List<Location> locations) {
+        List<String> countries = locations.stream().map(Location::getCountry).toList();
+        List<String> cities = locations.stream().map(Location::getCity).toList();
+        final Query query = new Query();
+        query.addCriteria(
+                where(COUNTRY_FIELD_NAME)
+                        .in(countries)
+                        .and(CITY_FIELD_NAME)
+                        .in(cities));
+        return mongoTemplate.find(query, Location.class);
+    }
+
+    @Override
+    public List<Location> findByFields(final Map<String, Object> fields) {
         final Query query = new Query();
         for (Map.Entry<String, Object> entry : fields.entrySet()) {
             query.addCriteria(where(entry.getKey()).regex(compile(entry.getValue().toString(), CASE_INSENSITIVE)));
