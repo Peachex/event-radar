@@ -27,6 +27,7 @@ public class EventRepositoryImplTest {
 
     @Test
     public void test_findByFields() {
+        //fixme Fix this test after updating findByFields method.
         repository.findByFields(Map.of());
         verify(mongoTemplate, times(1)).find(any(), eq(AbstractEvent.class));
     }
