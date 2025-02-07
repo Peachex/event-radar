@@ -4,10 +4,10 @@ import by.klevitov.eventpersistor.entity.AbstractEvent;
 import by.klevitov.eventpersistor.entity.Location;
 import by.klevitov.eventpersistor.repository.EventRepository;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
+import org.apache.commons.collections4.CollectionUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Repository
@@ -52,41 +54,46 @@ public class EventRepositoryImpl implements EventRepository {
 
     public List<AbstractEvent> findByFields(final Map<String, Object> fields) {
         //todo Refactor this method.
-        // Step 1: Initialize a list to hold the matching Location objects
-        List<Location> locations = new ArrayList<>();
-
-        // Step 2: Iterate through the fields to separate Location queries from Event queries
+        final Query locationQuery = new Query();
+        final Query eventQueryForSimpleSearch = new Query();
         for (Map.Entry<String, Object> entry : fields.entrySet()) {
             String key = entry.getKey();
-            Object value = entry.getValue();
-
-            // Handling Location fields (e.g., location.city, location.country)
+            String value = (String) entry.getValue();
+            //todo Replace location. with pattern regex.
             if (key.startsWith("location.")) {
-                String subField = key.split("\\.")[1];  // Extract "city" or "country"
-                Query locationQuery = new Query(Criteria.where(subField)
-                        .regex(compile(value.toString(), CASE_INSENSITIVE)));
-                locations.addAll(mongoTemplate.find(locationQuery, Location.class));
-
+                locationQuery.addCriteria(createCriteriaForLocationQuery(key, value));
             } else {
-                // Handling Event fields (e.g., title, price)
-                Query eventQuery = new Query(Criteria.where(key).regex(compile(value.toString(), CASE_INSENSITIVE)));
-                // Perform the search directly on the Event collection
-                return mongoTemplate.find(eventQuery, AbstractEvent.class);
+                eventQueryForSimpleSearch.addCriteria(Criteria.where(key).regex(compile(value, CASE_INSENSITIVE)));
             }
         }
+        List<Location> locations = mongoTemplate.find(locationQuery, Location.class);
+        Set<ObjectId> locationIds = extractIdsFromLocations(locations);
+        List<AbstractEvent> eventsFromComplexFieldSearch = findEventsUsingComplexFieldSearchQuery(locationIds);
+        List<AbstractEvent> eventsFromSimpleFieldSearch = findEventsUsingSimpleFieldSearchQuery(eventQueryForSimpleSearch);
+        return (List<AbstractEvent>) CollectionUtils.intersection(eventsFromSimpleFieldSearch, eventsFromComplexFieldSearch);
+    }
 
-        // Step 3: Collect all the Location IDs
-        Set<ObjectId> locationIds = locations.stream()
-                .map(location -> new ObjectId(location.getId()))  // Ensure it's ObjectId
+    private Criteria createCriteriaForLocationQuery(final String key, final String value) {
+        String subField = key.split("\\.")[1];
+        return Criteria.where(subField).regex(compile(value, CASE_INSENSITIVE));
+    }
+
+    private Set<ObjectId> extractIdsFromLocations(final List<Location> locations) {
+        return locations.stream()
+                .map(location -> new ObjectId(location.getId()))
                 .collect(Collectors.toSet());
+    }
 
-        // Step 4: If there are Location results, query the Event collection with location.$id
-        if (!locationIds.isEmpty()) {
-            Query eventQuery = new Query(Criteria.where("location.$id").in(locationIds));
-            return mongoTemplate.find(eventQuery, AbstractEvent.class);
+    private List<AbstractEvent> findEventsUsingComplexFieldSearchQuery(Set<ObjectId> locationIds) {
+        if (isEmpty(locationIds)) {
+            return new ArrayList<>();
         }
+        //todo Replace string with something constant.
+        final Query eventQueryForComplexFieldSearch = new Query(Criteria.where("location.$id").in(locationIds));
+        return new ArrayList<>(mongoTemplate.find(eventQueryForComplexFieldSearch, AbstractEvent.class));
+    }
 
-        // If no Location filters, return empty list or results based on Event-specific criteria
-        return new ArrayList<>();
+    private List<AbstractEvent> findEventsUsingSimpleFieldSearchQuery(final Query eventQueryForSimpleFieldSearch) {
+        return new ArrayList<>(mongoTemplate.find(eventQueryForSimpleFieldSearch, AbstractEvent.class));
     }
 }
