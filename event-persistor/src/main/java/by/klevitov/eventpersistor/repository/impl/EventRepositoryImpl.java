@@ -29,6 +29,9 @@ public class EventRepositoryImpl implements EventRepository {
     private static final String TITLE_FIELD_NAME = "title";
     private static final String CATEGORY_FIELD_NAME = "category";
     private static final String SOURCE_TYPE_FIELD_NAME = "sourceType";
+    private static final String LOCATION_PREFIX = "location.";
+    private static final String COMPLEX_FIELD_SPLIT_REGEX = "\\.";
+    private static final String MONGO_ID = "$id";
     private final MongoTemplate mongoTemplate;
 
     @Autowired
@@ -53,29 +56,46 @@ public class EventRepositoryImpl implements EventRepository {
     }
 
     public List<AbstractEvent> findByFields(final Map<String, Object> fields) {
-        //todo Refactor this method.
+        if (fields == null) {
+            return new ArrayList<>();
+        }
+
         final Query locationQuery = new Query();
         final Query eventQueryForSimpleSearch = new Query();
-        for (Map.Entry<String, Object> entry : fields.entrySet()) {
-            String key = entry.getKey();
-            String value = (String) entry.getValue();
-            //todo Replace location. with pattern regex.
-            if (key.startsWith("location.")) {
-                locationQuery.addCriteria(createCriteriaForLocationQuery(key, value));
-            } else {
-                eventQueryForSimpleSearch.addCriteria(Criteria.where(key).regex(compile(value, CASE_INSENSITIVE)));
-            }
-        }
+        processCriteriaAdditions(fields, locationQuery, eventQueryForSimpleSearch);
+
         List<Location> locations = mongoTemplate.find(locationQuery, Location.class);
         Set<ObjectId> locationIds = extractIdsFromLocations(locations);
-        List<AbstractEvent> eventsFromComplexFieldSearch = findEventsUsingComplexFieldSearchQuery(locationIds);
-        List<AbstractEvent> eventsFromSimpleFieldSearch = findEventsUsingSimpleFieldSearchQuery(eventQueryForSimpleSearch);
-        return (List<AbstractEvent>) CollectionUtils.intersection(eventsFromSimpleFieldSearch, eventsFromComplexFieldSearch);
+        return (List<AbstractEvent>) CollectionUtils.intersection(
+                findEventsUsingComplexFieldSearchQuery(locationIds),
+                findEventsUsingSimpleFieldSearchQuery(eventQueryForSimpleSearch)
+        );
     }
 
-    private Criteria createCriteriaForLocationQuery(final String key, final String value) {
-        String subField = key.split("\\.")[1];
-        return Criteria.where(subField).regex(compile(value, CASE_INSENSITIVE));
+    private void processCriteriaAdditions(final Map<String, Object> fields, final Query locationQuery,
+                                          final Query eventQueryForSimpleSearch) {
+        for (Map.Entry<String, Object> entry : fields.entrySet()) {
+            final String fieldName = entry.getKey();
+            final String fieldValue = (String) entry.getValue();
+            if (searchFieldIsComplex(fieldName)) {
+                locationQuery.addCriteria(createCriteriaForLocationQuery(fieldName, fieldValue));
+            } else {
+                eventQueryForSimpleSearch.addCriteria(createCriteriaForSimpleFieldSearchQuery(fieldName, fieldValue));
+            }
+        }
+    }
+
+    private boolean searchFieldIsComplex(final String field) {
+        return field.startsWith(LOCATION_PREFIX);
+    }
+
+    private Criteria createCriteriaForLocationQuery(final String fieldName, final String fieldValue) {
+        String subField = fieldName.split(COMPLEX_FIELD_SPLIT_REGEX)[1];
+        return Criteria.where(subField).regex(compile(fieldValue, CASE_INSENSITIVE));
+    }
+
+    private Criteria createCriteriaForSimpleFieldSearchQuery(final String fieldName, final String fieldValue) {
+        return Criteria.where(fieldName).regex(compile(fieldValue, CASE_INSENSITIVE));
     }
 
     private Set<ObjectId> extractIdsFromLocations(final List<Location> locations) {
@@ -84,13 +104,17 @@ public class EventRepositoryImpl implements EventRepository {
                 .collect(Collectors.toSet());
     }
 
-    private List<AbstractEvent> findEventsUsingComplexFieldSearchQuery(Set<ObjectId> locationIds) {
-        if (isEmpty(locationIds)) {
-            return new ArrayList<>();
+    private List<AbstractEvent> findEventsUsingComplexFieldSearchQuery(final Set<ObjectId> locationIds) {
+        List<AbstractEvent> events = new ArrayList<>();
+        if (isNotEmpty(locationIds)) {
+            final Query eventQuery = new Query(createCriteriaForComplexFieldSearchQuery(locationIds));
+            events.addAll(mongoTemplate.find(eventQuery, AbstractEvent.class));
         }
-        //todo Replace string with something constant.
-        final Query eventQueryForComplexFieldSearch = new Query(Criteria.where("location.$id").in(locationIds));
-        return new ArrayList<>(mongoTemplate.find(eventQueryForComplexFieldSearch, AbstractEvent.class));
+        return events;
+    }
+
+    private Criteria createCriteriaForComplexFieldSearchQuery(final Set<ObjectId> locationIds) {
+        return Criteria.where(LOCATION_PREFIX + MONGO_ID).in(locationIds);
     }
 
     private List<AbstractEvent> findEventsUsingSimpleFieldSearchQuery(final Query eventQueryForSimpleFieldSearch) {
