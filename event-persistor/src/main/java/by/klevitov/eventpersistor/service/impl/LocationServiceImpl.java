@@ -98,8 +98,8 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<Location> findByFields(Map<String, Object> fields) {
-        return (isNotEmpty(fields) ? locationRepository.findByFields(fields) : new ArrayList<>());
+    public List<Location> findByFields(final Map<String, Object> fields, final boolean isCombinedMatch) {
+        return (isNotEmpty(fields) ? locationRepository.findByFields(fields, isCombinedMatch) : new ArrayList<>());
     }
 
     private LocationNotFoundException createAndLogLocationNotFoundException(final String id) {

@@ -12,7 +12,7 @@ public interface LocationService {
 
     Location findById(final String id);
 
-    List<Location> findByFields(final Map<String, Object> fields);
+    List<Location> findByFields(final Map<String, Object> fields, final boolean isCombinedMatch);
 
     List<Location> findAll();
 

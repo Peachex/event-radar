@@ -115,8 +115,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<AbstractEvent> findByFields(Map<String, Object> fields) {
-        return (isNotEmpty(fields) ? repository.findByFields(fields) : new ArrayList<>());
+    public List<AbstractEvent> findByFields(final Map<String, Object> fields, final boolean isCombinedMatch) {
+        return (isNotEmpty(fields) ? repository.findByFields(fields, isCombinedMatch) : new ArrayList<>());
     }
 
     private EventNotFoundException createAndLogEventNotFoundException(final String id) {

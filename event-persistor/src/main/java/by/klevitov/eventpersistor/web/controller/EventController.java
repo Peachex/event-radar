@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -49,8 +50,9 @@ public class EventController {
     }
 
     @PostMapping("/search")
-    public List<AbstractEventDTO> findByFields(@RequestBody final Map<String, Object> fields) {
-        return converterService.convertToDTO(eventService.findByFields(fields));
+    public List<AbstractEventDTO> findByFields(@RequestBody final Map<String, Object> fields,
+                                               @RequestParam final boolean isCombinedMatch) {
+        return converterService.convertToDTO(eventService.findByFields(fields, isCombinedMatch));
     }
 
     @GetMapping("/{id}")

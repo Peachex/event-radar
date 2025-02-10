@@ -10,7 +10,6 @@ import by.klevitov.eventpersistor.exception.EventValidatorException;
 import by.klevitov.eventpersistor.repository.EventMongoRepository;
 import by.klevitov.eventpersistor.service.EventService;
 import by.klevitov.eventpersistor.service.LocationService;
-import by.klevitov.eventpersistor.service.impl.EventServiceImpl;
 import by.klevitov.eventpersistor.util.EventValidator;
 import by.klevitov.eventradarcommon.dto.EventDate;
 import by.klevitov.eventradarcommon.dto.EventPrice;
@@ -32,6 +31,7 @@ import static by.klevitov.eventradarcommon.dto.EventSourceType.BYCARD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -249,17 +249,17 @@ public class EventServiceImplTest {
 
     @Test
     public void test_findByFields_withExistentFields() {
-        when(repository.findByFields(anyMap()))
+        when(repository.findByFields(anyMap(), anyBoolean()))
                 .thenReturn(List.of(createTestEvent(AFISHA_RELAX), createTestEvent(BYCARD)));
         List<AbstractEvent> expected = List.of(createTestEvent(AFISHA_RELAX), createTestEvent(BYCARD));
-        List<AbstractEvent> actual = eventService.findByFields(Map.of("existentField", "fieldValue"));
+        List<AbstractEvent> actual = eventService.findByFields(Map.of("existentField", "fieldValue"), false);
         assertEquals(expected, actual);
     }
 
     @Test
     public void test_findByFields_withNonExistentFields() {
-        when(repository.findByFields(anyMap())).thenReturn(new ArrayList<>());
-        List<AbstractEvent> actual = eventService.findByFields(Map.of("nonExistentField", "fieldValue"));
+        when(repository.findByFields(anyMap(), anyBoolean())).thenReturn(new ArrayList<>());
+        List<AbstractEvent> actual = eventService.findByFields(Map.of("nonExistentField", "fieldValue"), false);
         assertEquals(0, actual.size());
     }
 

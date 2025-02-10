@@ -4,7 +4,6 @@ import by.klevitov.eventpersistor.entity.AbstractEvent;
 import by.klevitov.eventpersistor.entity.Location;
 import by.klevitov.eventpersistor.repository.EventRepository;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
-import org.apache.commons.collections4.CollectionUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -20,8 +19,9 @@ import java.util.stream.Collectors;
 
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import static org.apache.commons.collections4.CollectionUtils.intersection;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+import static org.apache.commons.collections4.CollectionUtils.union;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Repository
@@ -55,34 +55,42 @@ public class EventRepositoryImpl implements EventRepository {
         return mongoTemplate.find(query, AbstractEvent.class);
     }
 
-    public List<AbstractEvent> findByFields(final Map<String, Object> fields) {
+    @Override
+    public List<AbstractEvent> findByFields(final Map<String, Object> fields, final boolean isCombinedMatch) {
         if (fields == null) {
             return new ArrayList<>();
         }
 
         final Query locationQuery = new Query();
         final Query eventQueryForSimpleSearch = new Query();
-        processCriteriaAdditions(fields, locationQuery, eventQueryForSimpleSearch);
+        processCriteriaAdditions(fields, isCombinedMatch, locationQuery, eventQueryForSimpleSearch);
 
         List<Location> locations = mongoTemplate.find(locationQuery, Location.class);
         Set<ObjectId> locationIds = extractIdsFromLocations(locations);
-        return (List<AbstractEvent>) CollectionUtils.intersection(
-                findEventsUsingComplexFieldSearchQuery(locationIds),
-                findEventsUsingSimpleFieldSearchQuery(eventQueryForSimpleSearch)
-        );
+        final List<AbstractEvent> eventsFromComplexFieldSearch = findEventsUsingComplexFieldSearchQuery(locationIds);
+
+        final List<AbstractEvent> eventsFromSimpleFieldSearch = findEventsUsingSimpleFieldSearchQuery(eventQueryForSimpleSearch);
+
+        return isCombinedMatch
+                ? (List<AbstractEvent>) intersection(eventsFromComplexFieldSearch, eventsFromSimpleFieldSearch)
+                : (List<AbstractEvent>) union(eventsFromComplexFieldSearch, eventsFromSimpleFieldSearch);
     }
 
-    private void processCriteriaAdditions(final Map<String, Object> fields, final Query locationQuery,
-                                          final Query eventQueryForSimpleSearch) {
+    private void processCriteriaAdditions(final Map<String, Object> fields, final boolean isCombinedMatch,
+                                          final Query locationQuery, final Query eventQueryForSimpleSearch) {
+        final List<Criteria> criteriaListForLocationQuery = new ArrayList<>();
+        final List<Criteria> criteriaListForSimpleFieldSearchQuery = new ArrayList<>();
         for (Map.Entry<String, Object> entry : fields.entrySet()) {
             final String fieldName = entry.getKey();
             final String fieldValue = (String) entry.getValue();
             if (searchFieldIsComplex(fieldName)) {
-                locationQuery.addCriteria(createCriteriaForLocationQuery(fieldName, fieldValue));
+                criteriaListForLocationQuery.add(createCriteriaForLocationQuery(fieldName, fieldValue));
             } else {
-                eventQueryForSimpleSearch.addCriteria(createCriteriaForSimpleFieldSearchQuery(fieldName, fieldValue));
+                criteriaListForSimpleFieldSearchQuery.add(createCriteriaForSimpleFieldSearchQuery(fieldName, fieldValue));
             }
         }
+        addCriteriaToQuery(locationQuery, criteriaListForLocationQuery, isCombinedMatch);
+        addCriteriaToQuery(eventQueryForSimpleSearch, criteriaListForSimpleFieldSearchQuery, isCombinedMatch);
     }
 
     private boolean searchFieldIsComplex(final String field) {
@@ -96,6 +104,15 @@ public class EventRepositoryImpl implements EventRepository {
 
     private Criteria createCriteriaForSimpleFieldSearchQuery(final String fieldName, final String fieldValue) {
         return Criteria.where(fieldName).regex(compile(fieldValue, CASE_INSENSITIVE));
+    }
+
+    private void addCriteriaToQuery(final Query query, final List<Criteria> criteriaList,
+                                    final boolean isCombinedMatch) {
+        if (isNotEmpty(criteriaList)) {
+            query.addCriteria(isCombinedMatch
+                    ? new Criteria().andOperator(criteriaList)
+                    : new Criteria().orOperator(criteriaList));
+        }
     }
 
     private Set<ObjectId> extractIdsFromLocations(final List<Location> locations) {

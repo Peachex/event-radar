@@ -8,7 +8,6 @@ import by.klevitov.eventpersistor.exception.LocationValidatorException;
 import by.klevitov.eventpersistor.repository.EventMongoRepository;
 import by.klevitov.eventpersistor.repository.LocationMongoRepository;
 import by.klevitov.eventpersistor.service.LocationService;
-import by.klevitov.eventpersistor.service.impl.LocationServiceImpl;
 import by.klevitov.eventpersistor.util.LocationValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +22,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -212,7 +212,7 @@ public class LocationServiceImplTest {
 
     @Test
     public void test_findByFields_withExistentFields() {
-        when(locationRepository.findByFields(anyMap()))
+        when(locationRepository.findByFields(anyMap(), anyBoolean()))
                 .thenReturn(List.of(
                         new Location("id1", "country1", "city1"),
                         new Location("id2", "country1", "city2")
@@ -221,15 +221,15 @@ public class LocationServiceImplTest {
                 new Location("id1", "country1", "city1"),
                 new Location("id2", "country1", "city2")
         );
-        List<Location> actual = service.findByFields(Map.of("country", "country1"));
+        List<Location> actual = service.findByFields(Map.of("country", "country1"), false);
         assertEquals(expected, actual);
     }
 
     @Test
     public void test_findByFields_withNonExistentFields() {
-        when(locationRepository.findByFields(anyMap()))
+        when(locationRepository.findByFields(anyMap(), anyBoolean()))
                 .thenReturn(new ArrayList<>());
-        List<Location> actual = service.findByFields(Map.of("nonExistentField", "fieldValue"));
+        List<Location> actual = service.findByFields(Map.of("nonExistentField", "fieldValue"), false);
         assertEquals(0, actual.size());
     }
 

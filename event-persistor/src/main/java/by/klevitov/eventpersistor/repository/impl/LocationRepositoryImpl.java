@@ -3,9 +3,11 @@ package by.klevitov.eventpersistor.repository.impl;
 import by.klevitov.eventpersistor.entity.Location;
 import by.klevitov.eventpersistor.repository.LocationRepository;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -37,11 +39,15 @@ public class LocationRepositoryImpl implements LocationRepository {
     }
 
     @Override
-    public List<Location> findByFields(final Map<String, Object> fields) {
+    public List<Location> findByFields(final Map<String, Object> fields, final boolean isCombinedMatch) {
         final Query query = new Query();
+        final List<Criteria> criteriaList = new ArrayList<>();
         for (Map.Entry<String, Object> entry : fields.entrySet()) {
-            query.addCriteria(where(entry.getKey()).regex(compile(entry.getValue().toString(), CASE_INSENSITIVE)));
+            criteriaList.add(Criteria.where(entry.getKey()).regex(compile(entry.getValue().toString(), CASE_INSENSITIVE)));
         }
+        query.addCriteria(isCombinedMatch
+                ? new Criteria().andOperator(criteriaList)
+                : new Criteria().orOperator(criteriaList));
         return mongoTemplate.find(query, Location.class);
     }
 }

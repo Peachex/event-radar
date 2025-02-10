@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,39 +34,134 @@ public class EventRepositoryImplTest {
 
     @Test
     public void test_findByFields_withNullFields() {
-        repository.findByFields(null);
+        repository.findByFields(null, false);
         verify(mongoTemplate, never()).find(any(), eq(AbstractEvent.class));
     }
 
     @Test
     public void test_findByFields_withEmptyFields() {
-        repository.findByFields(Map.of());
+        repository.findByFields(Map.of(), false);
         verify(mongoTemplate, times(1)).find(any(), eq(AbstractEvent.class));
     }
 
     @Test
-    public void test_findByFields_withSimpleFields() {
-        repository.findByFields(Map.of("simpleField", "value"));
-        verify(mongoTemplate, times(1)).find(any(), eq(AbstractEvent.class));
-    }
-
-    @Test
-    public void test_findByFields_withComplexFields() {
-        repository.findByFields(Map.of("location.country", "value"));
-        verify(mongoTemplate, times(1)).find(any(), eq(AbstractEvent.class));
-    }
-
-    @Test
-    public void test_findByFields_withBothSimpleAndComplexFields() {
-        AbstractEvent intersectionEvent = AfishaRelaxEvent.builder().title("title").build();
+    public void test_findByFields_withSimpleFields_withCombinedMatch() {
+        AbstractEvent afishaEvent = AfishaRelaxEvent.builder().title("title1").build();
+        AbstractEvent byCardEvent = ByCardEvent.builder().title("title2").build();
 
         when(mongoTemplate.find(any(), any()))
-                .thenReturn(List.of(new Location("67aa3d0e9c61a064b13b84c7", "country", "city")))
-                .thenReturn(List.of(intersectionEvent, AfishaRelaxEvent.builder().title("titleValue")))
-                .thenReturn(List.of(intersectionEvent));
+                .thenReturn(new ArrayList<>())
+                .thenReturn(List.of(afishaEvent, byCardEvent));
 
-        List<AbstractEvent> expected = List.of(intersectionEvent);
-        List<AbstractEvent> actual = repository.findByFields(Map.of("simpleField", "val", "location.country", "val"));
+        List<AbstractEvent> expected = new ArrayList<>();
+        List<AbstractEvent> actual = repository.findByFields(Map.of("title", "title"), true);
+        assertEquals(expected, actual);
+        verify(mongoTemplate, times(1)).find(any(), eq(AbstractEvent.class));
+    }
+
+    @Test
+    public void test_findByFields_withSimpleFields_withoutCombinedMatch() {
+        AbstractEvent afishaEvent = AfishaRelaxEvent.builder().title("title1").build();
+        AbstractEvent byCardEvent = ByCardEvent.builder().title("title2").build();
+
+        when(mongoTemplate.find(any(), any()))
+                .thenReturn(new ArrayList<>())
+                .thenReturn(List.of(afishaEvent, byCardEvent));
+
+        List<AbstractEvent> expected = List.of(afishaEvent, byCardEvent);
+        List<AbstractEvent> actual = repository.findByFields(Map.of("title", "title"), false);
+        assertEquals(expected, actual);
+        verify(mongoTemplate, times(1)).find(any(), eq(AbstractEvent.class));
+    }
+
+    @Test
+    public void test_findByFields_withComplexFields_withCombinedMatch() {
+        AbstractEvent afishaEvent = AfishaRelaxEvent.builder()
+                .location(new Location("67aa3d0e9c61a064b13b84c7", "countryValue", "cityValue"))
+                .build();
+
+        ByCardEvent byCardEvent = ByCardEvent.builder()
+                .location(new Location("11aa3d0e9c61a064b13b84c1", "countryValue", "cityValue"))
+                .build();
+
+        when(mongoTemplate.find(any(), any()))
+                .thenReturn(List.of(afishaEvent.getLocation(), byCardEvent.getLocation()))
+                .thenReturn(List.of(afishaEvent, byCardEvent))
+                .thenReturn(new ArrayList<>());
+
+        List<AbstractEvent> expected = new ArrayList<>();
+        List<AbstractEvent> actual = repository.findByFields(
+                Map.of("location.country", "cityValue", "location.city", "cityValue"), true);
+        assertEquals(expected, actual);
+        verify(mongoTemplate, times(2)).find(any(), eq(AbstractEvent.class));
+    }
+
+    @Test
+    public void test_findByFields_withComplexFields_withoutCombinedMatch() {
+        AbstractEvent afishaEvent = AfishaRelaxEvent.builder()
+                .location(new Location("67aa3d0e9c61a064b13b84c7", "countryValue", "cityValue"))
+                .build();
+
+        ByCardEvent byCardEvent = ByCardEvent.builder()
+                .location(new Location("11aa3d0e9c61a064b13b84c1", "countryValue", "cityValue"))
+                .build();
+
+        when(mongoTemplate.find(any(), any()))
+                .thenReturn(List.of(afishaEvent.getLocation(), byCardEvent.getLocation()))
+                .thenReturn(List.of(afishaEvent, byCardEvent))
+                .thenReturn(new ArrayList<>());
+
+        List<AbstractEvent> expected = List.of(afishaEvent, byCardEvent);
+        List<AbstractEvent> actual = repository.findByFields(
+                Map.of("location.country", "cityValue", "location.city", "cityValue"), false);
+        assertEquals(expected, actual);
+        verify(mongoTemplate, times(2)).find(any(), eq(AbstractEvent.class));
+    }
+
+    @Test
+    public void test_findByFields_withBothSimpleAndComplexFieldsAndCombinedMatch() {
+        AbstractEvent afishaEvent = AfishaRelaxEvent.builder()
+                .title("titleValue")
+                .location(new Location("67aa3d0e9c61a064b13b84c7", "countryValue", "cityValue"))
+                .build();
+
+        ByCardEvent byCardEvent = ByCardEvent.builder()
+                .title("anotherUniqueTitleValue")
+                .location(new Location("11aa3d0e9c61a064b13b84c1", "countryValue", "cityValue"))
+                .build();
+
+        when(mongoTemplate.find(any(), any()))
+                .thenReturn(List.of(afishaEvent.getLocation(), byCardEvent.getLocation()))
+                .thenReturn(List.of(afishaEvent))
+                .thenReturn(List.of(byCardEvent));
+
+        List<AbstractEvent> expected = new ArrayList<>();
+        List<AbstractEvent> actual = repository.findByFields(
+                Map.of("title", "titleValue", "location.country", "countryValue"), true);
+        assertEquals(expected, actual);
+        verify(mongoTemplate, times(2)).find(any(), eq(AbstractEvent.class));
+    }
+
+    @Test
+    public void test_findByFields_withBothSimpleAndComplexFieldsAndWithoutCombinedMatch() {
+        AbstractEvent afishaEvent = AfishaRelaxEvent.builder()
+                .title("titleValue")
+                .location(new Location("67aa3d0e9c61a064b13b84c7", "countryValue", "cityValue"))
+                .build();
+
+        ByCardEvent byCardEvent = ByCardEvent.builder()
+                .title("anotherUniqueTitleValue")
+                .location(new Location("11aa3d0e9c61a064b13b84c1", "countryValue", "cityValue"))
+                .build();
+
+        when(mongoTemplate.find(any(), any()))
+                .thenReturn(List.of(afishaEvent.getLocation(), byCardEvent.getLocation()))
+                .thenReturn(List.of(afishaEvent))
+                .thenReturn(List.of(byCardEvent));
+
+        List<AbstractEvent> expected = List.of(byCardEvent, afishaEvent);
+        List<AbstractEvent> actual = repository.findByFields(
+                Map.of("title", "titleValue", "location.country", "countryValue"), false);
         assertEquals(expected, actual);
         verify(mongoTemplate, times(2)).find(any(), eq(AbstractEvent.class));
     }

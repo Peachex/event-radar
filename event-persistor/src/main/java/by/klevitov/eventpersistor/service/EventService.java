@@ -12,7 +12,7 @@ public interface EventService {
 
     AbstractEvent findById(final String id);
 
-    List<AbstractEvent> findByFields(final Map<String, Object> fields);
+    List<AbstractEvent> findByFields(final Map<String, Object> fields, final boolean isCombinedMatch);
 
     List<AbstractEvent> findAll();
 
