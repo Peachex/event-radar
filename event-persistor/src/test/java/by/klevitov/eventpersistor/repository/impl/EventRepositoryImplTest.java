@@ -50,7 +50,6 @@ public class EventRepositoryImplTest {
         AbstractEvent byCardEvent = ByCardEvent.builder().title("title2").build();
 
         when(mongoTemplate.find(any(), any()))
-                .thenReturn(new ArrayList<>())
                 .thenReturn(List.of(afishaEvent, byCardEvent));
 
         List<AbstractEvent> expected = new ArrayList<>();
@@ -65,7 +64,6 @@ public class EventRepositoryImplTest {
         AbstractEvent byCardEvent = ByCardEvent.builder().title("title2").build();
 
         when(mongoTemplate.find(any(), any()))
-                .thenReturn(new ArrayList<>())
                 .thenReturn(List.of(afishaEvent, byCardEvent));
 
         List<AbstractEvent> expected = List.of(afishaEvent, byCardEvent);

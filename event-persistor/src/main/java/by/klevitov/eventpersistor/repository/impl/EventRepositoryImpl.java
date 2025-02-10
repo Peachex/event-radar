@@ -65,7 +65,7 @@ public class EventRepositoryImpl implements EventRepository {
         final Query eventQueryForSimpleSearch = new Query();
         processCriteriaAdditions(fields, isCombinedMatch, locationQuery, eventQueryForSimpleSearch);
 
-        List<Location> locations = mongoTemplate.find(locationQuery, Location.class);
+        List<Location> locations = findLocationsByQuery(locationQuery);
         Set<ObjectId> locationIds = extractIdsFromLocations(locations);
         final List<AbstractEvent> eventsFromComplexFieldSearch = findEventsUsingComplexFieldSearchQuery(locationIds);
 
@@ -113,6 +113,18 @@ public class EventRepositoryImpl implements EventRepository {
                     ? new Criteria().andOperator(criteriaList)
                     : new Criteria().orOperator(criteriaList));
         }
+    }
+
+    private List<Location> findLocationsByQuery(final Query query) {
+        final List<Location> locations = new ArrayList<>();
+        if (queryHasCriteria(query)) {
+            locations.addAll(mongoTemplate.find(query, Location.class));
+        }
+        return locations;
+    }
+
+    private boolean queryHasCriteria(final Query query) {
+        return (!query.getQueryObject().isEmpty());
     }
 
     private Set<ObjectId> extractIdsFromLocations(final List<Location> locations) {
