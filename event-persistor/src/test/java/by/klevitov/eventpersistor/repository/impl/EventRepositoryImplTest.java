@@ -1,6 +1,8 @@
 package by.klevitov.eventpersistor.repository.impl;
 
 import by.klevitov.eventpersistor.entity.AbstractEvent;
+import by.klevitov.eventpersistor.entity.AfishaRelaxEvent;
+import by.klevitov.eventpersistor.entity.ByCardEvent;
 import by.klevitov.eventpersistor.entity.Location;
 import by.klevitov.eventpersistor.repository.EventRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +13,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -54,9 +57,16 @@ public class EventRepositoryImplTest {
 
     @Test
     public void test_findByFields_withBothSimpleAndComplexFields() {
+        AbstractEvent intersectionEvent = AfishaRelaxEvent.builder().title("title").build();
+
         when(mongoTemplate.find(any(), any()))
-                .thenReturn(List.of(new Location("67aa3d0e9c61a064b13b84c7", "country", "city")));
-        repository.findByFields(Map.of("simpleField", "value1", "location.country", "value2"));
+                .thenReturn(List.of(new Location("67aa3d0e9c61a064b13b84c7", "country", "city")))
+                .thenReturn(List.of(intersectionEvent, AfishaRelaxEvent.builder().title("titleValue")))
+                .thenReturn(List.of(intersectionEvent));
+
+        List<AbstractEvent> expected = List.of(intersectionEvent);
+        List<AbstractEvent> actual = repository.findByFields(Map.of("simpleField", "val", "location.country", "val"));
+        assertEquals(expected, actual);
         verify(mongoTemplate, times(2)).find(any(), eq(AbstractEvent.class));
     }
 }
