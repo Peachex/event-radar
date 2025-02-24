@@ -51,10 +51,10 @@ To start the Event-Radar application, follow these steps:
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/Peachex/event-radar.git
-   cd event-radar
 2. **Run the `start_services.sh` script**.
    This will start all required services and containers, including the event parsers, task scheduler, database, and more:
    ```bash
+   cd event-radar
    ./start_services.sh
 3. **Access Swagger Documentation**.
    Each web module in the system provides Swagger documentation to explore and test available REST endpoints. You can access it by navigating to the following URL:
