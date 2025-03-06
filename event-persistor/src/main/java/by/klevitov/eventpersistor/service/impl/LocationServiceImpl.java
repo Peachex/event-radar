@@ -1,5 +1,6 @@
 package by.klevitov.eventpersistor.service.impl;
 
+import by.klevitov.eventpersistor.common.PageRequestDTO;
 import by.klevitov.eventpersistor.exception.LocationAlreadyExistsException;
 import by.klevitov.eventpersistor.exception.LocationInUseException;
 import by.klevitov.eventpersistor.exception.LocationNotFoundException;
@@ -10,6 +11,7 @@ import by.klevitov.eventpersistor.service.LocationService;
 import by.klevitov.eventpersistor.util.LocationValidator;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -111,6 +113,11 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public List<Location> findAll() {
         return locationRepository.findAll();
+    }
+
+    @Override
+    public Page<Location> findAll(PageRequestDTO pageRequest) {
+        return locationRepository.findAll(pageRequest.createPageRequest());
     }
 
     @Override

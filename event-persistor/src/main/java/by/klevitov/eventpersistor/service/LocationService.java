@@ -1,6 +1,8 @@
 package by.klevitov.eventpersistor.service;
 
+import by.klevitov.eventpersistor.common.PageRequestDTO;
 import by.klevitov.eventpersistor.entity.Location;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Map;
@@ -15,6 +17,8 @@ public interface LocationService {
     List<Location> findByFields(final Map<String, Object> fields, final boolean isCombinedMatch);
 
     List<Location> findAll();
+
+    Page<Location> findAll(PageRequestDTO pageRequest);
 
     Location update(final Location updatedLocation);
 

@@ -1,5 +1,6 @@
 package by.klevitov.eventpersistor.service.impl;
 
+import by.klevitov.eventpersistor.common.PageRequestDTO;
 import by.klevitov.eventpersistor.entity.Location;
 import by.klevitov.eventpersistor.exception.LocationAlreadyExistsException;
 import by.klevitov.eventpersistor.exception.LocationInUseException;
@@ -13,6 +14,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -234,7 +239,7 @@ public class LocationServiceImplTest {
     }
 
     @Test
-    public void test_findAll() {
+    public void test_findAll_withoutPagination() {
         when(locationRepository.findAll())
                 .thenReturn(List.of(
                         new Location("id1", "country1", "city1"),
@@ -249,6 +254,24 @@ public class LocationServiceImplTest {
         List<Location> actual = service.findAll();
         assertEquals(expected, actual);
         verifyLocationsId(expected, actual);
+    }
+
+    @Test
+    public void test_findAll_withPagination() {
+        when(locationRepository.findAll(any(PageRequest.class)))
+                .thenReturn(new PageImpl<>(List.of(
+                        new Location("id1", "country1", "city1"),
+                        new Location("id2", "country2", "city2"),
+                        new Location("id3", "country3", "city3")
+                ), Pageable.ofSize(3), 3));
+        Page<Location> expected = new PageImpl<>(List.of(
+                new Location("id1", "country1", "city1"),
+                new Location("id2", "country2", "city2"),
+                new Location("id3", "country3", "city3")
+        ), Pageable.ofSize(3), 3);
+        Page<Location> actual = service.findAll(new PageRequestDTO(1, 3, null));
+        assertEquals(expected, actual);
+        verifyLocationsId(expected.getContent(), actual.getContent());
     }
 
     @Test
