@@ -51,19 +51,20 @@ To start the Event-Radar application, follow these steps:
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/Peachex/event-radar.git
-   cd event-radar
-2. **Before launching the module, verify the `Add the *.docker.internal names to the host's /etc/hosts file (Requires password)` checkbox status in Docker settings.** If it is unchecked, check it. If it is already checked, uncheck it and then check it again to ensure Docker is properly set up.
-   
-   ![image](https://github.com/user-attachments/assets/c22bcf1c-8a3c-4e63-b2b7-2723644cb8ab)
-   
-4. **Run the `start_services.sh` script**.
+2. **Run the `start_services.sh` script**.
    This will start all required services and containers, including the event parsers, task scheduler, database, and more:
    ```bash
+   cd event-radar
    ./start_services.sh
-5. **Access Swagger Documentation**.
+3. **Access Swagger Documentation**.
    Each web module in the system provides Swagger documentation to explore and test available REST endpoints. You can access it by navigating to the following URL:
      ```bash
      http://localhost:PORT/CONTEXT_PATH/swagger-ui/index.html
   - Replace `PORT` with the appropriate port number for the module.
   - Replace `CONTEXT_PATH` with the context path for the module.
-  
+
+  ### Local development
+  **Before launching the `event-persistor` module locally, verify the `Add the *.docker.internal names to the host's /etc/hosts file (Requires password)` checkbox status in Docker settings.** If it is unchecked, check it. If it is already checked, uncheck it and then check it again to ensure Docker is properly set up. This is necessary to enable the local `event-persistor` module (outside the Docker container) to connect to the MondoDB database inside the Docker container.
+   
+   ![image](https://github.com/user-attachments/assets/c22bcf1c-8a3c-4e63-b2b7-2723644cb8ab)
+
