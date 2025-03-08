@@ -1,6 +1,7 @@
 package by.klevitov.eventpersistor.web.controller;
 
 import by.klevitov.eventpersistor.common.PageRequestDTO;
+import by.klevitov.eventpersistor.common.PageResponseDTO;
 import by.klevitov.eventpersistor.entity.Location;
 import by.klevitov.eventpersistor.service.EntityConverterService;
 import by.klevitov.eventpersistor.service.LocationService;
@@ -53,10 +54,10 @@ public class LocationController {
     }
 
     @PostMapping("/all")
-    public Page<LocationDTO> findAll(@RequestBody final PageRequestDTO pageRequestDTO) {
+    public PageResponseDTO<LocationDTO> findAll(@RequestBody final PageRequestDTO pageRequestDTO) {
         Page<Location> entityResultPage = locationService.findAll(pageRequestDTO);
         List<LocationDTO> locationsDTO = converterService.convertToDTO(entityResultPage.getContent());
-        return new PageImpl<>(locationsDTO, entityResultPage.getPageable(), entityResultPage.getTotalElements());
+        return new PageResponseDTO<>(entityResultPage, locationsDTO);
     }
 
     @PostMapping("/search")
