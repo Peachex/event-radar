@@ -2,6 +2,9 @@ package by.klevitov.eventpersistor.repository.impl;
 
 import by.klevitov.eventpersistor.entity.Location;
 import by.klevitov.eventpersistor.repository.LocationRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -49,5 +52,22 @@ public class LocationRepositoryImpl implements LocationRepository {
                 ? new Criteria().andOperator(criteriaList)
                 : new Criteria().orOperator(criteriaList));
         return mongoTemplate.find(query, Location.class);
+    }
+
+    @Override
+    public Page<Location> findByFields(Map<String, Object> fields, boolean isCombinedMatch,
+                                       final PageRequest pageRequest) {
+        final Query query = new Query();
+        final List<Criteria> criteriaList = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : fields.entrySet()) {
+            criteriaList.add(Criteria.where(entry.getKey()).regex(compile(entry.getValue().toString(), CASE_INSENSITIVE)));
+        }
+        query.addCriteria(isCombinedMatch
+                ? new Criteria().andOperator(criteriaList)
+                : new Criteria().orOperator(criteriaList));
+        query.with(pageRequest);
+        List<Location> locations = mongoTemplate.find(query, Location.class);
+        long totalCount = mongoTemplate.count(query, Location.class);
+        return new PageImpl<>(locations, pageRequest, totalCount);
     }
 }

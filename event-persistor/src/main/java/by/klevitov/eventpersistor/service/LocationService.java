@@ -16,9 +16,12 @@ public interface LocationService {
 
     List<Location> findByFields(final Map<String, Object> fields, final boolean isCombinedMatch);
 
+    Page<Location> findByFields(final Map<String, Object> fields, final boolean isCombinedMatch,
+                                final PageRequestDTO pageRequestDTO);
+
     List<Location> findAll();
 
-    Page<Location> findAll(PageRequestDTO pageRequest);
+    Page<Location> findAll(final PageRequestDTO pageRequest);
 
     Location update(final Location updatedLocation);
 

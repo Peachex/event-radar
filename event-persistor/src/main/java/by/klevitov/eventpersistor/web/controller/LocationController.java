@@ -2,13 +2,13 @@ package by.klevitov.eventpersistor.web.controller;
 
 import by.klevitov.eventpersistor.common.PageRequestDTO;
 import by.klevitov.eventpersistor.common.PageResponseDTO;
+import by.klevitov.eventpersistor.common.SearchByFieldsRequestDTO;
 import by.klevitov.eventpersistor.entity.Location;
 import by.klevitov.eventpersistor.service.EntityConverterService;
 import by.klevitov.eventpersistor.service.LocationService;
 import by.klevitov.eventradarcommon.dto.LocationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,9 +62,16 @@ public class LocationController {
 
     @PostMapping("/search")
     public List<LocationDTO> findByFields(@RequestBody final Map<String, Object> fields,
-                                          @RequestParam boolean isCombinedMatch) {
-        //todo Add pagination to this method.
+                                          @RequestParam final boolean isCombinedMatch) {
         return converterService.convertToDTO(locationService.findByFields(fields, isCombinedMatch));
+    }
+
+    @PostMapping("/search/pagination")
+    public PageResponseDTO<LocationDTO> findByFields(@RequestBody final SearchByFieldsRequestDTO requestDTO) {
+        Page<Location> entityResultPage = locationService.findByFields(requestDTO.getFields(),
+                requestDTO.isCombinedMatch(), requestDTO.getPageRequestDTO());
+        List<LocationDTO> locationsDTO = converterService.convertToDTO(entityResultPage.getContent());
+        return new PageResponseDTO<>(entityResultPage, locationsDTO);
     }
 
     @GetMapping("/{id}")

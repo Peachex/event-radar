@@ -216,7 +216,7 @@ public class LocationServiceImplTest {
     }
 
     @Test
-    public void test_findByFields_withExistentFields() {
+    public void test_findByFields_withExistentFields_withoutPagination() {
         when(locationRepository.findByFields(anyMap(), anyBoolean()))
                 .thenReturn(List.of(
                         new Location("id1", "country1", "city1"),
@@ -231,11 +231,36 @@ public class LocationServiceImplTest {
     }
 
     @Test
-    public void test_findByFields_withNonExistentFields() {
+    public void test_findByFields_withExistentFieldsAnd_withPagination() {
+        when(locationRepository.findByFields(anyMap(), anyBoolean(), any(PageRequest.class)))
+                .thenReturn(new PageImpl<>(List.of(
+                        new Location("id1", "country1", "city1"),
+                        new Location("id2", "country1", "city2")
+                ), Pageable.ofSize(3), 3));
+        Page<Location> expected = new PageImpl<>(List.of(
+                new Location("id1", "country1", "city1"),
+                new Location("id2", "country1", "city2")
+        ), Pageable.ofSize(3), 3);
+        Page<Location> actual = service.findByFields(Map.of("country", "country1"), false,
+                new PageRequestDTO(1, 3, null));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_findByFields_withNonExistentFields_withoutPagination() {
         when(locationRepository.findByFields(anyMap(), anyBoolean()))
                 .thenReturn(new ArrayList<>());
         List<Location> actual = service.findByFields(Map.of("nonExistentField", "fieldValue"), false);
         assertEquals(0, actual.size());
+    }
+
+    @Test
+    public void test_findByFields_withNonExistentFields_withPagination() {
+        when(locationRepository.findByFields(anyMap(), anyBoolean(), any(PageRequest.class)))
+                .thenReturn(new PageImpl<>(new ArrayList<>()));
+        Page<Location> actual = service.findByFields(Map.of("nonExistentField", "fieldValue"), false,
+                new PageRequestDTO(1, 3, null));
+        assertEquals(0, actual.getContent().size());
     }
 
     @Test

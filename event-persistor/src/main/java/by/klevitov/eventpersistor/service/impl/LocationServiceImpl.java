@@ -12,6 +12,7 @@ import by.klevitov.eventpersistor.util.LocationValidator;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -104,6 +105,15 @@ public class LocationServiceImpl implements LocationService {
         return (isNotEmpty(fields) ? locationRepository.findByFields(fields, isCombinedMatch) : new ArrayList<>());
     }
 
+    @Override
+    public Page<Location> findByFields(Map<String, Object> fields, boolean isCombinedMatch,
+                                       final PageRequestDTO pageRequestDTO) {
+        //todo think about page request validation.
+        return (isNotEmpty(fields)
+                ? locationRepository.findByFields(fields, isCombinedMatch, pageRequestDTO.createPageRequest())
+                : new PageImpl<>(new ArrayList<>()));
+    }
+
     private LocationNotFoundException createAndLogLocationNotFoundException(final String id) {
         final String exceptionMessage = String.format(LOCATION_NOT_FOUND, id);
         log.error(exceptionMessage);
@@ -116,7 +126,8 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public Page<Location> findAll(PageRequestDTO pageRequest) {
+    public Page<Location> findAll(final PageRequestDTO pageRequest) {
+        //todo think about page request validation.
         return locationRepository.findAll(pageRequest.createPageRequest());
     }
 
