@@ -1,4 +1,4 @@
-package by.klevitov.eventpersistor.common;
+package by.klevitov.eventpersistor.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

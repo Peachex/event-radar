@@ -1,6 +1,6 @@
 package by.klevitov.eventpersistor.service.impl;
 
-import by.klevitov.eventpersistor.common.PageRequestDTO;
+import by.klevitov.eventpersistor.common.dto.PageRequestDTO;
 import by.klevitov.eventpersistor.entity.Location;
 import by.klevitov.eventpersistor.exception.LocationAlreadyExistsException;
 import by.klevitov.eventpersistor.exception.LocationInUseException;

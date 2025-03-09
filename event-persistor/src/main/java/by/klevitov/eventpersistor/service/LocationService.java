@@ -1,6 +1,6 @@
 package by.klevitov.eventpersistor.service;
 
-import by.klevitov.eventpersistor.common.PageRequestDTO;
+import by.klevitov.eventpersistor.common.dto.PageRequestDTO;
 import by.klevitov.eventpersistor.entity.Location;
 import org.springframework.data.domain.Page;
 
@@ -21,7 +21,7 @@ public interface LocationService {
 
     List<Location> findAll();
 
-    Page<Location> findAll(final PageRequestDTO pageRequest);
+    Page<Location> findAll(final PageRequestDTO pageRequestDTO);
 
     Location update(final Location updatedLocation);
 

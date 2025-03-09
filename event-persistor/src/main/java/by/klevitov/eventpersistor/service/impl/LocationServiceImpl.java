@@ -1,6 +1,6 @@
 package by.klevitov.eventpersistor.service.impl;
 
-import by.klevitov.eventpersistor.common.PageRequestDTO;
+import by.klevitov.eventpersistor.common.dto.PageRequestDTO;
 import by.klevitov.eventpersistor.exception.LocationAlreadyExistsException;
 import by.klevitov.eventpersistor.exception.LocationInUseException;
 import by.klevitov.eventpersistor.exception.LocationNotFoundException;
@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import static by.klevitov.eventpersistor.common.util.PageRequestValidator.validatePageRequest;
 import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.LOCATION_ALREADY_EXISTS;
 import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.LOCATION_IS_IN_USE;
 import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.LOCATION_NOT_FOUND;
@@ -108,7 +109,8 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public Page<Location> findByFields(Map<String, Object> fields, boolean isCombinedMatch,
                                        final PageRequestDTO pageRequestDTO) {
-        //todo think about page request validation.
+        //todo update tests to include validatePageRequest feat.
+        validatePageRequest(pageRequestDTO);
         return (isNotEmpty(fields)
                 ? locationRepository.findByFields(fields, isCombinedMatch, pageRequestDTO.createPageRequest())
                 : new PageImpl<>(new ArrayList<>()));
@@ -126,9 +128,10 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public Page<Location> findAll(final PageRequestDTO pageRequest) {
-        //todo think about page request validation.
-        return locationRepository.findAll(pageRequest.createPageRequest());
+    public Page<Location> findAll(final PageRequestDTO pageRequestDTO) {
+        //todo update tests to include validatePageRequest feat.
+        validatePageRequest(pageRequestDTO);
+        return locationRepository.findAll(pageRequestDTO.createPageRequest());
     }
 
     @Override

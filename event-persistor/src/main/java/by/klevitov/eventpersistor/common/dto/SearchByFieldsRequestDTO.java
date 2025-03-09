@@ -1,4 +1,4 @@
-package by.klevitov.eventpersistor.common;
+package by.klevitov.eventpersistor.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

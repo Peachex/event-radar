@@ -1,4 +1,4 @@
-package by.klevitov.eventpersistor.common;
+package by.klevitov.eventpersistor.common.dto;
 
 import by.klevitov.eventpersistor.entity.AbstractEntity;
 import by.klevitov.eventradarcommon.dto.AbstractDTO;

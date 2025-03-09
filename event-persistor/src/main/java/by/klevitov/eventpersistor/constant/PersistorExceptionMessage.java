@@ -21,10 +21,15 @@ public final class PersistorExceptionMessage {
     public static final String LOCATION_IS_IN_USE = "Location with id: '%s' cannot be deleted because it is in use.";
     public static final String INVALID_EVENT_CLASS = "Invalid event class: %s for event %s";
     public static final String ENTITY_CONVERTER_NOT_FOUND = "No entity converter found for: %s";
-    public static final String REQUEST_HANDLER_NOT_FOUND = "No request handler found for entity type '%s' and "
-            + "request type '%s'.";
     public static final String NULL_DTO = "DTO cannot be null.";
     public static final String NULL_ENTITY = "Entity cannot be null.";
+    public static final String NULL_PAGE_REQUEST = "Page request cannot be null.";
+    public static final String INVALID_PAGE_NUMBER = "Invalid page number: '%d'. Page number cannot be less than zero.";
+    public static final String INVALID_PAGE_SIZE = "Invalid page size: '%d'. Page size cannot be less than one.";
+    public static final String NULL_SORT_FIELD = "Sort field value cannot be null.";
+    public static final String NULL_SORT_FIELD_DIRECTION = "Sort field direction cannot be null.";
+    public static final String INVALID_SORT_DIRECTION = "Invalid Sort direction: '%s'. Sort direction can be either "
+            + "ASC or DESC.";
 
     private PersistorExceptionMessage() {
     }
