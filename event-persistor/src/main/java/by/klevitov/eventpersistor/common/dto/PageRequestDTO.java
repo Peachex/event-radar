@@ -20,6 +20,7 @@ public class PageRequestDTO {
     private List<SortField> sortFields;
 
     @Data
+    @AllArgsConstructor
     @NoArgsConstructor
     public static class SortField {
         private String field;
