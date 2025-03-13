@@ -1,6 +1,7 @@
 package by.klevitov.eventpersistor.service.impl;
 
 import by.klevitov.eventpersistor.common.dto.PageRequestDTO;
+import by.klevitov.eventpersistor.common.util.PageRequestValidator;
 import by.klevitov.eventpersistor.entity.Location;
 import by.klevitov.eventpersistor.exception.LocationAlreadyExistsException;
 import by.klevitov.eventpersistor.exception.LocationInUseException;
@@ -232,18 +233,23 @@ public class LocationServiceImplTest {
 
     @Test
     public void test_findByFields_withExistentFieldsAnd_withPagination() {
-        when(locationRepository.findByFields(anyMap(), anyBoolean(), any(PageRequest.class)))
-                .thenReturn(new PageImpl<>(List.of(
-                        new Location("id1", "country1", "city1"),
-                        new Location("id2", "country1", "city2")
-                ), Pageable.ofSize(3), 3));
-        Page<Location> expected = new PageImpl<>(List.of(
-                new Location("id1", "country1", "city1"),
-                new Location("id2", "country1", "city2")
-        ), Pageable.ofSize(3), 3);
-        Page<Location> actual = service.findByFields(Map.of("country", "country1"), false,
-                new PageRequestDTO(1, 3, null));
-        assertEquals(expected, actual);
+        try (MockedStatic<PageRequestValidator> validator = Mockito.mockStatic(PageRequestValidator.class)) {
+            validator.when(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)))
+                    .then(invocationOnMock -> null);
+            when(locationRepository.findByFields(anyMap(), anyBoolean(), any(PageRequest.class)))
+                    .thenReturn(new PageImpl<>(List.of(
+                            new Location("id1", "country1", "city1"),
+                            new Location("id2", "country1", "city2")
+                    ), Pageable.ofSize(3), 3));
+            Page<Location> expected = new PageImpl<>(List.of(
+                    new Location("id1", "country1", "city1"),
+                    new Location("id2", "country1", "city2")
+            ), Pageable.ofSize(3), 3);
+            Page<Location> actual = service.findByFields(Map.of("country", "country1"), false,
+                    new PageRequestDTO(1, 3, null));
+            assertEquals(expected, actual);
+            validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)));
+        }
     }
 
     @Test
@@ -256,11 +262,16 @@ public class LocationServiceImplTest {
 
     @Test
     public void test_findByFields_withNonExistentFields_withPagination() {
-        when(locationRepository.findByFields(anyMap(), anyBoolean(), any(PageRequest.class)))
-                .thenReturn(new PageImpl<>(new ArrayList<>()));
-        Page<Location> actual = service.findByFields(Map.of("nonExistentField", "fieldValue"), false,
-                new PageRequestDTO(1, 3, null));
-        assertEquals(0, actual.getContent().size());
+        try (MockedStatic<PageRequestValidator> validator = Mockito.mockStatic(PageRequestValidator.class)) {
+            validator.when(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)))
+                    .then(invocationOnMock -> null);
+            when(locationRepository.findByFields(anyMap(), anyBoolean(), any(PageRequest.class)))
+                    .thenReturn(new PageImpl<>(new ArrayList<>()));
+            Page<Location> actual = service.findByFields(Map.of("nonExistentField", "fieldValue"), false,
+                    new PageRequestDTO(1, 3, null));
+            assertEquals(0, actual.getContent().size());
+            validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)));
+        }
     }
 
     @Test
@@ -283,20 +294,25 @@ public class LocationServiceImplTest {
 
     @Test
     public void test_findAll_withPagination() {
-        when(locationRepository.findAll(any(PageRequest.class)))
-                .thenReturn(new PageImpl<>(List.of(
-                        new Location("id1", "country1", "city1"),
-                        new Location("id2", "country2", "city2"),
-                        new Location("id3", "country3", "city3")
-                ), Pageable.ofSize(3), 3));
-        Page<Location> expected = new PageImpl<>(List.of(
-                new Location("id1", "country1", "city1"),
-                new Location("id2", "country2", "city2"),
-                new Location("id3", "country3", "city3")
-        ), Pageable.ofSize(3), 3);
-        Page<Location> actual = service.findAll(new PageRequestDTO(1, 3, null));
-        assertEquals(expected, actual);
-        verifyLocationsId(expected.getContent(), actual.getContent());
+        try (MockedStatic<PageRequestValidator> validator = Mockito.mockStatic(PageRequestValidator.class)) {
+            validator.when(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)))
+                    .then(invocationOnMock -> null);
+            when(locationRepository.findAll(any(PageRequest.class)))
+                    .thenReturn(new PageImpl<>(List.of(
+                            new Location("id1", "country1", "city1"),
+                            new Location("id2", "country2", "city2"),
+                            new Location("id3", "country3", "city3")
+                    ), Pageable.ofSize(3), 3));
+            Page<Location> expected = new PageImpl<>(List.of(
+                    new Location("id1", "country1", "city1"),
+                    new Location("id2", "country2", "city2"),
+                    new Location("id3", "country3", "city3")
+            ), Pageable.ofSize(3), 3);
+            Page<Location> actual = service.findAll(new PageRequestDTO(1, 3, null));
+            assertEquals(expected, actual);
+            verifyLocationsId(expected.getContent(), actual.getContent());
+            validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)));
+        }
     }
 
     @Test

@@ -109,7 +109,6 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public Page<Location> findByFields(Map<String, Object> fields, boolean isCombinedMatch,
                                        final PageRequestDTO pageRequestDTO) {
-        //todo update tests to include validatePageRequest feat.
         validatePageRequest(pageRequestDTO);
         return (isNotEmpty(fields)
                 ? locationRepository.findByFields(fields, isCombinedMatch, pageRequestDTO.createPageRequest())
