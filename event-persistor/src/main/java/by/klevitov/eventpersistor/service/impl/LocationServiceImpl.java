@@ -128,7 +128,6 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public Page<Location> findAll(final PageRequestDTO pageRequestDTO) {
-        //todo update tests to include validatePageRequest feat.
         validatePageRequest(pageRequestDTO);
         return locationRepository.findAll(pageRequestDTO.createPageRequest());
     }

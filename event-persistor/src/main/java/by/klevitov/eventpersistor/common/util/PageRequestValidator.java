@@ -19,8 +19,6 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Log4j2
 public final class PageRequestValidator {
-    //todo Add unit tests for this class.
-
     private PageRequestValidator() {
     }
 
