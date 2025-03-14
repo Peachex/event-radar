@@ -107,7 +107,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public Page<Location> findByFields(Map<String, Object> fields, boolean isCombinedMatch,
+    public Page<Location> findByFields(final Map<String, Object> fields, final boolean isCombinedMatch,
                                        final PageRequestDTO pageRequestDTO) {
         validatePageRequest(pageRequestDTO);
         return (isNotEmpty(fields)

@@ -246,7 +246,7 @@ public class LocationServiceImplTest {
                     new Location("id2", "country1", "city2")
             ), Pageable.ofSize(3), 3);
             Page<Location> actual = service.findByFields(Map.of("country", "country1"), false,
-                    new PageRequestDTO(1, 3, null));
+                    new PageRequestDTO(0, 3, null));
             assertEquals(expected, actual);
             validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)));
         }
@@ -268,7 +268,7 @@ public class LocationServiceImplTest {
             when(locationRepository.findByFields(anyMap(), anyBoolean(), any(PageRequest.class)))
                     .thenReturn(new PageImpl<>(new ArrayList<>()));
             Page<Location> actual = service.findByFields(Map.of("nonExistentField", "fieldValue"), false,
-                    new PageRequestDTO(1, 3, null));
+                    new PageRequestDTO(0, 3, null));
             assertEquals(0, actual.getContent().size());
             validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)));
         }
@@ -308,7 +308,7 @@ public class LocationServiceImplTest {
                     new Location("id2", "country2", "city2"),
                     new Location("id3", "country3", "city3")
             ), Pageable.ofSize(3), 3);
-            Page<Location> actual = service.findAll(new PageRequestDTO(1, 3, null));
+            Page<Location> actual = service.findAll(new PageRequestDTO(0, 3, null));
             assertEquals(expected, actual);
             verifyLocationsId(expected.getContent(), actual.getContent());
             validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)));

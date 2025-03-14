@@ -14,10 +14,16 @@ import by.klevitov.eventpersistor.util.EventValidator;
 import by.klevitov.eventradarcommon.dto.EventDate;
 import by.klevitov.eventradarcommon.dto.EventPrice;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
+import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
+import by.klevitov.eventradarcommon.pagination.util.PageRequestValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -248,7 +254,7 @@ public class EventServiceImplTest {
     }
 
     @Test
-    public void test_findByFields_withExistentFields() {
+    public void test_findByFields_withExistentFields_withoutPagination() {
         when(repository.findByFields(anyMap(), anyBoolean()))
                 .thenReturn(List.of(createTestEvent(AFISHA_RELAX), createTestEvent(BYCARD)));
         List<AbstractEvent> expected = List.of(createTestEvent(AFISHA_RELAX), createTestEvent(BYCARD));
@@ -257,20 +263,75 @@ public class EventServiceImplTest {
     }
 
     @Test
-    public void test_findByFields_withNonExistentFields() {
+    public void test_findByFields_withExistentFields_withPagination() {
+        try (MockedStatic<PageRequestValidator> validator = Mockito.mockStatic(PageRequestValidator.class)) {
+            validator.when(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)))
+                    .then(invocationOnMock -> null);
+            when(repository.findByFields(anyMap(), anyBoolean(), any(PageRequest.class)))
+                    .thenReturn(new PageImpl<>(List.of(
+                            createTestEvent(AFISHA_RELAX), createTestEvent(BYCARD)
+                    ), Pageable.ofSize(3), 3));
+            Page<AbstractEvent> expected = new PageImpl<>(List.of(
+                    createTestEvent(AFISHA_RELAX), createTestEvent(BYCARD)
+            ), Pageable.ofSize(3), 3);
+            Page<AbstractEvent> actual = eventService.findByFields(Map.of("existentField", "fieldValue"), false,
+                    new PageRequestDTO(0, 3, null));
+            assertEquals(expected, actual);
+            validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)));
+        }
+    }
+
+    @Test
+    public void test_findByFields_withNonExistentFields_withoutPagination() {
         when(repository.findByFields(anyMap(), anyBoolean())).thenReturn(new ArrayList<>());
         List<AbstractEvent> actual = eventService.findByFields(Map.of("nonExistentField", "fieldValue"), false);
         assertEquals(0, actual.size());
     }
 
     @Test
-    public void test_findAll() {
+    public void test_findByFields_withNonExistentFields_withPagination() {
+        try (MockedStatic<PageRequestValidator> validator = Mockito.mockStatic(PageRequestValidator.class)) {
+            validator.when(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)))
+                    .then(invocationOnMock -> null);
+            when(repository.findByFields(anyMap(), anyBoolean(), any(PageRequest.class)))
+                    .thenReturn(new PageImpl<>(new ArrayList<>(), Pageable.ofSize(3), 3));
+            Page<AbstractEvent> expected = new PageImpl<>(new ArrayList<>(), Pageable.ofSize(3), 3);
+            Page<AbstractEvent> actual = eventService.findByFields(Map.of("nonExistentField", "fieldValue"), false,
+                    new PageRequestDTO(0, 3, null));
+            assertEquals(expected, actual);
+            validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)));
+        }
+    }
+
+    @Test
+    public void test_findAll_withoutPagination() {
         when(repository.findAll())
                 .thenReturn(List.of(createTestEvent(AFISHA_RELAX), createTestEvent(BYCARD)));
         List<AbstractEvent> expected = List.of(createTestEvent(AFISHA_RELAX), createTestEvent(BYCARD));
         List<AbstractEvent> actual = eventService.findAll();
         assertEquals(expected, actual);
         verifyEventsId(expected, actual);
+    }
+
+    @Test
+    public void test_findAll_withPagination() {
+        try (MockedStatic<PageRequestValidator> validator = Mockito.mockStatic(PageRequestValidator.class)) {
+            validator.when(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)))
+                    .then(invocationOnMock -> null);
+            when(repository.findAll(any(PageRequest.class)))
+                    .thenReturn(new PageImpl<>(List.of(
+                            createTestEvent(AFISHA_RELAX),
+                            createTestEvent(BYCARD)
+                    ), Pageable.ofSize(2), 2));
+            Page<AbstractEvent> expected = new PageImpl<>(List.of(
+                    createTestEvent(AFISHA_RELAX),
+                    createTestEvent(BYCARD)
+            ), Pageable.ofSize(2), 2);
+            Page<AbstractEvent> actual = eventService.findAll(new PageRequestDTO(0, 2, null));
+            assertEquals(expected, actual);
+            verifyEventsId(expected.getContent(), actual.getContent());
+            validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)));
+        }
     }
 
     @Test

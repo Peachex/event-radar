@@ -6,6 +6,9 @@ import by.klevitov.eventpersistor.repository.EventRepository;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -71,9 +74,33 @@ public class EventRepositoryImpl implements EventRepository {
 
         final List<AbstractEvent> eventsFromSimpleFieldSearch = findEventsUsingSimpleFieldSearchQuery(eventQueryForSimpleSearch);
 
-        return isCombinedMatch
-                ? (List<AbstractEvent>) intersection(eventsFromComplexFieldSearch, eventsFromSimpleFieldSearch)
-                : (List<AbstractEvent>) union(eventsFromComplexFieldSearch, eventsFromSimpleFieldSearch);
+        return createResultListBasedOnCombineCriteria(eventsFromComplexFieldSearch, eventsFromSimpleFieldSearch, isCombinedMatch);
+    }
+
+    @Override
+    public Page<AbstractEvent> findByFields(Map<String, Object> fields, boolean isCombinedMatch, PageRequest pageRequest) {
+        if (fields == null) {
+            return new PageImpl<>(new ArrayList<>());
+        }
+
+        final Query locationQuery = new Query();
+        final Query eventQueryForSimpleSearch = new Query();
+        eventQueryForSimpleSearch.with(pageRequest);
+
+        processCriteriaAdditions(fields, isCombinedMatch, locationQuery, eventQueryForSimpleSearch);
+
+        List<Location> locations = findLocationsByQuery(locationQuery);
+        Set<ObjectId> locationIds = extractIdsFromLocations(locations);
+        final List<AbstractEvent> eventsFromComplexFieldSearch = findEventsUsingComplexFieldSearchQuery(locationIds);
+
+        final List<AbstractEvent> eventsFromSimpleFieldSearch = findEventsUsingSimpleFieldSearchQuery(eventQueryForSimpleSearch);
+
+        final List<AbstractEvent> foundEvents = createResultListBasedOnCombineCriteria(eventsFromComplexFieldSearch,
+                eventsFromSimpleFieldSearch, isCombinedMatch);
+
+        trimFoundEventsToPageSize(foundEvents, pageRequest.getPageSize());
+        long totalCount = foundEvents.size();
+        return new PageImpl<>(foundEvents, pageRequest, totalCount);
     }
 
     private void processCriteriaAdditions(final Map<String, Object> fields, final boolean isCombinedMatch,
@@ -148,5 +175,31 @@ public class EventRepositoryImpl implements EventRepository {
 
     private List<AbstractEvent> findEventsUsingSimpleFieldSearchQuery(final Query eventQueryForSimpleFieldSearch) {
         return new ArrayList<>(mongoTemplate.find(eventQueryForSimpleFieldSearch, AbstractEvent.class));
+    }
+
+    private void trimFoundEventsToPageSize(final List<AbstractEvent> events, final int pageSize) {
+        while (events.size() > pageSize) {
+            events.remove(events.size() - 1);
+        }
+    }
+
+    private List<AbstractEvent> createResultListBasedOnCombineCriteria(final List<AbstractEvent> eventsFromComplexFieldSearch,
+                                                                       final List<AbstractEvent> eventsFromSimpleFieldSearch,
+                                                                       final boolean isCombinedMatch) {
+        return isCombinedMatch
+                ? createResultListWithIntersection(eventsFromComplexFieldSearch, eventsFromSimpleFieldSearch)
+                : createResultListWithUnion(eventsFromComplexFieldSearch, eventsFromSimpleFieldSearch);
+    }
+
+    private List<AbstractEvent> createResultListWithIntersection(final List<AbstractEvent> eventsFromComplexFieldSearch,
+                                                                 final List<AbstractEvent> eventsFromSimpleFieldSearch) {
+        return isNotEmpty(eventsFromComplexFieldSearch)
+                ? (List<AbstractEvent>) intersection(eventsFromComplexFieldSearch, eventsFromSimpleFieldSearch)
+                : eventsFromSimpleFieldSearch;
+    }
+
+    private List<AbstractEvent> createResultListWithUnion(final List<AbstractEvent> eventsFromComplexFieldSearch,
+                                                          final List<AbstractEvent> eventsFromSimpleFieldSearch) {
+        return (List<AbstractEvent>) union(eventsFromComplexFieldSearch, eventsFromSimpleFieldSearch);
     }
 }

@@ -8,8 +8,11 @@ import by.klevitov.eventpersistor.repository.EventMongoRepository;
 import by.klevitov.eventpersistor.service.EventService;
 import by.klevitov.eventpersistor.service.LocationService;
 import by.klevitov.eventpersistor.util.EventValidator;
+import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +29,7 @@ import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.EVEN
 import static by.klevitov.eventpersistor.util.EventValidator.throwExceptionInCaseOfEmptyId;
 import static by.klevitov.eventpersistor.util.EventValidator.validateEventBeforeCreation;
 import static by.klevitov.eventpersistor.util.EventValidator.validateEventBeforeUpdating;
+import static by.klevitov.eventradarcommon.pagination.util.PageRequestValidator.validatePageRequest;
 import static org.apache.commons.collections4.MapUtils.isNotEmpty;
 
 @Log4j2
@@ -119,6 +123,15 @@ public class EventServiceImpl implements EventService {
         return (isNotEmpty(fields) ? repository.findByFields(fields, isCombinedMatch) : new ArrayList<>());
     }
 
+    @Override
+    public Page<AbstractEvent> findByFields(final Map<String, Object> fields, final boolean isCombinedMatch,
+                                            final PageRequestDTO pageRequestDTO) {
+        validatePageRequest(pageRequestDTO);
+        return (isNotEmpty(fields)
+                ? repository.findByFields(fields, isCombinedMatch, pageRequestDTO.createPageRequest())
+                : new PageImpl<>(new ArrayList<>()));
+    }
+
     private EventNotFoundException createAndLogEventNotFoundException(final String id) {
         final String exceptionMessage = String.format(EVENT_NOT_FOUND, id);
         log.error(exceptionMessage);
@@ -128,6 +141,12 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<AbstractEvent> findAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public Page<AbstractEvent> findAll(final PageRequestDTO pageRequestDTO) {
+        validatePageRequest(pageRequestDTO);
+        return repository.findAll(pageRequestDTO.createPageRequest());
     }
 
     @Transactional

@@ -4,7 +4,11 @@ import by.klevitov.eventpersistor.entity.AbstractEvent;
 import by.klevitov.eventpersistor.service.EntityConverterService;
 import by.klevitov.eventpersistor.service.EventService;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
+import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
+import by.klevitov.eventradarcommon.pagination.dto.PageResponseDTO;
+import by.klevitov.eventradarcommon.pagination.dto.SearchByFieldsRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,10 +53,25 @@ public class EventController {
         return converterService.convertToDTO(eventService.findAll());
     }
 
+    @PostMapping("/all")
+    public PageResponseDTO<AbstractEventDTO> findAll(@RequestBody final PageRequestDTO pageRequestDTO) {
+        Page<AbstractEvent> entityResultPage = eventService.findAll(pageRequestDTO);
+        List<AbstractEventDTO> eventsDTO = converterService.convertToDTO(entityResultPage.getContent());
+        return new PageResponseDTO<>(entityResultPage, eventsDTO);
+    }
+
     @PostMapping("/search")
     public List<AbstractEventDTO> findByFields(@RequestBody final Map<String, Object> fields,
                                                @RequestParam final boolean isCombinedMatch) {
         return converterService.convertToDTO(eventService.findByFields(fields, isCombinedMatch));
+    }
+
+    @PostMapping("/search/pagination")
+    public PageResponseDTO<AbstractEventDTO> findByFields(@RequestBody final SearchByFieldsRequestDTO requestDTO) {
+        Page<AbstractEvent> entityResultPage = eventService.findByFields(requestDTO.getFields(),
+                requestDTO.isCombinedMatch(), requestDTO.getPageRequestDTO());
+        List<AbstractEventDTO> eventsDTO = converterService.convertToDTO(entityResultPage.getContent());
+        return new PageResponseDTO<>(entityResultPage, eventsDTO);
     }
 
     @GetMapping("/{id}")
