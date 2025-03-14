@@ -1,8 +1,8 @@
 package by.klevitov.eventpersistor.web.controller;
 
-import by.klevitov.eventpersistor.common.dto.PageRequestDTO;
-import by.klevitov.eventpersistor.common.dto.PageResponseDTO;
-import by.klevitov.eventpersistor.common.dto.SearchByFieldsRequestDTO;
+import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
+import by.klevitov.eventradarcommon.pagination.dto.PageResponseDTO;
+import by.klevitov.eventradarcommon.pagination.dto.SearchByFieldsRequestDTO;
 import by.klevitov.eventpersistor.entity.Location;
 import by.klevitov.eventpersistor.service.EntityConverterService;
 import by.klevitov.eventpersistor.service.LocationService;

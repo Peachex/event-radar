@@ -1,4 +1,4 @@
-package by.klevitov.eventpersistor.common.dto;
+package by.klevitov.eventradarcommon.pagination.dto;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageRequest;

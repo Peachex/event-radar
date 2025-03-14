@@ -1,6 +1,6 @@
 package by.klevitov.eventpersistor.service.impl;
 
-import by.klevitov.eventpersistor.common.dto.PageRequestDTO;
+import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
 import by.klevitov.eventpersistor.exception.LocationAlreadyExistsException;
 import by.klevitov.eventpersistor.exception.LocationInUseException;
 import by.klevitov.eventpersistor.exception.LocationNotFoundException;
@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static by.klevitov.eventpersistor.common.util.PageRequestValidator.validatePageRequest;
+import static by.klevitov.eventradarcommon.pagination.util.PageRequestValidator.validatePageRequest;
 import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.LOCATION_ALREADY_EXISTS;
 import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.LOCATION_IS_IN_USE;
 import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.LOCATION_NOT_FOUND;

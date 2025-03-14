@@ -1,6 +1,6 @@
 package by.klevitov.eventpersistor.service;
 
-import by.klevitov.eventpersistor.common.dto.PageRequestDTO;
+import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
 import by.klevitov.eventpersistor.entity.Location;
 import org.springframework.data.domain.Page;
 

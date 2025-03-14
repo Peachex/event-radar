@@ -1,7 +1,7 @@
-package by.klevitov.eventpersistor.common.util;
+package by.klevitov.eventradarcommon.pagination.util;
 
-import by.klevitov.eventpersistor.common.dto.PageRequestDTO;
-import by.klevitov.eventpersistor.exception.PageRequestValidatorException;
+import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
+import by.klevitov.eventradarcommon.pagination.exception.PageRequestValidatorException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static by.klevitov.eventpersistor.common.util.PageRequestValidator.validatePageRequest;
+import static by.klevitov.eventradarcommon.pagination.util.PageRequestValidator.validatePageRequest;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 

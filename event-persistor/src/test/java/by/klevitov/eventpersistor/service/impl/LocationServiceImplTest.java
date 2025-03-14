@@ -1,7 +1,7 @@
 package by.klevitov.eventpersistor.service.impl;
 
-import by.klevitov.eventpersistor.common.dto.PageRequestDTO;
-import by.klevitov.eventpersistor.common.util.PageRequestValidator;
+import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
+import by.klevitov.eventradarcommon.pagination.util.PageRequestValidator;
 import by.klevitov.eventpersistor.entity.Location;
 import by.klevitov.eventpersistor.exception.LocationAlreadyExistsException;
 import by.klevitov.eventpersistor.exception.LocationInUseException;

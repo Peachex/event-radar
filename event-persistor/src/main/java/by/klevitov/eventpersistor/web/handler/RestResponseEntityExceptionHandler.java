@@ -1,10 +1,10 @@
 package by.klevitov.eventpersistor.web.handler;
 
-import by.klevitov.eventpersistor.exception.AbstractValidatorException;
 import by.klevitov.eventpersistor.exception.EntityAlreadyExistsException;
 import by.klevitov.eventpersistor.exception.EntityConverterException;
 import by.klevitov.eventpersistor.exception.EntityNotFoundException;
 import by.klevitov.eventpersistor.exception.LocationInUseException;
+import by.klevitov.eventradarcommon.exception.AbstractValidatorException;
 import by.klevitov.eventradarcommon.exception.ExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

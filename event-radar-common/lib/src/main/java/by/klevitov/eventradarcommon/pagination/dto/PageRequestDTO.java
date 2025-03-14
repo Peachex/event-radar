@@ -1,4 +1,4 @@
-package by.klevitov.eventpersistor.common.dto;
+package by.klevitov.eventradarcommon.pagination.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

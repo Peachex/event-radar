@@ -1,19 +1,19 @@
-package by.klevitov.eventpersistor.common.util;
+package by.klevitov.eventradarcommon.pagination.util;
 
-import by.klevitov.eventpersistor.common.dto.PageRequestDTO;
-import by.klevitov.eventpersistor.common.dto.PageRequestDTO.SortField;
-import by.klevitov.eventpersistor.exception.PageRequestValidatorException;
+import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
+import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO.SortField;
+import by.klevitov.eventradarcommon.pagination.exception.PageRequestValidatorException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
-import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.INVALID_PAGE_NUMBER;
-import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.INVALID_PAGE_SIZE;
-import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.INVALID_SORT_DIRECTION;
-import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.NULL_PAGE_REQUEST;
-import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.NULL_SORT_FIELD;
-import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.NULL_SORT_FIELD_DIRECTION;
+import static by.klevitov.eventradarcommon.pagination.constant.PaginationExceptionMessage.INVALID_PAGE_NUMBER;
+import static by.klevitov.eventradarcommon.pagination.constant.PaginationExceptionMessage.INVALID_PAGE_SIZE;
+import static by.klevitov.eventradarcommon.pagination.constant.PaginationExceptionMessage.INVALID_SORT_DIRECTION;
+import static by.klevitov.eventradarcommon.pagination.constant.PaginationExceptionMessage.NULL_PAGE_REQUEST;
+import static by.klevitov.eventradarcommon.pagination.constant.PaginationExceptionMessage.NULL_SORT_FIELD;
+import static by.klevitov.eventradarcommon.pagination.constant.PaginationExceptionMessage.NULL_SORT_FIELD_DIRECTION;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
