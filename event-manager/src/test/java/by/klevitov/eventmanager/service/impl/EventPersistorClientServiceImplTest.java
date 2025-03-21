@@ -1,11 +1,8 @@
 package by.klevitov.eventmanager.service.impl;
 
 import by.klevitov.eventmanager.service.EventPersistorClientService;
-import by.klevitov.eventmanager.service.impl.EventPersistorClientServiceImpl;
 import by.klevitov.eventradarcommon.client.EventPersistorClient;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
-import by.klevitov.eventradarcommon.dto.AfishaRelaxEventDTO;
-import by.klevitov.eventradarcommon.dto.ByCardEventDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -13,8 +10,6 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 import java.util.List;
 
-import static by.klevitov.eventradarcommon.dto.EventSourceType.AFISHA_RELAX;
-import static by.klevitov.eventradarcommon.dto.EventSourceType.BYCARD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -60,13 +55,7 @@ public class EventPersistorClientServiceImplTest {
 
     @Test
     public void test_deleteEvents() {
-        when(mockedPersistorClient.findAll())
-                .thenReturn(List.of(
-                        AfishaRelaxEventDTO.builder().id("id1").title("title").sourceType(AFISHA_RELAX).build(),
-                        ByCardEventDTO.builder().id("id2").title("title").sourceType(BYCARD).build())
-                );
         persistorClientService.deleteEvents();
-        verify(mockedPersistorClient, times(1)).findAll();
-        verify(mockedPersistorClient, times(2)).delete(anyString());
+        verify(mockedPersistorClient, times(1)).deleteAll();
     }
 }

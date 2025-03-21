@@ -33,6 +33,7 @@ public class RemoveExpiredEventsTaskExecutor implements SyncTaskExecutor {
         this.clientService = clientService;
     }
 
+    //todo Add functionality to perform deletion of multiple events by ids.
     @Override
     public void execute() {
         try {

@@ -32,10 +32,8 @@ public class EventPersistorClientServiceImpl implements EventPersistorClientServ
         client.delete(id);
     }
 
-    //todo Add deleteAll method to event persistor and then replace multiple delete calls with single request.
     @Override
     public void deleteEvents() {
-        List<AbstractEventDTO> existentEvents = findEvents();
-        existentEvents.forEach(e -> deleteEvent(e.getId()));
+        client.deleteAll();
     }
 }

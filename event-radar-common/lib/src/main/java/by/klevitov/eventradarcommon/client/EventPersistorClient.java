@@ -2,6 +2,9 @@ package by.klevitov.eventradarcommon.client;
 
 import by.klevitov.eventradarcommon.client.exception.EventPersistorClientException;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
+import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
+import by.klevitov.eventradarcommon.pagination.dto.PageResponseDTO;
+import by.klevitov.eventradarcommon.pagination.dto.SearchByFieldsRequestDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,11 +25,18 @@ public interface EventPersistorClient {
     @GetMapping("/events")
     List<AbstractEventDTO> findAll() throws EventPersistorClientException;
 
+    @GetMapping("/events/all")
+    PageResponseDTO<AbstractEventDTO> findAll(@RequestBody final PageRequestDTO pageRequestDTO) throws EventPersistorClientException;
+
     @GetMapping("/events/{id}")
     AbstractEventDTO findById(@PathVariable("id") final String id) throws EventPersistorClientException;
 
     @PostMapping("/events/search")
     List<AbstractEventDTO> findByFields(@RequestBody final Map<String, Object> fields)
+            throws EventPersistorClientException;
+
+    @PostMapping("/events/search/pagination")
+    PageResponseDTO<AbstractEventDTO> findByFields(@RequestBody final SearchByFieldsRequestDTO requestDTO)
             throws EventPersistorClientException;
 
     @PostMapping("/events")
@@ -41,6 +51,9 @@ public interface EventPersistorClient {
 
     @DeleteMapping("/events/{id}")
     void delete(@PathVariable("id") final String id) throws EventPersistorClientException;
+
+    @DeleteMapping("/events/all")
+    void deleteAll() throws EventPersistorClientException;
 
     @GetMapping("/healthcheck")
     void healthCheck() throws EventPersistorClientException;
