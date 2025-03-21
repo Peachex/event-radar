@@ -163,6 +163,13 @@ public class LocationServiceImpl implements LocationService {
         locationRepository.deleteById(id);
     }
 
+    @Override
+    public void deleteAll() {
+        List<Location> locations = locationRepository.findAll();
+        locations.forEach(this::throwExceptionInCaseOfLocationIsInUse);
+        locationRepository.deleteAll();
+    }
+
     private void throwExceptionInCaseOfLocationIsInUse(final Location location) {
         if (eventRepository.countByLocation(location) != 0) {
             final String exceptionMessage = String.format(LOCATION_IS_IN_USE, location.getId());

@@ -90,4 +90,10 @@ public class EventController {
         eventService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/all")
+    public ResponseEntity<?> deleteAll() {
+        eventService.deleteAll();
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -26,4 +26,6 @@ public interface LocationService {
     Location update(final Location updatedLocation);
 
     void delete(final String id);
+
+    void deleteAll();
 }

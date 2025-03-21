@@ -431,4 +431,32 @@ public class LocationServiceImplTest {
             verify(locationRepository, never()).deleteById(anyString());
         }
     }
+
+    @Test
+    public void test_deleteAll_withLocationsThatAreNotInUse() {
+        when(locationRepository.findAll())
+                .thenReturn(List.of(new Location("id", "country", "city")));
+        when(eventRepository.countByLocation(any()))
+                .thenReturn(0L);
+
+        service.deleteAll();
+
+        verify(locationRepository, times(1)).findAll();
+        verify(eventRepository, times(1)).countByLocation(any());
+        verify(locationRepository, times(1)).deleteAll();
+    }
+
+    @Test
+    public void test_deleteAll_withLocationsThatAreInUse() {
+        when(locationRepository.findAll())
+                .thenReturn(List.of(new Location("id", "country", "city")));
+        when(eventRepository.countByLocation(any()))
+                .thenReturn(1L);
+
+        assertThrows(LocationInUseException.class, () -> service.deleteAll());
+
+        verify(locationRepository, times(1)).findAll();
+        verify(eventRepository, times(1)).countByLocation(any());
+        verify(locationRepository, never()).deleteAll();
+    }
 }

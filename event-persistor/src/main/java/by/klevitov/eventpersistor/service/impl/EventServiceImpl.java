@@ -180,4 +180,9 @@ public class EventServiceImpl implements EventService {
         findById(id);
         repository.deleteById(id);
     }
+
+    @Override
+    public void deleteAll() {
+        repository.deleteAll();
+    }
 }

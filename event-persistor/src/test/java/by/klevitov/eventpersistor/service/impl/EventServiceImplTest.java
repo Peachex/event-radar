@@ -450,6 +450,12 @@ public class EventServiceImplTest {
         }
     }
 
+    @Test
+    public void test_deleteAll() {
+        eventService.deleteAll();
+        verify(repository, times(1)).deleteAll();
+    }
+
     private AbstractEvent createTestEvent(EventSourceType sourceType) {
         return switch (sourceType) {
             case AFISHA_RELAX -> AfishaRelaxEvent.builder()

@@ -26,4 +26,6 @@ public interface EventService {
     AbstractEvent update(final AbstractEvent updatedEvent);
 
     void delete(final String id);
+
+    void deleteAll();
 }

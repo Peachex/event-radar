@@ -90,4 +90,10 @@ public class LocationController {
         locationService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/all")
+    public ResponseEntity<?> deleteAll() {
+        locationService.deleteAll();
+        return ResponseEntity.noContent().build();
+    }
 }
