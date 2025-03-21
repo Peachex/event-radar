@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,8 @@ public interface EventPersistorClient {
     AbstractEventDTO findById(@PathVariable("id") final String id) throws EventPersistorClientException;
 
     @PostMapping("/events/search")
-    List<AbstractEventDTO> findByFields(@RequestBody final Map<String, Object> fields)
+    List<AbstractEventDTO> findByFields(@RequestBody final Map<String, Object> fields,
+                                        @RequestParam("isCombinedMatch") final boolean isCombinedMatch)
             throws EventPersistorClientException;
 
     @PostMapping("/events/search/pagination")
