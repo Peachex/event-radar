@@ -1,5 +1,7 @@
 package by.klevitov.eventradarcommon.pagination.util;
 
+import by.klevitov.eventradarcommon.dto.LocationDTO;
+import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -23,5 +25,23 @@ public class PaginationUtilTest {
             elements.add("element" + i);
         }
         return elements;
+    }
+
+    @Test
+    public void test_removeNonExistentSortFields_withExistentFields() {
+        List<PageRequestDTO.SortField> expected = List.of(new PageRequestDTO.SortField("city", "asc"));
+        List<PageRequestDTO.SortField> actual = new ArrayList<>();
+        actual.add(new PageRequestDTO.SortField("city", "asc"));
+        PaginationUtil.removeNonExistentSortFields(actual, LocationDTO.class);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_removeNonExistentSortFields_withNonExistentFields() {
+        List<PageRequestDTO.SortField> expected = new ArrayList<>();
+        List<PageRequestDTO.SortField> actual = new ArrayList<>();
+        actual.add(new PageRequestDTO.SortField("field", "asc"));
+        PaginationUtil.removeNonExistentSortFields(actual, LocationDTO.class);
+        assertEquals(expected, actual);
     }
 }

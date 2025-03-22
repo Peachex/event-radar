@@ -14,12 +14,18 @@ import static by.klevitov.eventradarcommon.pagination.constant.PaginationExcepti
 import static by.klevitov.eventradarcommon.pagination.constant.PaginationExceptionMessage.NULL_PAGE_REQUEST;
 import static by.klevitov.eventradarcommon.pagination.constant.PaginationExceptionMessage.NULL_SORT_FIELD;
 import static by.klevitov.eventradarcommon.pagination.constant.PaginationExceptionMessage.NULL_SORT_FIELD_DIRECTION;
+import static by.klevitov.eventradarcommon.pagination.util.PaginationUtil.removeNonExistentSortFields;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Log4j2
 public final class PageRequestValidator {
     private PageRequestValidator() {
+    }
+
+    public static void validatePageRequest(final PageRequestDTO pageRequest, final Class<?> clazz) {
+        validatePageRequest(pageRequest);
+        removeNonExistentSortFields(pageRequest.getSortFields(), clazz);
     }
 
     public static void validatePageRequest(final PageRequestDTO pageRequest) {

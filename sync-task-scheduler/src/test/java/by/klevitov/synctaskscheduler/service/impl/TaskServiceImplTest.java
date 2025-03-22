@@ -181,14 +181,14 @@ public class TaskServiceImplTest {
     @Test
     public void test_findByFields_withExistentFields_withPagination() {
         try (MockedStatic<PageRequestValidator> validator = Mockito.mockStatic(PageRequestValidator.class)) {
-            validator.when(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)))
+            validator.when(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class), any(Class.class)))
                     .then(invocationOnMock -> null);
             when(mockedRepository.findByFields(anyMap(), anyBoolean()))
                     .thenReturn(List.of(new Task(), new Task()));
             Page<Task> expected = new PageImpl<>(List.of(new Task(), new Task()), Pageable.ofSize(2), 2);
             Page<Task> actual = service.findByFields(Map.of("name", "taskName"), false, new PageRequestDTO(0, 2, null));
             assertEquals(expected, actual);
-            validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)));
+            validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class), any(Class.class)));
         }
     }
 
@@ -203,14 +203,14 @@ public class TaskServiceImplTest {
     @Test
     public void test_findByFields_withNonExistentFields_withPagination() {
         try (MockedStatic<PageRequestValidator> validator = Mockito.mockStatic(PageRequestValidator.class)) {
-            validator.when(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)))
+            validator.when(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class), any(Class.class)))
                     .then(invocationOnMock -> null);
             when(mockedRepository.findByFields(anyMap(), anyBoolean()))
                     .thenReturn(new ArrayList<>());
             Page<Task> actual = service.findByFields(Map.of("nonExistentField", "fieldValue"), false,
                     new PageRequestDTO(0, 3, null));
             assertEquals(0, actual.getContent().size());
-            validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)));
+            validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class), any(Class.class)));
         }
     }
 
@@ -227,7 +227,7 @@ public class TaskServiceImplTest {
     @Test
     public void test_findAll_withPagination() {
         try (MockedStatic<PageRequestValidator> validator = Mockito.mockStatic(PageRequestValidator.class)) {
-            validator.when(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)))
+            validator.when(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class), any(Class.class)))
                     .then(invocationOnMock -> null);
             when(mockedRepository.findAll(any(PageRequest.class)))
                     .thenReturn(new PageImpl<>(createTasksWithId(), Pageable.ofSize(3), 3));
@@ -235,7 +235,7 @@ public class TaskServiceImplTest {
             Page<Task> actual = service.findAll(new PageRequestDTO(0, 3, null));
             assertEquals(expected, actual);
             verifyTasksId(expected.getContent(), actual.getContent());
-            validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)));
+            validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class), any(Class.class)));
         }
     }
 

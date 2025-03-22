@@ -106,8 +106,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Page<Task> findByFields(Map<String, Object> fields, boolean isCombinedMatch, PageRequestDTO pageRequestDTO) {
-        //fixme Fix the issue when the sorting field doesn't exist.
-        validatePageRequest(pageRequestDTO);
+        validatePageRequest(pageRequestDTO, Task.class);
         return (isNotEmpty(fields)
                 ? createPaginationFindByFieldsResult(fields, isCombinedMatch, pageRequestDTO)
                 : new PageImpl<>(new ArrayList<>()));
@@ -128,8 +127,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Page<Task> findAll(PageRequestDTO pageRequestDTO) {
-        //fixme Fix the issue when the sorting field doesn't exist.
-        validatePageRequest(pageRequestDTO);
+        validatePageRequest(pageRequestDTO, Task.class);
         return repository.findAll(pageRequestDTO.createPageRequest());
     }
 
