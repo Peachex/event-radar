@@ -1,5 +1,7 @@
 package by.klevitov.synctaskscheduler.service.impl;
 
+import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
+import by.klevitov.eventradarcommon.pagination.util.PageRequestValidator;
 import by.klevitov.synctaskscheduler.entity.Task;
 import by.klevitov.synctaskscheduler.exception.TaskAlreadyExistsException;
 import by.klevitov.synctaskscheduler.exception.TaskNotFoundException;
@@ -11,6 +13,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +28,7 @@ import static by.klevitov.synctaskscheduler.entity.TaskStatus.PAUSED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyMap;
@@ -163,30 +170,73 @@ public class TaskServiceImplTest {
     }
 
     @Test
-    public void test_findByFields_withExistentFields() {
-        when(mockedRepository.findByFields(anyMap()))
+    public void test_findByFields_withExistentFields_withoutPagination() {
+        when(mockedRepository.findByFields(anyMap(), anyBoolean()))
                 .thenReturn(List.of(new Task(), new Task()));
         List<Task> expected = List.of(new Task(), new Task());
-        List<Task> actual = service.findByFields(Map.of("name", "taskName"));
+        List<Task> actual = service.findByFields(Map.of("name", "taskName"), false);
         assertEquals(expected, actual);
     }
 
     @Test
-    public void test_findByFields_withNonExistentFields() {
-        when(mockedRepository.findByFields(anyMap()))
+    public void test_findByFields_withExistentFields_withPagination() {
+        try (MockedStatic<PageRequestValidator> validator = Mockito.mockStatic(PageRequestValidator.class)) {
+            validator.when(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)))
+                    .then(invocationOnMock -> null);
+            when(mockedRepository.findByFields(anyMap(), anyBoolean()))
+                    .thenReturn(List.of(new Task(), new Task()));
+            Page<Task> expected = new PageImpl<>(List.of(new Task(), new Task()), Pageable.ofSize(2), 2);
+            Page<Task> actual = service.findByFields(Map.of("name", "taskName"), false, new PageRequestDTO(0, 2, null));
+            assertEquals(expected, actual);
+            validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)));
+        }
+    }
+
+    @Test
+    public void test_findByFields_withNonExistentFields_withoutPagination() {
+        when(mockedRepository.findByFields(anyMap(), anyBoolean()))
                 .thenReturn(new ArrayList<>());
-        List<Task> actual = service.findByFields(Map.of("nonExistentField", "fieldValue"));
+        List<Task> actual = service.findByFields(Map.of("nonExistentField", "fieldValue"), false);
         assertEquals(0, actual.size());
     }
 
     @Test
-    public void test_findAll() {
+    public void test_findByFields_withNonExistentFields_withPagination() {
+        try (MockedStatic<PageRequestValidator> validator = Mockito.mockStatic(PageRequestValidator.class)) {
+            validator.when(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)))
+                    .then(invocationOnMock -> null);
+            when(mockedRepository.findByFields(anyMap(), anyBoolean()))
+                    .thenReturn(new ArrayList<>());
+            Page<Task> actual = service.findByFields(Map.of("nonExistentField", "fieldValue"), false,
+                    new PageRequestDTO(0, 3, null));
+            assertEquals(0, actual.getContent().size());
+            validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)));
+        }
+    }
+
+    @Test
+    public void test_findAll_withoutPagination() {
         when(mockedRepository.findAll())
                 .thenReturn(createTasksWithId());
         List<Task> expected = createTasksWithId();
         List<Task> actual = service.findAll();
         assertEquals(expected, actual);
         verifyTasksId(expected, actual);
+    }
+
+    @Test
+    public void test_findAll_withPagination() {
+        try (MockedStatic<PageRequestValidator> validator = Mockito.mockStatic(PageRequestValidator.class)) {
+            validator.when(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)))
+                    .then(invocationOnMock -> null);
+            when(mockedRepository.findAll(any(PageRequest.class)))
+                    .thenReturn(new PageImpl<>(createTasksWithId(), Pageable.ofSize(3), 3));
+            Page<Task> expected = new PageImpl<>(createTasksWithId(), Pageable.ofSize(3), 3);
+            Page<Task> actual = service.findAll(new PageRequestDTO(0, 3, null));
+            assertEquals(expected, actual);
+            verifyTasksId(expected.getContent(), actual.getContent());
+            validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)));
+        }
     }
 
     @Test

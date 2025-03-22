@@ -232,7 +232,7 @@ public class LocationServiceImplTest {
     }
 
     @Test
-    public void test_findByFields_withExistentFieldsAnd_withPagination() {
+    public void test_findByFields_withExistentFields_withPagination() {
         try (MockedStatic<PageRequestValidator> validator = Mockito.mockStatic(PageRequestValidator.class)) {
             validator.when(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)))
                     .then(invocationOnMock -> null);

@@ -8,5 +8,5 @@ import java.util.Map;
 
 @Repository
 public interface TaskRepository {
-    List<Task> findByFields(Map<String, Object> fields);
+    List<Task> findByFields(Map<String, Object> fields, boolean isCombinedMatch);
 }

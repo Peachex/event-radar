@@ -22,7 +22,7 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
-    public List<Task> findByFields(Map<String, Object> fields) {
+    public List<Task> findByFields(final Map<String, Object> fields, final boolean isCombinedMatch) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Task> criteriaQuery = criteriaBuilder.createQuery(Task.class);
         Root<Task> taskRoot = criteriaQuery.from(Task.class);
@@ -31,7 +31,12 @@ public class TaskRepositoryImpl implements TaskRepository {
                         criteriaBuilder.lower(taskRoot.get(entry.getKey())),
                         PERCENT_SYMBOL + entry.getValue().toString().toLowerCase() + PERCENT_SYMBOL))
                 .toArray(Predicate[]::new);
-        criteriaQuery.where(criteriaBuilder.and(predicates));
+        criteriaQuery.where(createCombinedPredicates(predicates, isCombinedMatch, criteriaBuilder));
         return entityManager.createQuery(criteriaQuery).getResultList();
+    }
+
+    private Predicate createCombinedPredicates(final Predicate[] predicates, final boolean isCombinedMatch,
+                                               final CriteriaBuilder criteriaBuilder) {
+        return (isCombinedMatch ? criteriaBuilder.and(predicates) : criteriaBuilder.or(predicates));
     }
 }

@@ -4,6 +4,7 @@ import by.klevitov.eventpersistor.entity.AbstractEvent;
 import by.klevitov.eventpersistor.entity.Location;
 import by.klevitov.eventpersistor.repository.EventRepository;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
+import by.klevitov.eventradarcommon.pagination.util.PaginationUtil;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static by.klevitov.eventradarcommon.pagination.util.PaginationUtil.trimToPageSize;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
 import static org.apache.commons.collections4.CollectionUtils.intersection;
@@ -99,7 +101,7 @@ public class EventRepositoryImpl implements EventRepository {
                 eventsFromSimpleFieldSearch, isCombinedMatch);
 
         long totalCount = foundEvents.size();
-        trimFoundEventsToPageSize(foundEvents, pageRequest.getPageSize());
+        trimToPageSize(foundEvents, pageRequest.getPageSize());
         return new PageImpl<>(foundEvents, pageRequest, totalCount);
     }
 
@@ -175,12 +177,6 @@ public class EventRepositoryImpl implements EventRepository {
 
     private List<AbstractEvent> findEventsUsingSimpleFieldSearchQuery(final Query eventQueryForSimpleFieldSearch) {
         return new ArrayList<>(mongoTemplate.find(eventQueryForSimpleFieldSearch, AbstractEvent.class));
-    }
-
-    private void trimFoundEventsToPageSize(final List<AbstractEvent> events, final int pageSize) {
-        while (events.size() > pageSize) {
-            events.remove(events.size() - 1);
-        }
     }
 
     private List<AbstractEvent> createResultListBasedOnCombineCriteria(final List<AbstractEvent> eventsFromComplexFieldSearch,

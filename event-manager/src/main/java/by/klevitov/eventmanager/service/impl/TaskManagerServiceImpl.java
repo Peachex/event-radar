@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static by.klevitov.eventradarcommon.pagination.util.PageRequestValidator.validatePageRequest;
+import static by.klevitov.eventradarcommon.pagination.util.PaginationUtil.trimToPageSize;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Log4j2
@@ -52,16 +54,11 @@ public class TaskManagerServiceImpl implements TaskManagerService {
 
     @Override
     public Page<String> retrieveTaskExecutorIds(PageRequestDTO pageRequestDTO) {
-        final List<String> foundIds = new ArrayList<>(taskRegistry.getTaskExecutorsMapWithKey().keySet());
+        validatePageRequest(pageRequestDTO);
+        List<String> foundIds = new ArrayList<>(taskRegistry.getTaskExecutorsMapWithKey().keySet());
         PageRequest pageRequest = pageRequestDTO.createPageRequest();
         long totalCount = foundIds.size();
-        trimFoundTaskIdsToPageSize(foundIds, pageRequest.getPageSize());
+        trimToPageSize(foundIds, pageRequest.getPageSize());
         return new PageImpl<>(foundIds, pageRequest, totalCount);
-    }
-
-    private void trimFoundTaskIdsToPageSize(final List<String> ids, final int pageSize) {
-        while (ids.size() > pageSize) {
-            ids.remove(ids.size() - 1);
-        }
     }
 }

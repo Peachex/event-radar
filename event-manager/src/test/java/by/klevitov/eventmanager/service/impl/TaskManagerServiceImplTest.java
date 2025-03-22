@@ -6,8 +6,10 @@ import by.klevitov.eventmanager.executor.SyncTaskExecutor;
 import by.klevitov.eventmanager.factory.SyncTaskExecutorFactory;
 import by.klevitov.eventmanager.service.TaskManagerService;
 import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
+import by.klevitov.eventradarcommon.pagination.util.PageRequestValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,6 +20,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -78,12 +81,17 @@ public class TaskManagerServiceImplTest {
 
     @Test
     public void test_retrieveTaskExecutorIds_withPagination() {
-        final String taskName = "taskName";
-        when(mockedTaskRegistry.getTaskExecutorsMapWithKey())
-                .thenReturn(Map.of(taskName, mockedTaskExecutor));
-        Page<String> expected = new PageImpl<>(List.of(taskName), Pageable.ofSize(1), 1);
-        Page<String> actual = taskManagerService.retrieveTaskExecutorIds(new PageRequestDTO(0, 1, null));
-        assertEquals(expected, actual);
-        verify(mockedTaskRegistry, times(1)).getTaskExecutorsMapWithKey();
+        try (MockedStatic<PageRequestValidator> validator = Mockito.mockStatic(PageRequestValidator.class)) {
+            validator.when(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)))
+                    .then(invocationOnMock -> null);
+            final String taskName = "taskName";
+            when(mockedTaskRegistry.getTaskExecutorsMapWithKey())
+                    .thenReturn(Map.of(taskName, mockedTaskExecutor));
+            Page<String> expected = new PageImpl<>(List.of(taskName), Pageable.ofSize(1), 1);
+            Page<String> actual = taskManagerService.retrieveTaskExecutorIds(new PageRequestDTO(0, 1, null));
+            assertEquals(expected, actual);
+            verify(mockedTaskRegistry, times(1)).getTaskExecutorsMapWithKey();
+            validator.verify(() -> PageRequestValidator.validatePageRequest(any(PageRequestDTO.class)));
+        }
     }
 }

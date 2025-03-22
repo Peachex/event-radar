@@ -55,7 +55,7 @@ public class LocationRepositoryImpl implements LocationRepository {
     }
 
     @Override
-    public Page<Location> findByFields(Map<String, Object> fields, boolean isCombinedMatch,
+    public Page<Location> findByFields(final Map<String, Object> fields, final boolean isCombinedMatch,
                                        final PageRequest pageRequest) {
         final Query query = new Query();
         final List<Criteria> criteriaList = new ArrayList<>();

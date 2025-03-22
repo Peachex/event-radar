@@ -39,7 +39,7 @@ public class TaskRepositoryImplTest {
         when(entityManager.createQuery(mockedCriteriaQuery))
                 .thenReturn(mockedTypedQuery);
 
-        repository.findByFields(Map.of());
+        repository.findByFields(Map.of(), false);
         verify(entityManager, times(1)).createQuery(mockedCriteriaQuery);
     }
 }

@@ -1,14 +1,17 @@
 package by.klevitov.synctaskscheduler.service.impl;
 
+import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
+import by.klevitov.synctaskscheduler.entity.Task;
+import by.klevitov.synctaskscheduler.entity.TaskStatus;
 import by.klevitov.synctaskscheduler.exception.TaskAlreadyExistsException;
 import by.klevitov.synctaskscheduler.exception.TaskNotFoundException;
 import by.klevitov.synctaskscheduler.repository.TaskJpaRepository;
 import by.klevitov.synctaskscheduler.service.TaskService;
-import by.klevitov.synctaskscheduler.entity.Task;
-import by.klevitov.synctaskscheduler.entity.TaskStatus;
 import by.klevitov.synctaskscheduler.util.TaskValidator;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +22,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import static by.klevitov.eventradarcommon.pagination.util.PageRequestValidator.validatePageRequest;
+import static by.klevitov.eventradarcommon.pagination.util.PaginationUtil.trimToPageSize;
 import static by.klevitov.synctaskscheduler.constant.TaskSchedulerExceptionMessage.TASK_ALREADY_EXISTS;
 import static by.klevitov.synctaskscheduler.constant.TaskSchedulerExceptionMessage.TASK_NOT_FOUND;
 import static by.klevitov.synctaskscheduler.util.TaskValidator.throwExceptionInCaseOfNullStatus;
@@ -95,13 +100,37 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> findByFields(final Map<String, Object> fields) {
-        return (isNotEmpty(fields) ? repository.findByFields(fields) : new ArrayList<>());
+    public List<Task> findByFields(final Map<String, Object> fields, final boolean isCombinedMatch) {
+        return (isNotEmpty(fields) ? repository.findByFields(fields, isCombinedMatch) : new ArrayList<>());
+    }
+
+    @Override
+    public Page<Task> findByFields(Map<String, Object> fields, boolean isCombinedMatch, PageRequestDTO pageRequestDTO) {
+        //fixme Fix the issue when the sorting field doesn't exist.
+        validatePageRequest(pageRequestDTO);
+        return (isNotEmpty(fields)
+                ? createPaginationFindByFieldsResult(fields, isCombinedMatch, pageRequestDTO)
+                : new PageImpl<>(new ArrayList<>()));
+    }
+
+    private Page<Task> createPaginationFindByFieldsResult(Map<String, Object> fields, boolean isCombinedMatch,
+                                                          PageRequestDTO pageRequestDTO) {
+        List<Task> tasks = repository.findByFields(fields, isCombinedMatch);
+        int totalCount = tasks.size();
+        trimToPageSize(tasks, pageRequestDTO.getSize());
+        return new PageImpl<>(tasks, pageRequestDTO.createPageRequest(), totalCount);
     }
 
     @Override
     public List<Task> findAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public Page<Task> findAll(PageRequestDTO pageRequestDTO) {
+        //fixme Fix the issue when the sorting field doesn't exist.
+        validatePageRequest(pageRequestDTO);
+        return repository.findAll(pageRequestDTO.createPageRequest());
     }
 
     @Override

@@ -1,9 +1,13 @@
 package by.klevitov.synctaskscheduler.web.controller;
 
+import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
+import by.klevitov.eventradarcommon.pagination.dto.PageResponseDTO;
+import by.klevitov.eventradarcommon.pagination.dto.SearchByFieldsRequestDTO;
 import by.klevitov.synctaskscheduler.entity.Task;
 import by.klevitov.synctaskscheduler.service.SchedulerService;
 import by.klevitov.synctaskscheduler.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -46,9 +51,24 @@ public class TaskController {
         return taskService.findAll();
     }
 
+    @PostMapping("/all")
+    public PageResponseDTO<Task> findAll(@RequestBody final PageRequestDTO pageRequestDTO) {
+        Page<Task> entityResultPage = taskService.findAll(pageRequestDTO);
+        return new PageResponseDTO<>(entityResultPage, entityResultPage.getContent());
+    }
+
     @PostMapping("/search")
-    public List<Task> findByFields(@RequestBody final Map<String, Object> fields) {
-        return taskService.findByFields(fields);
+    public List<Task> findByFields(@RequestBody final Map<String, Object> fields,
+                                   @RequestParam final boolean isCombinedMatch) {
+        return taskService.findByFields(fields, isCombinedMatch);
+    }
+
+    @PostMapping("/search/pagination")
+    public PageResponseDTO<Task> findByFields(@RequestBody final SearchByFieldsRequestDTO requestDTO) {
+        Page<Task> entityResultPage = taskService.findByFields(requestDTO.getFields(), requestDTO.isCombinedMatch(),
+                requestDTO.getPageRequestDTO());
+        List<Task> tasks = entityResultPage.getContent();
+        return new PageResponseDTO<>(entityResultPage, tasks);
     }
 
     @GetMapping("/{id}")

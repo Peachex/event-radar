@@ -1,5 +1,6 @@
 package by.klevitov.synctaskscheduler.entity;
 
+import by.klevitov.eventradarcommon.dto.AbstractDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,9 +20,9 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = "id")
+@EqualsAndHashCode(callSuper = true, exclude = "id")
 @ToString
-public class Task {
+public class Task extends AbstractDTO {
     private static final String TASK_POSTFIX = "task";
     private static final String TRIGGER_POSTFIX = "trigger";
     private static final String IDENTITY_FORMAT = "%s_%s";
