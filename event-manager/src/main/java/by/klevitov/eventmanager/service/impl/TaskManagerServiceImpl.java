@@ -5,7 +5,11 @@ import by.klevitov.eventmanager.exception.TaskManagerServiceException;
 import by.klevitov.eventmanager.executor.SyncTaskExecutor;
 import by.klevitov.eventmanager.factory.SyncTaskExecutorFactory;
 import by.klevitov.eventmanager.service.TaskManagerService;
+import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -44,5 +48,20 @@ public class TaskManagerServiceImpl implements TaskManagerService {
     @Override
     public List<String> retrieveTaskExecutorIds() {
         return new ArrayList<>(taskRegistry.getTaskExecutorsMapWithKey().keySet());
+    }
+
+    @Override
+    public Page<String> retrieveTaskExecutorIds(PageRequestDTO pageRequestDTO) {
+        final List<String> foundIds = new ArrayList<>(taskRegistry.getTaskExecutorsMapWithKey().keySet());
+        PageRequest pageRequest = pageRequestDTO.createPageRequest();
+        long totalCount = foundIds.size();
+        trimFoundTaskIdsToPageSize(foundIds, pageRequest.getPageSize());
+        return new PageImpl<>(foundIds, pageRequest, totalCount);
+    }
+
+    private void trimFoundTaskIdsToPageSize(final List<String> ids, final int pageSize) {
+        while (ids.size() > pageSize) {
+            ids.remove(ids.size() - 1);
+        }
     }
 }
