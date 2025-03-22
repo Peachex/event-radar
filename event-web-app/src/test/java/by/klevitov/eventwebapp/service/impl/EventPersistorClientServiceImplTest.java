@@ -23,6 +23,7 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -84,7 +85,21 @@ public class EventPersistorClientServiceImplTest {
     }
 
     @Test
-    public void test_findEventsByFields_withPagination() {
+    public void test_findEventsByFields_withNonEmptyPagination() {
+        when(mockedPersistorClient.findByFields(any(SearchByFieldsRequestDTO.class)))
+                .thenReturn(new PageResponseDTO<>(new PageImpl<AbstractEventDTO>(new ArrayList<>()), new ArrayList<>()));
+        PageResponseDTO<AbstractEventDTO> expected = new PageResponseDTO<>(
+                new PageImpl<AbstractEventDTO>(new ArrayList<>()),
+                new ArrayList<>());
+        PageResponseDTO<AbstractEventDTO> actual = persistorClientService.findEventsByFields(new SearchByFieldsRequestDTO(
+                false, Map.of("field", "value"), new PageRequestDTO(0, 3, null)
+        ));
+        assertEquals(expected, actual);
+        verify(mockedPersistorClient, times(1)).findByFields(any(SearchByFieldsRequestDTO.class));
+    }
+
+    @Test
+    public void test_findEventsByFields_withEmptyPagination() {
         when(mockedPersistorClient.findByFields(any(SearchByFieldsRequestDTO.class)))
                 .thenReturn(new PageResponseDTO<>(new PageImpl<AbstractEventDTO>(new ArrayList<>()), new ArrayList<>()));
         PageResponseDTO<AbstractEventDTO> expected = new PageResponseDTO<>(
@@ -92,7 +107,7 @@ public class EventPersistorClientServiceImplTest {
                 new ArrayList<>());
         PageResponseDTO<AbstractEventDTO> actual = persistorClientService.findEventsByFields(new SearchByFieldsRequestDTO());
         assertEquals(expected, actual);
-        verify(mockedPersistorClient, times(1)).findByFields(any(SearchByFieldsRequestDTO.class));
+        verify(mockedPersistorClient, never()).findByFields(any(SearchByFieldsRequestDTO.class));
     }
 
     @Test
