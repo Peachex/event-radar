@@ -54,6 +54,9 @@ public interface EventPersistorClient {
     @DeleteMapping("/events/{id}")
     void delete(@PathVariable("id") final String id) throws EventPersistorClientException;
 
+    @DeleteMapping("/events")
+    void delete(@RequestBody final List<String> ids) throws EventPersistorClientException;
+
     @DeleteMapping("/events/all")
     void deleteAll() throws EventPersistorClientException;
 

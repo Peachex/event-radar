@@ -440,13 +440,43 @@ public class EventServiceImplTest {
     @Test
     public void test_delete_withInvalidEventId() {
         try (MockedStatic<EventValidator> validator = Mockito.mockStatic(EventValidator.class)) {
-            validator.when(() -> EventValidator.throwExceptionInCaseOfEmptyId(nullable(String.class)))
+            validator.when(() -> EventValidator.throwExceptionInCaseOfEmptyIds(nullable(String.class)))
                     .thenThrow(new EventValidatorException("Event id cannot be null or empty."));
 
-            assertThrows(EventValidatorException.class, () -> eventService.delete(null));
+            assertThrows(EventValidatorException.class, () -> eventService.delete((String) null));
 
             verify(repository, never()).findById(anyString());
             verify(repository, never()).deleteById(anyString());
+        }
+    }
+
+    @Test
+    public void test_delete_withValidEventIds() {
+        try (MockedStatic<EventValidator> validator = Mockito.mockStatic(EventValidator.class)) {
+            validator.when(() -> EventValidator.throwExceptionInCaseOfEmptyIds(anyList()))
+                    .then(invocationOnMock -> null);
+            eventService.delete(List.of("id1", "id2"));
+            verify(repository, times(1)).deleteAllById(anyList());
+        }
+    }
+
+    @Test
+    public void test_delete_withNullEventIds() {
+        try (MockedStatic<EventValidator> validator = Mockito.mockStatic(EventValidator.class)) {
+            validator.when(() -> EventValidator.throwExceptionInCaseOfEmptyIds(nullable(List.class)))
+                    .thenThrow(new EventValidatorException("Event id cannot be null or empty."));
+            assertThrows(EventValidatorException.class, () -> eventService.delete((List<String>) null));
+            verify(repository, never()).deleteAllById(anyList());
+        }
+    }
+
+    @Test
+    public void test_delete_withEmptyEventIds() {
+        try (MockedStatic<EventValidator> validator = Mockito.mockStatic(EventValidator.class)) {
+            validator.when(() -> EventValidator.throwExceptionInCaseOfEmptyIds(anyList()))
+                    .thenThrow(new EventValidatorException("Event id cannot be null or empty."));
+            assertThrows(EventValidatorException.class, () -> eventService.delete(new ArrayList<>()));
+            verify(repository, never()).deleteAllById(anyList());
         }
     }
 

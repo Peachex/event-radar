@@ -6,6 +6,9 @@ import by.klevitov.eventpersistor.exception.EventValidatorException;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.List;
+
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Log4j2
@@ -57,8 +60,15 @@ public final class EventValidator {
         }
     }
 
-    public static void throwExceptionInCaseOfEmptyId(final String id) {
+    public static void throwExceptionInCaseOfEmptyIds(final String id) {
         if (isEmpty(id)) {
+            log.error(PersistorExceptionMessage.NULL_OR_EMPTY_EVENT_ID);
+            throw new EventValidatorException(PersistorExceptionMessage.NULL_OR_EMPTY_EVENT_ID);
+        }
+    }
+
+    public static void throwExceptionInCaseOfEmptyIds(final List<String> ids) {
+        if (isEmpty(ids)) {
             log.error(PersistorExceptionMessage.NULL_OR_EMPTY_EVENT_ID);
             throw new EventValidatorException(PersistorExceptionMessage.NULL_OR_EMPTY_EVENT_ID);
         }
@@ -66,6 +76,6 @@ public final class EventValidator {
 
     public static void validateEventBeforeUpdating(final AbstractEvent event) {
         throwExceptionInCaseOfNullOrEmptyEvent(event);
-        throwExceptionInCaseOfEmptyId(event.getId());
+        throwExceptionInCaseOfEmptyIds(event.getId());
     }
 }

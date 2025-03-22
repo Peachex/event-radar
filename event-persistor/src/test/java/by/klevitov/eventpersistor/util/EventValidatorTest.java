@@ -8,12 +8,14 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.List;
 import java.util.stream.Stream;
 
-import static by.klevitov.eventpersistor.util.EventValidator.throwExceptionInCaseOfEmptyId;
+import static by.klevitov.eventpersistor.util.EventValidator.throwExceptionInCaseOfEmptyIds;
 import static by.klevitov.eventpersistor.util.EventValidator.validateEventBeforeCreation;
 import static by.klevitov.eventpersistor.util.EventValidator.validateEventBeforeUpdating;
 import static by.klevitov.eventradarcommon.dto.EventSourceType.BYCARD;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
@@ -67,9 +69,9 @@ public class EventValidatorTest {
         String eventsId = eventsIdWithExpectedValues.getKey();
         boolean eventIdIsValid = eventsIdWithExpectedValues.getValue();
         if (eventIdIsValid) {
-            assertDoesNotThrow(() -> throwExceptionInCaseOfEmptyId(eventsId));
+            assertDoesNotThrow(() -> throwExceptionInCaseOfEmptyIds(eventsId));
         } else {
-            assertThrowsExactly(EventValidatorException.class, () -> throwExceptionInCaseOfEmptyId(eventsId));
+            assertThrowsExactly(EventValidatorException.class, () -> throwExceptionInCaseOfEmptyIds(eventsId));
         }
     }
 
@@ -78,6 +80,26 @@ public class EventValidatorTest {
                 Pair.of(null, false),
                 Pair.of("", false),
                 Pair.of("id", true)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("eventsIds")
+    public void test_throwExceptionInCaseOfEmptyIds(Pair<List<String>, Boolean> eventsIdsWithExpectedValues) {
+        List<String> eventsIds = eventsIdsWithExpectedValues.getKey();
+        boolean eventIdIsValid = eventsIdsWithExpectedValues.getValue();
+        if (eventIdIsValid) {
+            assertDoesNotThrow(() -> EventValidator.throwExceptionInCaseOfEmptyIds(eventsIds));
+        } else {
+            assertThrowsExactly(EventValidatorException.class, () -> EventValidator.throwExceptionInCaseOfEmptyIds(eventsIds));
+        }
+    }
+
+    private static Stream<Pair<List<String>, Boolean>> eventsIds() {
+        return Stream.of(
+                Pair.of(null, false),
+                Pair.of(emptyList(), false),
+                Pair.of(List.of("i1", "id2"), true)
         );
     }
 }

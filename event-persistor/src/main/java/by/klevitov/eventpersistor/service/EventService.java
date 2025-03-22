@@ -27,5 +27,7 @@ public interface EventService {
 
     void delete(final String id);
 
+    void delete(final List<String> ids);
+
     void deleteAll();
 }

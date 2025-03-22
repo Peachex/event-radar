@@ -11,5 +11,7 @@ public interface EventPersistorClientService {
 
     void deleteEvent(final String id);
 
+    void deleteEventsByIds(final List<String> ids);
+
     void deleteEvents();
 }

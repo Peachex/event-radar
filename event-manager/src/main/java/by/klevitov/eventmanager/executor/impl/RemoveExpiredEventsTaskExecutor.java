@@ -33,13 +33,13 @@ public class RemoveExpiredEventsTaskExecutor implements SyncTaskExecutor {
         this.clientService = clientService;
     }
 
-    //todo Add functionality to perform deletion of multiple events by ids.
     @Override
     public void execute() {
         try {
             List<AbstractEventDTO> persistentEvents = clientService.findEvents();
             List<AbstractEventDTO> expiredEvents = findExpiredEvents(persistentEvents);
-            expiredEvents.forEach(e -> clientService.deleteEvent(e.getId()));
+            List<String> expiredEventsIds = expiredEvents.stream().map(AbstractEventDTO::getId).toList();
+            clientService.deleteEventsByIds(expiredEventsIds);
         } catch (Exception e) {
             TaskExecutorUtil.logException(e, TASK_NAME);
         }

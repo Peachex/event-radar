@@ -33,6 +33,11 @@ public class EventPersistorClientServiceImpl implements EventPersistorClientServ
     }
 
     @Override
+    public void deleteEventsByIds(List<String> ids) {
+        client.delete(ids);
+    }
+
+    @Override
     public void deleteEvents() {
         client.deleteAll();
     }

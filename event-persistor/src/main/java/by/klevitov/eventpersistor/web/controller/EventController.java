@@ -91,6 +91,12 @@ public class EventController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> delete(@RequestBody final List<String> ids) {
+        eventService.delete(ids);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/all")
     public ResponseEntity<?> deleteAll() {
         eventService.deleteAll();

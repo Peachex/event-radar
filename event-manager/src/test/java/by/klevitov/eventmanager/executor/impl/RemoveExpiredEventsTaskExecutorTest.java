@@ -1,6 +1,5 @@
 package by.klevitov.eventmanager.executor.impl;
 
-import by.klevitov.eventmanager.executor.impl.RemoveExpiredEventsTaskExecutor;
 import by.klevitov.eventmanager.service.EventFetcherService;
 import by.klevitov.eventmanager.service.EventPersistorClientService;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
@@ -24,7 +23,7 @@ import java.util.stream.Stream;
 import static by.klevitov.eventradarcommon.dto.EventSourceType.AFISHA_RELAX;
 import static by.klevitov.eventradarcommon.dto.EventSourceType.BYCARD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -54,7 +53,7 @@ public class RemoveExpiredEventsTaskExecutorTest {
         removeExpiredEventsTaskExecutor.execute();
         verify(mockedClientService, times(1)).findEvents();
         verify(mockedFetcherService, times(1)).fetch();
-        verify(mockedClientService, times(3)).deleteEvent(anyString());
+        verify(mockedClientService, times(1)).deleteEventsByIds(anyList());
     }
 
     private List<AbstractEventDTO> createEvents() {

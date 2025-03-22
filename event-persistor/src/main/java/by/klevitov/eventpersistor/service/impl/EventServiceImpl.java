@@ -26,7 +26,7 @@ import java.util.Set;
 
 import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.EVENT_ALREADY_EXISTS;
 import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.EVENT_NOT_FOUND;
-import static by.klevitov.eventpersistor.util.EventValidator.throwExceptionInCaseOfEmptyId;
+import static by.klevitov.eventpersistor.util.EventValidator.throwExceptionInCaseOfEmptyIds;
 import static by.klevitov.eventpersistor.util.EventValidator.validateEventBeforeCreation;
 import static by.klevitov.eventpersistor.util.EventValidator.validateEventBeforeUpdating;
 import static by.klevitov.eventradarcommon.pagination.util.PageRequestValidator.validatePageRequest;
@@ -113,7 +113,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public AbstractEvent findById(final String id) {
-        throwExceptionInCaseOfEmptyId(id);
+        throwExceptionInCaseOfEmptyIds(id);
         Optional<AbstractEvent> event = repository.findById(id);
         return event.orElseThrow(() -> createAndLogEventNotFoundException(id));
     }
@@ -179,6 +179,12 @@ public class EventServiceImpl implements EventService {
     public void delete(final String id) {
         findById(id);
         repository.deleteById(id);
+    }
+
+    @Override
+    public void delete(final List<String> ids) {
+        throwExceptionInCaseOfEmptyIds(ids);
+        repository.deleteAllById(ids);
     }
 
     @Override
