@@ -70,7 +70,7 @@ public class EventRepositoryImplTest {
         when(mongoTemplate.find(any(), any()))
                 .thenReturn(List.of(afishaEvent, byCardEvent));
 
-        Page<AbstractEvent> expected = new PageImpl<>(List.of(afishaEvent), Pageable.ofSize(1), 1);
+        Page<AbstractEvent> expected = new PageImpl<>(List.of(afishaEvent), Pageable.ofSize(1), 2);
         Page<AbstractEvent> actual = repository.findByFields(Map.of("title", "title"), true,
                 PageRequest.of(0, 1));
         assertEquals(expected, actual);
@@ -99,7 +99,7 @@ public class EventRepositoryImplTest {
         when(mongoTemplate.find(any(), any()))
                 .thenReturn(List.of(afishaEvent, byCardEvent));
 
-        Page<AbstractEvent> expected = new PageImpl<>(List.of(afishaEvent), Pageable.ofSize(1), 1);
+        Page<AbstractEvent> expected = new PageImpl<>(List.of(afishaEvent), Pageable.ofSize(1), 2);
         Page<AbstractEvent> actual = repository.findByFields(Map.of("title", "title"), false,
                 PageRequest.of(0, 1));
         assertEquals(expected, actual);
@@ -188,7 +188,7 @@ public class EventRepositoryImplTest {
                 .thenReturn(List.of(afishaEvent, byCardEvent))
                 .thenReturn(new ArrayList<>());
 
-        Page<AbstractEvent> expected = new PageImpl<>(List.of(afishaEvent), Pageable.ofSize(1), 1);
+        Page<AbstractEvent> expected = new PageImpl<>(List.of(afishaEvent), Pageable.ofSize(1), 2);
         Page<AbstractEvent> actual = repository.findByFields(
                 Map.of("location.country", "cityValue", "location.city", "cityValue"), false,
                 PageRequest.of(0, 1));
@@ -286,7 +286,7 @@ public class EventRepositoryImplTest {
                 .thenReturn(List.of(afishaEvent))
                 .thenReturn(List.of(byCardEvent));
 
-        Page<AbstractEvent> expected = new PageImpl<>(List.of(byCardEvent), Pageable.ofSize(1), 1);
+        Page<AbstractEvent> expected = new PageImpl<>(List.of(byCardEvent), Pageable.ofSize(1), 2);
         Page<AbstractEvent> actual = repository.findByFields(
                 Map.of("title", "titleValue", "location.country", "countryValue"), false,
                 PageRequest.of(0, 1));

@@ -98,8 +98,8 @@ public class EventRepositoryImpl implements EventRepository {
         final List<AbstractEvent> foundEvents = createResultListBasedOnCombineCriteria(eventsFromComplexFieldSearch,
                 eventsFromSimpleFieldSearch, isCombinedMatch);
 
-        trimFoundEventsToPageSize(foundEvents, pageRequest.getPageSize());
         long totalCount = foundEvents.size();
+        trimFoundEventsToPageSize(foundEvents, pageRequest.getPageSize());
         return new PageImpl<>(foundEvents, pageRequest, totalCount);
     }
 
