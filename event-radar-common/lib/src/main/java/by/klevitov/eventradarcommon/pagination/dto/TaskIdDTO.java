@@ -15,16 +15,16 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class TaskManagerResponseDTO extends AbstractDTO {
+public class TaskIdDTO extends AbstractDTO {
     private String taskId;
 
-    public static List<TaskManagerResponseDTO> createListFromTaskIds(final List<String> ids) {
+    public static List<TaskIdDTO> createListFromTaskIds(final List<String> ids) {
         return (isNotEmpty(ids) ? createList(ids) : new ArrayList<>());
     }
 
-    private static List<TaskManagerResponseDTO> createList(final List<String> ids) {
+    private static List<TaskIdDTO> createList(final List<String> ids) {
         return ids.stream()
-                .map(TaskManagerResponseDTO::new)
+                .map(TaskIdDTO::new)
                 .toList();
     }
 }
