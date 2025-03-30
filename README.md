@@ -43,7 +43,7 @@ The `event-radar` project is composed of several modules, each responsible for s
 - Gradle (**optional**). All modules include a Gradle Wrapper, which can be used to perform tasks.
 
 
-To start the `event-radar` application, you can use the provided `start_services.sh` script. This script will automatically set up all required services, including databases, message brokers, and other necessary containers.
+To start the backend part of `event-radar` application, you can use the provided `start_services.sh` script in the `backend` folder. This script will automatically set up all required services, including databases, message brokers, and other necessary containers.
 
 ### Steps to Run
 To start the Event-Radar application, follow these steps:
@@ -54,7 +54,7 @@ To start the Event-Radar application, follow these steps:
 2. **Run the `start_services.sh` script**.
    This will start all required services and containers, including the event parsers, task scheduler, database, and more:
    ```bash
-   cd event-radar
+   cd event-radar/backend
    ./start_services.sh
 3. **Access Swagger Documentation**.
    Each web module in the system provides Swagger documentation to explore and test available REST endpoints. You can access it by navigating to the following URL:
