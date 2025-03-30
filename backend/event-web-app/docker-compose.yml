@@ -1,0 +1,22 @@
+services:
+  application:
+    image: 'peachex/event-web-application:latest'
+    container_name: 'application'
+    environment:
+      - 'APPLICATION_PORT=8095'
+      - 'APPLICATION_CONTEXT_PATH=/EventWebApp'
+      - 'EVENT_PERSISTOR_CLIENT_NAME=event-persistor'
+      - 'EVENT_PERSISTOR_CLIENT_URL=event-persistor-application:8082'
+      - 'EVENT_PERSISTOR_CLIENT_CONTEXT_PATH=/EventPersistor'
+      - 'EVENT_PERSISTOR_CLIENT_CONNECT_TIMEOUT=3000'
+      - 'EVENT_PERSISTOR_CLIENT_READ_TIMEOUT=3000'
+    ports:
+      - '8096:8095'
+    restart: 'on-failure'
+    networks:
+      - 'eventradar-network'
+
+networks:
+  eventradar-network:
+    driver: 'bridge'
+    name: 'eventradar-network'
