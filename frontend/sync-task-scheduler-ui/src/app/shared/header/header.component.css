@@ -1,0 +1,54 @@
+.nav-links {
+  flex-grow: 0.5; /* Allows items to expand */
+  display: flex;
+  justify-content: space-evenly; /* Evenly space links */
+}
+
+.navbar-nav .nav-link {
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 10px 20px; /* Adds more padding on the sides to increase clickable area */
+  transition: color 0.3s ease-in-out;
+  color: rgb(216, 216, 216);
+  display: inline-block; /* Make sure link is treated as block to handle padding */
+}
+
+/* Nav links alignment to display the links right under the logo nav text. Total size = (.logo width + .nav-text-gap) */
+.nav-link-gap {
+  margin-left: calc(40px + 6px);
+  margin-right: calc(40px + 6px);
+}
+
+/* Hover effect on the nav links text */
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: #8d0dd6;
+  text-decoration: underline;
+}
+
+/* Adjust logo size */
+.logo {
+  width: 40px;
+  height: 40px;
+}
+
+/* Gap between logo and text */
+.nav-text-gap {
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
+.nav-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: rgb(216, 216, 216);
+  padding: 10px 20px; /* Adds padding around the logo text to increase clickable area */
+  display: inline-block; /* Make the logo text behave like a block */
+  transition: color 0.3s ease-in-out; /* Smooth color transition */
+}
+
+/* Hover effect on the logo text */
+.navbar-brand:hover .nav-text {
+  color: #8d0dd6;
+  transition: color 0.3s ease-in-out;
+}
