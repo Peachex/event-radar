@@ -15,21 +15,23 @@
 
 /* Nav links alignment to display the links right under the logo nav text. Total size = (.logo width + .nav-text-gap) */
 .nav-link-gap {
-  margin-left: calc(40px + 6px);
-  margin-right: calc(40px + 6px);
+  margin-left: calc(50px + 6px);
+  margin-right: calc(50px + 6px);
 }
 
 /* Hover effect on the nav links text */
 .navbar-nav .nav-link:hover,
 .navbar-nav .nav-link.active {
-  color: #8d0dd6;
+  color: #ac20fd;
   text-decoration: underline;
+  transform: scale(1.1);
+  transition: transform 0.5s ease-in-out;
 }
 
 /* Adjust logo size */
 .logo {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
 }
 
 /* Gap between logo and text */
@@ -49,6 +51,13 @@
 
 /* Hover effect on the logo text */
 .navbar-brand:hover .nav-text {
-  color: #8d0dd6;
-  transition: color 0.3s ease-in-out;
+  color: #ac20fd;
+  transition: transform 0.5s ease-in-out;
+}
+
+/* Hover effect on the logo image and logo text */
+.navbar-brand:hover {
+  color: #ac20fd;
+  transition: transform 0.5s ease-in-out;
+  transform: scale(1.1);
 }
