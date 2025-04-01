@@ -20,7 +20,6 @@
 
 .footer-text-gap {
   margin-left: 10px;
-  white-space: nowrap;
   transition: color 0.3s ease-in-out;
 }
 
