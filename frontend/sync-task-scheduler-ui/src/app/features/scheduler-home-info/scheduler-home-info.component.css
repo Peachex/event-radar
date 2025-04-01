@@ -1,0 +1,13 @@
+.scheduler-home-info {
+  text-align: start;
+  margin: 20px;
+}
+
+.scheduler-home-info h2 {
+  font-size: 2rem;
+}
+
+.scheduler-home-info p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}

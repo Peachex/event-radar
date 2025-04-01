@@ -1,0 +1,33 @@
+.home-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.title-container {
+  text-align: center;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: rgb(56, 56, 56);
+}
+
+.section-divider {
+  width: 80%;
+  height: 2px;
+  background-color: #343a402f;
+  margin: 10px 0;
+}
+
+app-scheduler-home-info,
+app-tasks-home-info {
+  padding: 10px 20px;
+  width: 80%;
+}

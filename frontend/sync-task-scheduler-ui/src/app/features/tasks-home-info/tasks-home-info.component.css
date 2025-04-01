@@ -1,0 +1,13 @@
+.tasks-home-info {
+  text-align: start;
+  margin: 20px;
+}
+
+.tasks-home-info h2 {
+  font-size: 2rem;
+}
+
+.tasks-home-info p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
