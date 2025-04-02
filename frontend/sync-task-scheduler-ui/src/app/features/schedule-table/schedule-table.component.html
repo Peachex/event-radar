@@ -1,0 +1,48 @@
+<div class="task-table-container">
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Task Name</th>
+                <th>Status</th>
+                <th>Cron Expression</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let task of filteredTasks">
+                <td>{{ task.id }}</td>
+                <td>
+                    <a href="#" class="task-link" (click)="openTaskDetails(task, $event)">{{ task.name }}</a>
+                </td>
+                <td>
+                    <span
+                        [ngClass]="{'status-active': task.status === 'ACTIVE', 'status-paused': task.status === 'PAUSED'}">
+                        {{ task.status }}
+                    </span>
+                </td>
+                <td>
+                    {{task.cronExpression}}
+                </td>
+                <td>
+                    <button class="btn btn-success btn-sm" (click)="runTask(task)">Run Now</button>
+                    <button class="btn btn-warning btn-sm" (click)="toggleTaskStatus(task)">
+                        {{ task.status === 'ACTIVE' ? 'Pause' : 'Resume' }}
+                    </button>
+                    <button class="btn btn-danger btn-sm" (click)="deleteTask(task.id)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Task Details Modal -->
+<div class="modal-backdrop" *ngIf="selectedTask">
+    <div class="modal-content">
+        <h3>{{ selectedTask.name }}</h3>
+        <p><strong>Description:</strong> {{ selectedTask.description }}</p>
+        <p><strong>Task ID:</strong> {{ selectedTask.taskIdToExecute }}</p>
+        <p><strong>Cron Expression:</strong> {{ selectedTask.cronExpression }}</p>
+        <button class="btn btn-secondary" (click)="closeTaskDetails()">Close</button>
+    </div>
+</div>

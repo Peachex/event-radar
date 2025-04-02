@@ -1,0 +1,53 @@
+.task-table-container {
+  width: 80%;
+  margin: auto;
+  padding: 20px;
+}
+
+.table-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.task-link {
+  text-decoration: none;
+  font-weight: bold;
+  color: #8d0dd6;
+  cursor: pointer;
+}
+
+.task-link:hover {
+  text-decoration: underline;
+}
+
+.status-active {
+  color: green;
+  font-weight: bold;
+}
+
+.status-paused {
+  color: rgb(117, 117, 117);
+  font-weight: bold;
+}
+
+/* Modal Styles */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  text-align: center;
+}

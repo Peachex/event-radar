@@ -1,1 +1,8 @@
-<p>scheduler-page works!</p>
+<div class="scheduler-page">
+    <div class="search-container">
+        <input type="text" class="form-control search-input" placeholder="Search tasks..." [(ngModel)]="searchQuery">
+        <button class="btn btn-primary search-btn" (click)="performSearch()">Search</button>
+    </div>
+
+    <app-schedule-table [searchQuery]="filteredQuery"></app-schedule-table>
+</div>
