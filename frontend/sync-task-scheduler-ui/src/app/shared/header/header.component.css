@@ -21,11 +21,18 @@
 
 /* Hover effect on the nav links text */
 .navbar-nav .nav-link:hover,
-.navbar-nav .nav-link.active {
+.navbar-nav {
   color: #ac20fd;
   text-decoration: underline;
-  transform: scale(1.1);
   transition: transform 0.5s ease-in-out;
+  transform: scale(1.1);
+}
+
+/* Highlight active tab */
+.nav-link.active,
+.navbar-brand.active .nav-text {
+  color: #ffffff9c !important;
+  text-decoration: underline;
 }
 
 /* Adjust logo size */
@@ -51,6 +58,7 @@
 
 /* Hover effect on the logo text */
 .navbar-brand:hover .nav-text {
+  text-decoration: underline;
   color: #ac20fd;
   transition: transform 0.5s ease-in-out;
 }
