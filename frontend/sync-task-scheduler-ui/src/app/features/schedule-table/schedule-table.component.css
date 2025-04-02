@@ -51,3 +51,7 @@
   width: 600px;
   text-align: start;
 }
+
+.table-column {
+  background-color: aliceblue;
+}
