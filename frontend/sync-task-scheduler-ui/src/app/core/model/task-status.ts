@@ -1,4 +1,4 @@
-export enum ScheduleStatus {
+export enum TaskStatus {
   ACTIVE = 'active',
   PAUSED = 'paused',
 }

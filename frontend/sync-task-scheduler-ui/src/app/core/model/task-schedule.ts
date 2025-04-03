@@ -1,8 +1,8 @@
-import { ScheduleStatus } from './schedule-status';
+import { TaskStatus } from './task-status';
 
 export interface TaskSchedule {
   id: number;
-  status: ScheduleStatus;
+  status: TaskStatus;
   name: string;
   description?: string;
   taskIdToExecute: string;

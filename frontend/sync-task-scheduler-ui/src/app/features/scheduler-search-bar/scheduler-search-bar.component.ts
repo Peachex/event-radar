@@ -22,4 +22,11 @@ export class SchedulerSearchBarComponent {
       this.taskService.retrieveTasksSchedulesFromBackendAPI(this.searchQuery)
     );
   }
+
+  findAll() {
+    // Add exception handling
+    this.tasksSchedules.emit(
+      this.taskService.retrieveAllTasksSchedulesFromBackendAPI()
+    );
+  }
 }

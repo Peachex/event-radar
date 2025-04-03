@@ -10,7 +10,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let task of tasks">
+            <tr *ngFor="let task of tasksSchedules">
                 <td class="table-column">{{ task.id }}</td>
                 <td class="table-column">
                     <a href="#" class="task-link" (click)="openTaskDetails(task, $event)">{{ task.name }}</a>

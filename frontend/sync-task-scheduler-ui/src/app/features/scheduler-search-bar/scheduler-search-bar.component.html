@@ -2,4 +2,5 @@
     <input type="text" class="form-control search-input" placeholder="Search tasks..." [(ngModel)]="searchQuery"
         (keyup.enter)="performSearch()">
     <button class="btn btn-primary search-btn" (click)="performSearch()">Search</button>
+    <button class="btn btn-secondary search-btn" (click)="findAll()">Reset</button>
 </div>
