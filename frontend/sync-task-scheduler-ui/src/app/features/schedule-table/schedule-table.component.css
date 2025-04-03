@@ -10,6 +10,10 @@
   margin-bottom: 20px;
 }
 
+.table-column {
+  background-color: aliceblue;
+}
+
 th {
   text-align: center;
 }
@@ -75,9 +79,27 @@ td {
   padding: 20px;
   border-radius: 8px;
   width: 600px;
+  max-height: 70vh;
+  overflow-y: auto;
   text-align: start;
 }
 
-.table-column {
-  background-color: aliceblue;
+.modal-header {
+  text-align: center; /* Aligns the button to the right */
+  margin-bottom: 15px;
+  align-self: center;
+}
+
+.modal-footer {
+  margin-top: 15px;
+  align-self: center;
+}
+
+.modal-footer .btn-secondary {
+  display: inline-block; /* Prevents full width */
+  width: auto; /* Ensures it fits content */
+  min-width: 150px; /* Adjust as needed */
+  padding: 8px 15px; /* Slightly larger for better clickability */
+  font-size: 1rem; /* Readable size */
+  border-radius: 5px; /* Optional: keeps button rounded */
 }

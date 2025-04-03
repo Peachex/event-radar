@@ -41,10 +41,15 @@
 <!-- Task Details Modal -->
 <div class="modal-backdrop" *ngIf="selectedTask">
     <div class="modal-content">
-        <h3>{{ selectedTask.name }}</h3>
-        <p><strong>Description:</strong> {{ selectedTask.description }}</p>
-        <p><strong>Task ID:</strong> {{ selectedTask.taskIdToExecute }}</p>
+        <div class="modal-header">
+            <h3>{{ selectedTask.name }}</h3>
+        </div>
+        <p><strong>Status:</strong> {{ selectedTask.status }}</p>
+        <p *ngIf="selectedTask.description"><strong>Description:</strong> {{ selectedTask.description }}</p>
+        <p><strong>Task ID to execute:</strong> {{ selectedTask.taskIdToExecute }}</p>
         <p><strong>Cron Expression:</strong> {{ selectedTask.cronExpression }}</p>
-        <button class="btn btn-secondary" (click)="closeTaskDetails()">Close</button>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="closeTaskDetails()">Close</button>
+        </div>
     </div>
 </div>
