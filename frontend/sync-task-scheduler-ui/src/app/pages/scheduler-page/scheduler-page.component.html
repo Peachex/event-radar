@@ -1,9 +1,4 @@
 <div class="scheduler-page">
-    <div class="search-container">
-        <input type="text" class="form-control search-input" placeholder="Search tasks..." [(ngModel)]="searchQuery"
-            (keyup.enter)="performSearch()">
-        <button class="btn btn-primary search-btn" (click)="performSearch()">Search</button>
-    </div>
-
+    <app-scheduler-search-bar (searchQueryChange)="updateSearchQuery($event)"></app-scheduler-search-bar>
     <app-schedule-table [searchQuery]="filteredQuery"></app-schedule-table>
 </div>
