@@ -10,12 +10,12 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let task of tasksSchedules">
-                <td class="table-column">{{ task.id }}</td>
+            <tr *ngFor="let task of tasksSchedules; let i = index">
+                <td class="table-column">{{ i + 1 }}</td>
                 <td class="table-column">
-                    <a href="#" class="task-link" (click)="openTaskDetails(task, $event)">{{ task.name }}</a>
+                    <a href="#" class="task-link" (click)="viewTaskScheduleDetails(task, $event)">{{ task.name }}</a>
                 </td>
-                <td class="table-column">
+                <td class="table-column task-status">
                     <span
                         [ngClass]="{'status-active': task.status.toString() === 'ACTIVE', 'status-paused': task.status.toString() === 'PAUSED'}">
                         {{ task.status }}
@@ -25,11 +25,13 @@
                     {{task.cronExpression}}
                 </td>
                 <td class="table-column">
-                    <button class="btn btn-success btn-sm" (click)="runTask(task)">Run Now</button>
-                    <button class="btn btn-warning btn-sm" (click)="toggleTaskStatus(task)">
-                        {{ task.status.toString() === 'ACTIVE' ? 'Pause' : 'Resume' }}
-                    </button>
-                    <button class="btn btn-danger btn-sm" (click)="deleteTask(task.id)">Delete</button>
+                    <div class="task-buttons">
+                        <button class="btn btn-success btn-sm" (click)="runTask(task)">Run Now</button>
+                        <button class="btn btn-warning btn-sm" (click)="updateTaskStatus(task)">
+                            {{ task.status.toString() === 'ACTIVE' ? 'Pause' : 'Resume' }}
+                        </button>
+                        <button class="btn btn-danger btn-sm" (click)="deleteTask(task.id)">Delete</button>
+                    </div>
                 </td>
             </tr>
         </tbody>

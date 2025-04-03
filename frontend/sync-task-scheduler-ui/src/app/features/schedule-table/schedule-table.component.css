@@ -10,15 +10,28 @@
   margin-bottom: 20px;
 }
 
+th {
+  text-align: center;
+}
+
+td {
+  text-align: center;
+}
+
 .task-link {
   text-decoration: none;
   font-weight: bold;
-  color: #8d0dd6;
+  color: #0066ff;
   cursor: pointer;
 }
 
 .task-link:hover {
   text-decoration: underline;
+  color: #ac20fd;
+}
+
+.task-status {
+  text-align: center;
 }
 
 .status-active {
@@ -31,7 +44,20 @@
   font-weight: bold;
 }
 
-/* Modal Styles */
+.task-buttons {
+  display: flex;
+  justify-content: center; /* Centers the buttons */
+  gap: 10px; /* Adds spacing between buttons */
+}
+
+.task-buttons button {
+  flex: 1; /* Ensures equal width for all buttons */
+  min-width: 90px; /* Prevents buttons from being too small */
+  max-width: 100px; /* Prevents buttons from being too large */
+  padding: 8px 12px;
+  text-align: center;
+}
+
 .modal-backdrop {
   position: fixed;
   top: 0;

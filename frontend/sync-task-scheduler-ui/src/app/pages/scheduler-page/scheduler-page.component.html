@@ -1,4 +1,5 @@
 <div class="scheduler-page">
-    <app-scheduler-search-bar (tasksSchedules)="updateResults($event)"></app-scheduler-search-bar>
+    <app-scheduler-search-bar
+        (fetchedTasksSchedules)="fetchResultsFromSearchBarComponent($event)"></app-scheduler-search-bar>
     <app-schedule-table [tasksSchedules]="tasksSchedules"></app-schedule-table>
 </div>

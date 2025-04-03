@@ -11,10 +11,10 @@ import { TaskSchedule } from '../../core/model/task-schedule';
   styleUrl: './scheduler-page.component.css',
 })
 export class SchedulerPageComponent {
-  searchQuery: string = ''; // Step 1: Initial query
-  tasksSchedules: TaskSchedule[] = []; // Step 2: Store filtered results
+  searchQuery: string = '';
+  tasksSchedules: TaskSchedule[] = [];
 
-  updateResults(results: TaskSchedule[]) {
-    this.tasksSchedules = results; // Step 3: Store results from search bar
+  fetchResultsFromSearchBarComponent(results: TaskSchedule[]) {
+    this.tasksSchedules = results;
   }
 }

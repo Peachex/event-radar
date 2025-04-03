@@ -18,12 +18,12 @@ export class TaskService {
     {
       id: 2,
       status: TaskStatus.PAUSED,
-      name: 'SyncTask#2',
+      name: 'SomeLongTaskName#2',
       taskIdToExecute: 'update_records_task',
       cronExpression: '0 0/30 * * * ?',
     },
     {
-      id: 3,
+      id: 63,
       status: TaskStatus.ACTIVE,
       name: 'SyncTask#3',
       description: 'Another task for syncing.',
@@ -31,7 +31,7 @@ export class TaskService {
       cronExpression: '0 0/30 * * * ?',
     },
     {
-      id: 4,
+      id: 412,
       status: TaskStatus.PAUSED,
       name: 'SyncTask#4',
       description:

@@ -18,11 +18,10 @@ export class ScheduleTableComponent implements OnInit {
   constructor(private taskService: TaskService) {}
 
   ngOnInit(): void {
-    this.tasksSchedules =
-      this.taskService.retrieveAllTasksSchedulesFromBackendAPI();
+    this.tasksSchedules = this.taskService.retrieveAllTasksSchedulesFromBackendAPI();
   }
 
-  openTaskDetails(task: TaskSchedule, event: Event) {
+  viewTaskScheduleDetails(task: TaskSchedule, event: Event) {
     event.preventDefault();
     this.selectedTask = task;
   }
@@ -36,16 +35,13 @@ export class ScheduleTableComponent implements OnInit {
     console.log(`Running task: ${task.name}`);
   }
 
-  toggleTaskStatus(task: TaskSchedule) {
+  updateTaskStatus(task: TaskSchedule) {
     //todo Call service method.
-    task.status =
-      task.status === TaskStatus.ACTIVE ? TaskStatus.PAUSED : TaskStatus.ACTIVE;
+    task.status = task.status === TaskStatus.ACTIVE ? TaskStatus.PAUSED : TaskStatus.ACTIVE;
   }
 
   deleteTask(taskId: number) {
     //todo Call service method.
-    this.tasksSchedules = this.tasksSchedules.filter(
-      (task) => task.id !== taskId
-    );
+    this.tasksSchedules = this.tasksSchedules.filter((task) => task.id !== taskId);
   }
 }

@@ -11,21 +11,22 @@ import { TaskService } from '../../core/service/task-service';
 })
 export class SchedulerSearchBarComponent {
   @Input() searchQuery: string = '';
-  @Output() tasksSchedules = new EventEmitter<TaskSchedule[]>();
+  @Output() fetchedTasksSchedules = new EventEmitter<TaskSchedule[]>();
 
   constructor(private taskService: TaskService) {}
 
   performSearch() {
     // Add exception handling
     console.log(`Here is the resuls for query=${this.searchQuery}`);
-    this.tasksSchedules.emit(
+    this.fetchedTasksSchedules.emit(
       this.taskService.retrieveTasksSchedulesFromBackendAPI(this.searchQuery)
     );
   }
 
   findAll() {
     // Add exception handling
-    this.tasksSchedules.emit(
+    this.searchQuery = '';
+    this.fetchedTasksSchedules.emit(
       this.taskService.retrieveAllTasksSchedulesFromBackendAPI()
     );
   }
