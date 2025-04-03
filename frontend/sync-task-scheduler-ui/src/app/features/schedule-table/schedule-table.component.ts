@@ -1,5 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { TaskSchedule } from '../../core/model/task-schedule';
+import { ScheduleStatus } from '../../core/model/schedule-status';
+import { TaskService } from '../../core/service/task-service';
 
 @Component({
   selector: 'app-schedule-table',
@@ -7,67 +10,18 @@ import { Component, Input } from '@angular/core';
   templateUrl: './schedule-table.component.html',
   styleUrl: './schedule-table.component.css',
 })
-export class ScheduleTableComponent {
-  tasks: Task[] = [
-    {
-      id: 1,
-      status: 'ACTIVE',
-      name: 'SyncTask#1',
-      description: 'Task that is needed for events sync.',
-      taskIdToExecute: 'fetch_new_events_task',
-      cronExpression: '0/10 * * * * ?',
-    },
-    {
-      id: 2,
-      status: 'PAUSED',
-      name: 'SyncTask#2',
-      description: 'Another task for syncing.',
-      taskIdToExecute: 'update_records_task',
-      cronExpression: '0 0/30 * * * ?',
-    },
-    {
-      id: 3,
-      status: 'PAUSED',
-      name: 'SyncTask#3',
-      description: 'Another task for syncing.',
-      taskIdToExecute: 'update_records_task',
-      cronExpression: '0 0/30 * * * ?',
-    },
-    {
-      id: 4,
-      status: 'PAUSED',
-      name: 'SyncTask#4',
-      description:
-        'Another task for syncing. Another task for syncing. Another task for syncing.Another task for syncing.',
-      taskIdToExecute: 'update_records_task',
-      cronExpression: '0 0/30 * * * ?',
-    },
-    {
-      id: 5,
-      status: 'PAUSED',
-      name: 'SyncTask#5',
-      description:
-        'Some dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfome dwefiewjfiew hfuewibewuf hewui fewifgeuwohfioq fuewofh ehfuewogfuoegfo ewufgewo fhiewohfoewfew fewf ewfewufgewo fhiewohfoewfew fewf ewf',
-      taskIdToExecute: 'update_records_task',
-      cronExpression: '0 0/30 * * * ?',
-    },
-  ];
+export class ScheduleTableComponent implements OnInit {
+  @Input() tasks: TaskSchedule[] = [];
 
-  @Input() searchQuery: string = '';
+  constructor(private taskService: TaskService) {}
 
-  get filteredTasks() {
-    const query = this.searchQuery.toLowerCase();
-
-    return this.tasks.filter((task) =>
-      Object.values(task).some((value) =>
-        value.toString().toLowerCase().includes(query)
-      )
-    );
+  ngOnInit(): void {
+    this.tasks = this.taskService.retrieveAllTasksSchedulesFromBackendAPI();
   }
 
-  selectedTask: Task | null = null;
+  selectedTask: TaskSchedule | null = null;
 
-  openTaskDetails(task: Task, event: Event) {
+  openTaskDetails(task: TaskSchedule, event: Event) {
     event.preventDefault();
     this.selectedTask = task;
   }
@@ -76,24 +30,18 @@ export class ScheduleTableComponent {
     this.selectedTask = null;
   }
 
-  runTask(task: Task) {
+  runTask(task: TaskSchedule) {
     console.log(`Running task: ${task.name}`);
   }
 
-  toggleTaskStatus(task: Task) {
-    task.status = task.status === 'ACTIVE' ? 'PAUSED' : 'ACTIVE';
+  toggleTaskStatus(task: TaskSchedule) {
+    task.status =
+      task.status === ScheduleStatus.ACTIVE
+        ? ScheduleStatus.PAUSED
+        : ScheduleStatus.ACTIVE;
   }
 
   deleteTask(taskId: number) {
     this.tasks = this.tasks.filter((task) => task.id !== taskId);
   }
-}
-
-interface Task {
-  id: number;
-  status: string;
-  name: string;
-  description: string;
-  taskIdToExecute: string;
-  cronExpression: string;
 }

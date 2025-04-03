@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TaskSchedule } from '../../core/model/task-schedule';
+import { TaskService } from '../../core/service/task-service';
 
 @Component({
   selector: 'app-scheduler-search-bar',
@@ -8,10 +10,16 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './scheduler-search-bar.component.css',
 })
 export class SchedulerSearchBarComponent {
-  searchQuery: string = '';
-  @Output() searchQueryChange = new EventEmitter<string>();
+  @Input() searchQuery: string = '';
+  @Output() tasksSchedules = new EventEmitter<TaskSchedule[]>();
+
+  constructor(private taskService: TaskService) {}
 
   performSearch() {
-    this.searchQueryChange.emit(this.searchQuery.trim());
+    // Add exception handling
+    console.log(`Here is the resuls for query=${this.searchQuery}`);
+    this.tasksSchedules.emit(
+      this.taskService.retrieveTasksSchedulesFromBackendAPI(this.searchQuery)
+    );
   }
 }

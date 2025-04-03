@@ -1,4 +1,5 @@
 <div class="scheduler-page">
-    <app-scheduler-search-bar (searchQueryChange)="updateSearchQuery($event)"></app-scheduler-search-bar>
-    <app-schedule-table [searchQuery]="filteredQuery"></app-schedule-table>
+    <app-scheduler-search-bar (searchQuery)="searchQuery"
+        (tasksSchedules)="updateResults($event)"></app-scheduler-search-bar>
+    <app-schedule-table [tasks]="tasksSchedules"></app-schedule-table>
 </div>

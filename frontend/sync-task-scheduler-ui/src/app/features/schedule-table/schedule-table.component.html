@@ -10,14 +10,14 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let task of filteredTasks">
+            <tr *ngFor="let task of tasks">
                 <td class="table-column">{{ task.id }}</td>
                 <td class="table-column">
                     <a href="#" class="task-link" (click)="openTaskDetails(task, $event)">{{ task.name }}</a>
                 </td>
                 <td class="table-column">
                     <span
-                        [ngClass]="{'status-active': task.status === 'ACTIVE', 'status-paused': task.status === 'PAUSED'}">
+                        [ngClass]="{'status-active': task.status.toString() === 'ACTIVE', 'status-paused': task.status.toString() === 'PAUSED'}">
                         {{ task.status }}
                     </span>
                 </td>
@@ -27,7 +27,7 @@
                 <td class="table-column">
                     <button class="btn btn-success btn-sm" (click)="runTask(task)">Run Now</button>
                     <button class="btn btn-warning btn-sm" (click)="toggleTaskStatus(task)">
-                        {{ task.status === 'ACTIVE' ? 'Pause' : 'Resume' }}
+                        {{ task.status.toString() === 'ACTIVE' ? 'Pause' : 'Resume' }}
                     </button>
                     <button class="btn btn-danger btn-sm" (click)="deleteTask(task.id)">Delete</button>
                 </td>
