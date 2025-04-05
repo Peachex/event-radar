@@ -58,6 +58,10 @@ td {
   gap: 10px; /* Adds spacing between buttons */
 }
 
+.task-buttons-column {
+  width: 40%;
+}
+
 .task-buttons button {
   flex: 1; /* Ensures equal width for all buttons */
   min-width: 90px; /* Prevents buttons from being too small */
