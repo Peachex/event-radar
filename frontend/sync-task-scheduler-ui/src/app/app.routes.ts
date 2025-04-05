@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { HomePageComponent } from './pages/home-page/home-page.component';
-import { SchedulerPageComponent } from './pages/scheduler-page/scheduler-page.component';
+import { HomePageComponent } from './page/home-page/home-page.component';
+import { SchedulerPageComponent } from './page/scheduler-page/scheduler-page.component';
 
 export const routes: Routes = [
   { path: '', component: HomePageComponent },

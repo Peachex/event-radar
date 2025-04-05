@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { TaskSchedule } from '../model/task-schedule';
+import { Task } from '../model/task';
 import { catchError, Observable, throwError } from 'rxjs';
 import { TaskFetchingError } from '../error/task-fetching-error';
 
@@ -12,8 +12,8 @@ export class SyncTaskSchedulerClient {
 
   constructor(private httpClient: HttpClient) {}
 
-  retrieveAllTasks(): Observable<TaskSchedule[]> {
-    return this.httpClient.get<TaskSchedule[]>(this.retrieveAllTasksApiUrl).pipe(
+  retrieveAllTasks(): Observable<Task[]> {
+    return this.httpClient.get<Task[]>(this.retrieveAllTasksApiUrl).pipe(
       catchError((error) => {
         console.error('HTTP error occurred:', error);
         return throwError(() => new TaskFetchingError('Failed to fetch tasks. Please try again later.', error));

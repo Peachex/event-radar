@@ -3,7 +3,7 @@ export class TaskFetchingError extends Error {
 
   constructor(message: string, sourceError?: Error) {
     super(message);
-    this.name = 'TaskErTaskFetchingError';
+    this.name = 'TaskFetchingError';
     this.sourceError = sourceError;
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TaskStatus } from '../model/task-status';
-import { TaskSchedule } from '../model/task-schedule';
+import { Task } from '../model/task';
 import { SyncTaskSchedulerClient } from '../client/sync-task-scheduler-client';
 import { Observable } from 'rxjs';
 
@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class TaskService {
-  private schedulesResponse: TaskSchedule[] = [
+  private schedulesResponse: Task[] = [
     {
       id: 1,
       status: TaskStatus.ACTIVE,
@@ -54,7 +54,7 @@ export class TaskService {
 
   constructor(private taskClient: SyncTaskSchedulerClient) {}
 
-  retrieveTasksSchedulesFromBackendAPI(searchQuery: string): TaskSchedule[] {
+  retrieveTasksSchedulesFromBackendAPI(searchQuery: string): Task[] {
     // Simulate response from backend API
 
     let filtered = this.schedulesResponse.filter(
@@ -70,7 +70,7 @@ export class TaskService {
     return filtered;
   }
 
-  retrieveAllTasks(): Observable<TaskSchedule[]> {
+  retrieveAllTasks(): Observable<Task[]> {
     return this.taskClient.retrieveAllTasks();
   }
 }

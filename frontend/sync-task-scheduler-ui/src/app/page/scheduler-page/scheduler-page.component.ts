@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ScheduleTableComponent } from '../../features/schedule-table/schedule-table.component';
-import { SchedulerSearchBarComponent } from '../../features/scheduler-search-bar/scheduler-search-bar.component';
-import { TaskSchedule } from '../../core/model/task-schedule';
+import { ScheduleTableComponent } from '../../feature/schedule-table/schedule-table.component';
+import { SchedulerSearchBarComponent } from '../../feature/scheduler-search-bar/scheduler-search-bar.component';
+import { Task } from '../../core/model/task';
 
 @Component({
   selector: 'app-scheduler-page',
@@ -12,11 +12,11 @@ import { TaskSchedule } from '../../core/model/task-schedule';
 })
 export class SchedulerPageComponent {
   searchQuery: string = '';
-  tasksSchedules: TaskSchedule[] = [];
+  tasks: Task[] = [];
   errorMessage: string | null = '';
 
-  fetchResultsFromSearchBarComponent(results: TaskSchedule[]) {
-    this.tasksSchedules = results;
+  fetchResultsFromSearchBarComponent(foundTasks: Task[]) {
+    this.tasks = foundTasks;
   }
 
   onErrorMessageUpdate(errorMessage: string | null) {

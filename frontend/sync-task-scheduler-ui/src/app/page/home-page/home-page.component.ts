@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { SchedulerHomeInfoComponent } from '../../features/scheduler-home-info/scheduler-home-info.component';
-import { TasksHomeInfoComponent } from '../../features/tasks-home-info/tasks-home-info.component';
+import { SchedulerHomeInfoComponent } from '../../feature/scheduler-home-info/scheduler-home-info.component';
+import { TasksHomeInfoComponent } from '../../feature/tasks-home-info/tasks-home-info.component';
 
 @Component({
   selector: 'app-home-page',

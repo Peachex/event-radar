@@ -1,6 +1,6 @@
 import { TaskStatus } from './task-status';
 
-export interface TaskSchedule {
+export interface Task {
   id: number;
   status: TaskStatus;
   name: string;

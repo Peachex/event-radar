@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TaskSchedule } from '../../core/model/task-schedule';
+import { Task } from '../../core/model/task';
 import { TaskService } from '../../core/service/task-service';
 import { TaskFetchingError } from '../../core/error/task-fetching-error';
 
@@ -12,7 +12,7 @@ import { TaskFetchingError } from '../../core/error/task-fetching-error';
 })
 export class SchedulerSearchBarComponent {
   @Input() searchQuery: string = '';
-  @Output() fetchedTasksSchedules = new EventEmitter<TaskSchedule[]>();
+  @Output() fetchedTasks = new EventEmitter<Task[]>();
   @Output() errorMessage = new EventEmitter<string | null>();
 
   constructor(private taskService: TaskService) {}
@@ -20,14 +20,14 @@ export class SchedulerSearchBarComponent {
   performSearch() {
     // Add exception handling
     console.log(`Here is the resuls for query=${this.searchQuery}`);
-    this.fetchedTasksSchedules.emit(this.taskService.retrieveTasksSchedulesFromBackendAPI(this.searchQuery));
+    this.fetchedTasks.emit(this.taskService.retrieveTasksSchedulesFromBackendAPI(this.searchQuery));
   }
 
   findAll() {
     this.searchQuery = '';
     this.taskService.retrieveAllTasks().subscribe({
-      next: (tasks: TaskSchedule[]) => {
-        this.fetchedTasksSchedules.emit(tasks);
+      next: (tasks: Task[]) => {
+        this.fetchedTasks.emit(tasks);
         this.errorMessage.emit(null);
       },
       error: (error: TaskFetchingError) => {

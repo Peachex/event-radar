@@ -10,10 +10,10 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let task of tasksSchedules; let i = index">
+            <tr *ngFor="let task of tasks; let i = index">
                 <td class="table-column">{{ i + 1 }}</td>
                 <td class="table-column">
-                    <a href="#" class="task-link" (click)="viewTaskScheduleDetails(task, $event)">{{ task.name }}</a>
+                    <a href="#" class="task-link" (click)="viewTaskDetails(task, $event)">{{ task.name }}</a>
                 </td>
                 <td class="table-column task-status">
                     <span

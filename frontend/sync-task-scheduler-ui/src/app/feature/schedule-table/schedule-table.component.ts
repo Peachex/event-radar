@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { TaskSchedule } from '../../core/model/task-schedule';
+import { Task } from '../../core/model/task';
 import { TaskStatus } from '../../core/model/task-status';
 import { TaskService } from '../../core/service/task-service';
 
@@ -11,19 +11,19 @@ import { TaskService } from '../../core/service/task-service';
   styleUrl: './schedule-table.component.css',
 })
 export class ScheduleTableComponent implements OnInit {
-  @Input() tasksSchedules: TaskSchedule[] = [];
+  @Input() tasks: Task[] = [];
 
-  selectedTask: TaskSchedule | null = null;
+  selectedTask: Task | null = null;
 
   constructor(private taskService: TaskService) {}
 
   ngOnInit(): void {
     this.taskService.retrieveAllTasks().subscribe((tasks) => {
-      this.tasksSchedules = tasks;
+      this.tasks = tasks;
     });
   }
 
-  viewTaskScheduleDetails(task: TaskSchedule, event: Event) {
+  viewTaskDetails(task: Task, event: Event) {
     event.preventDefault();
     this.selectedTask = task;
   }
@@ -32,18 +32,18 @@ export class ScheduleTableComponent implements OnInit {
     this.selectedTask = null;
   }
 
-  runTask(task: TaskSchedule) {
+  runTask(task: Task) {
     //todo Call service method.
     console.log(`Running task: ${task.name}`);
   }
 
-  updateTaskStatus(task: TaskSchedule) {
+  updateTaskStatus(task: Task) {
     //todo Call service method.
     task.status = task.status === TaskStatus.ACTIVE ? TaskStatus.PAUSED : TaskStatus.ACTIVE;
   }
 
   deleteTask(taskId: number) {
     //todo Call service method.
-    this.tasksSchedules = this.tasksSchedules.filter((task) => task.id !== taskId);
+    this.tasks = this.tasks.filter((task) => task.id !== taskId);
   }
 }
