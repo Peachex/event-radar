@@ -13,8 +13,13 @@ import { TaskSchedule } from '../../core/model/task-schedule';
 export class SchedulerPageComponent {
   searchQuery: string = '';
   tasksSchedules: TaskSchedule[] = [];
+  errorMessage: string | null = '';
 
   fetchResultsFromSearchBarComponent(results: TaskSchedule[]) {
     this.tasksSchedules = results;
+  }
+
+  onErrorMessageUpdate(errorMessage: string | null) {
+    this.errorMessage = errorMessage;
   }
 }

@@ -1,5 +1,7 @@
 <div class="scheduler-page">
-    <app-scheduler-search-bar
-        (fetchedTasksSchedules)="fetchResultsFromSearchBarComponent($event)"></app-scheduler-search-bar>
+    <app-scheduler-search-bar (fetchedTasksSchedules)="fetchResultsFromSearchBarComponent($event)"
+        (errorMessage)="onErrorMessageUpdate($event)"></app-scheduler-search-bar>
     <app-schedule-table [tasksSchedules]="tasksSchedules"></app-schedule-table>
+    <!-- Create error message component -->
+    {{errorMessage}}
 </div>

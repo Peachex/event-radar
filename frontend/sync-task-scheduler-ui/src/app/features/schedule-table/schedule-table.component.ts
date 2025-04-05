@@ -18,7 +18,9 @@ export class ScheduleTableComponent implements OnInit {
   constructor(private taskService: TaskService) {}
 
   ngOnInit(): void {
-    this.tasksSchedules = this.taskService.retrieveAllTasksSchedulesFromBackendAPI();
+    this.taskService.retrieveAllTasks().subscribe((tasks) => {
+      this.tasksSchedules = tasks;
+    });
   }
 
   viewTaskScheduleDetails(task: TaskSchedule, event: Event) {

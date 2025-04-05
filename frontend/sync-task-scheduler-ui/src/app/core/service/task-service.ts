@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { TaskStatus } from '../model/task-status';
 import { TaskSchedule } from '../model/task-schedule';
+import { SyncTaskSchedulerClient } from '../client/sync-task-scheduler-client';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -50,14 +52,15 @@ export class TaskService {
     },
   ];
 
+  constructor(private taskClient: SyncTaskSchedulerClient) {}
+
   retrieveTasksSchedulesFromBackendAPI(searchQuery: string): TaskSchedule[] {
     // Simulate response from backend API
 
     let filtered = this.schedulesResponse.filter(
       (task) =>
         task.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (task.description &&
-          task.description.toLowerCase().includes(searchQuery.toLowerCase())) || // Check if description exists
+        (task.description && task.description.toLowerCase().includes(searchQuery.toLowerCase())) || // Check if description exists
         task.status.toLowerCase().includes(searchQuery.toLowerCase()) ||
         task.taskIdToExecute.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -67,8 +70,7 @@ export class TaskService {
     return filtered;
   }
 
-  retrieveAllTasksSchedulesFromBackendAPI(): TaskSchedule[] {
-    // Simulate response from backend API
-    return this.schedulesResponse;
+  retrieveAllTasks(): Observable<TaskSchedule[]> {
+    return this.taskClient.retrieveAllTasks();
   }
 }
