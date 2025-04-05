@@ -35,7 +35,11 @@ td {
 }
 
 .task-status {
+  width: 140px;
   text-align: center;
+  overflow: hidden; /* Prevent text overflow */
+  white-space: nowrap; /* Prevent text wrapping */
+  text-overflow: ellipsis; /* Show '...' if text is too long */
 }
 
 .status-active {

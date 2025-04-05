@@ -8,7 +8,7 @@ import { TaskFetchingError } from '../error/task-fetching-error';
   providedIn: 'root',
 })
 export class SyncTaskSchedulerClient {
-  private readonly retrieveAllTasksApiUrl: string = 'http://localhost:8088/SyncTaskScheduler/tasks';
+  private readonly retrieveAllTasksApiUrl: string = 'http://localhost:8089/SyncTaskScheduler/tasks';
 
   constructor(private httpClient: HttpClient) {}
 
