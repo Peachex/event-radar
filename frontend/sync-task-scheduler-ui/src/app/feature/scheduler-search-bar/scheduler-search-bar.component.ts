@@ -18,14 +18,21 @@ export class SchedulerSearchBarComponent {
   constructor(private taskService: TaskService) {}
 
   performSearch() {
-    // Add exception handling
-    console.log(`Here is the resuls for query=${this.searchQuery}`);
-    this.fetchedTasks.emit(this.taskService.retrieveTasksSchedulesFromBackendAPI(this.searchQuery));
+    this.taskService.findTasksBySearchQuery(this.searchQuery).subscribe({
+      next: (tasks: Task[]) => {
+        this.fetchedTasks.emit(tasks);
+        this.errorMessage.emit(null);
+      },
+      error: (error: TaskFetchingError) => {
+        console.error('Error fetching tasks:', error);
+        this.errorMessage.emit(error.message);
+      },
+    });
   }
 
   findAll() {
     this.searchQuery = '';
-    this.taskService.retrieveAllTasks().subscribe({
+    this.taskService.findAllTasks().subscribe({
       next: (tasks: Task[]) => {
         this.fetchedTasks.emit(tasks);
         this.errorMessage.emit(null);

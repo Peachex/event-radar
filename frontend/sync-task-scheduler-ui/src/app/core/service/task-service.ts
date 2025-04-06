@@ -3,6 +3,7 @@ import { TaskStatus } from '../model/task-status';
 import { Task } from '../model/task';
 import { SyncTaskSchedulerClient } from '../client/sync-task-scheduler-client';
 import { Observable } from 'rxjs';
+import { SearchByFieldsRequest } from '../model/search-by-field-request';
 
 @Injectable({
   providedIn: 'root',
@@ -70,7 +71,20 @@ export class TaskService {
     return filtered;
   }
 
-  retrieveAllTasks(): Observable<Task[]> {
+  findTasksBySearchQuery(searchQuery: string): Observable<Task[]> {
+    const searchRequest: SearchByFieldsRequest = {} as SearchByFieldsRequest;
+
+    Task.getTaskFields().forEach((field) => {
+      console.log(searchRequest[field]);
+      searchRequest[field] = searchQuery;
+    });
+
+    console.log(searchRequest);
+
+    return this.taskClient.retrieveTasksByFields(searchRequest, false);
+  }
+
+  findAllTasks(): Observable<Task[]> {
     return this.taskClient.retrieveAllTasks();
   }
 }

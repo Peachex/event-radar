@@ -21,7 +21,7 @@ export class ScheduleTableComponent implements OnInit {
   constructor(private taskService: TaskService) {}
 
   ngOnInit(): void {
-    this.taskService.retrieveAllTasks().subscribe({
+    this.taskService.findAllTasks().subscribe({
       next: (tasks: Task[]) => {
         this.tasks = tasks;
         this.errorMessage.emit(null);
