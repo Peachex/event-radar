@@ -31,6 +31,7 @@ export class SchedulerPageComponent {
 
   onErrorMessageUpdate(errorMessage: string | null) {
     this.errorMessage = errorMessage;
+    this.resetTasksInCaseOfErrorMessageExists(errorMessage);
   }
 
   onFetchForTableInitIsCompletedUpdate(isCompleted: boolean) {
@@ -39,5 +40,11 @@ export class SchedulerPageComponent {
 
   private resetErrorMessage() {
     this.errorMessage = null;
+  }
+
+  private resetTasksInCaseOfErrorMessageExists(errorMessage: string | null) {
+    if (errorMessage) {
+      this.tasks = [];
+    }
   }
 }
