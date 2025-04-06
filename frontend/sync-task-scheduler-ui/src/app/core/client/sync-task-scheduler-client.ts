@@ -15,7 +15,6 @@ export class SyncTaskSchedulerClient {
   retrieveAllTasks(): Observable<Task[]> {
     return this.httpClient.get<Task[]>(this.retrieveAllTasksApiUrl).pipe(
       catchError((error) => {
-        console.error('HTTP error occurred:', error);
         return throwError(() => new TaskFetchingError('Failed to fetch tasks. Please try again later.', error));
       })
     );
