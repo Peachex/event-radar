@@ -1,7 +1,7 @@
 <div class="scheduler-page">
     <app-scheduler-search-bar (fetchedTasks)="fetchResultsFromSearchBarComponent($event)"
         (errorMessage)="onErrorMessageUpdate($event)"></app-scheduler-search-bar>
-    <app-schedule-table [tasks]="tasks" (errorMessage)="onErrorMessageUpdate($event)"
+    <app-schedule-table [(tasks)]="tasks" (errorMessage)="onErrorMessageUpdate($event)"
         (fetchForTableInitIsCompleted)="onFetchForTableInitIsCompletedUpdate($event)"></app-schedule-table>
     <div class="results-message">
         <app-error-message [errorMessage]="errorMessage"></app-error-message>

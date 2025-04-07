@@ -13,6 +13,7 @@ import { TaskFetchingError } from '../../core/error/task-fetching-error';
 })
 export class ScheduleTableComponent implements OnInit {
   @Input() tasks: Task[] = [];
+  @Output() tasksChange = new EventEmitter<Task[]>();
   @Output() errorMessage = new EventEmitter<string | null>();
   @Output() fetchForTableInitIsCompleted = new EventEmitter<boolean>();
 
@@ -24,6 +25,7 @@ export class ScheduleTableComponent implements OnInit {
     this.taskService.findAllTasks().subscribe({
       next: (tasks: Task[]) => {
         this.tasks = tasks;
+        this.tasksChange.emit(tasks);
         this.errorMessage.emit(null);
         this.fetchForTableInitIsCompleted.emit(true);
       },

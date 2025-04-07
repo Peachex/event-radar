@@ -75,11 +75,8 @@ export class TaskService {
     const searchRequest: SearchByFieldsRequest = {} as SearchByFieldsRequest;
 
     Task.getTaskFields().forEach((field) => {
-      console.log(searchRequest[field]);
       searchRequest[field] = searchQuery;
     });
-
-    console.log(searchRequest);
 
     return this.taskClient.retrieveTasksByFields(searchRequest, false);
   }
