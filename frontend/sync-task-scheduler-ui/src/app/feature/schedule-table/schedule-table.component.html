@@ -13,7 +13,8 @@
             <tr *ngFor="let task of tasks; let i = index">
                 <td class="table-column">{{ i + 1 }}</td>
                 <td class="table-column">
-                    <a href="#task-info" class="task-link" (click)="viewTaskDetails(task, $event)">{{ task.name }}</a>
+                    <a href="#task-info" data-bs-toggle="modal" data-bs-target="#taskInfoModal" class="task-link"
+                        (click)="viewTaskDetails(task, $event)">{{ task.name }}</a>
                 </td>
                 <td class="table-column task-status">
                     <span
@@ -39,22 +40,8 @@
     </table>
 </div>
 
-<!-- Task Details Modal -->
-<!-- Move to separate component? -->
-<div class="modal-backdrop" *ngIf="selectedTask">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>{{ selectedTask.name }}</h3>
-        </div>
-        <p><strong>Status:</strong> {{ selectedTask.status }}</p>
-        <p *ngIf="selectedTask.description"><strong>Description:</strong> {{ selectedTask.description }}</p>
-        <p><strong>Task ID to execute:</strong> {{ selectedTask.taskIdToExecute }}</p>
-        <p><strong>Cron Expression:</strong> {{ selectedTask.cronExpression }}</p>
-        <div class="modal-footer">
-            <button class="btn btn-secondary" (click)="closeTaskDetails()">Close</button>
-        </div>
-    </div>
-</div>
+<!-- Modals -->
+<app-task-info-modal [selectedTask]="selectedTask"></app-task-info-modal>
 
 <app-success-message-modal [modalId]="`taskSuccessfullyStartedModal`" [modalTitle]="`Task Started`"
-    [modalBody]="successMessage | async"></app-success-message-modal>
+    [modalBody]="successMessage | async" [errorMessage]="errorMessage | async"></app-success-message-modal>

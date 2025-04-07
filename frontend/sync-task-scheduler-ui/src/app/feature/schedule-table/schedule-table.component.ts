@@ -5,11 +5,12 @@ import { TaskStatus } from '../../core/model/task-status';
 import { TaskService } from '../../core/service/task-service';
 import { TaskFetchingError } from '../../core/error/task-fetching-error';
 import { SchedulerService } from '../../core/service/scheduler-service';
-import { ModalComponent } from '../success-message-modal/success-message-modal.component';
+import { SuccessMessageModalComponent } from '../success-message-modal/success-message-modal.component';
+import { TaskInfoModalComponent } from '../task-info-modal/task-info-modal.component';
 
 @Component({
   selector: 'app-schedule-table',
-  imports: [CommonModule, ModalComponent],
+  imports: [CommonModule, SuccessMessageModalComponent, TaskInfoModalComponent],
   templateUrl: './schedule-table.component.html',
   styleUrl: './schedule-table.component.css',
 })
@@ -50,10 +51,8 @@ export class ScheduleTableComponent implements OnInit {
   }
 
   runTask(task: Task) {
-    // todo: Remove success message after a user click or press something.
-
-    this.errorMessage.emit(null);
-    this.successMessage.emit(null);
+    //fixme: In case of error occurs, the modal is still opened with successfull message.
+    // As a solution, open modal and show spinner to the user while the reuqest is proccessing on the backend.
 
     this.schedulerService.triggerTask(task).subscribe({
       next: (message: string) => {
