@@ -5,10 +5,11 @@ import { TaskStatus } from '../../core/model/task-status';
 import { TaskService } from '../../core/service/task-service';
 import { TaskFetchingError } from '../../core/error/task-fetching-error';
 import { SchedulerService } from '../../core/service/scheduler-service';
+import { ModalComponent } from '../success-message-modal/success-message-modal.component';
 
 @Component({
   selector: 'app-schedule-table',
-  imports: [CommonModule],
+  imports: [CommonModule, ModalComponent],
   templateUrl: './schedule-table.component.html',
   styleUrl: './schedule-table.component.css',
 })

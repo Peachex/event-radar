@@ -5,7 +5,7 @@ import { SchedulerSearchBarComponent } from '../../feature/scheduler-search-bar/
 import { Task } from '../../core/model/task';
 import { ErrorMessageComponent } from '../../feature/error-message/error-message.component';
 import { EmptyResultsComponent } from '../../feature/empty-results/empty-results.component';
-import { SuccessMessageComponent } from '../../feature/success-message/success-message.component';
+import { ModalComponent } from '../../feature/success-message-modal/success-message-modal.component';
 
 @Component({
   selector: 'app-scheduler-page',
@@ -13,7 +13,6 @@ import { SuccessMessageComponent } from '../../feature/success-message/success-m
     FormsModule,
     ScheduleTableComponent,
     SchedulerSearchBarComponent,
-    SuccessMessageComponent,
     ErrorMessageComponent,
     EmptyResultsComponent,
   ],

@@ -2,8 +2,6 @@
     <app-scheduler-search-bar (fetchedTasks)="fetchResultsFromSearchBarComponent($event)"
         (errorMessage)="onErrorMessageUpdate($event)"></app-scheduler-search-bar>
 
-    <app-success-message [successMessage]="successMessage"></app-success-message>
-
     <app-schedule-table [(tasks)]="tasks" (successMessage)="onSuccessMessageUpdate($event)"
         (errorMessage)="onErrorMessageUpdate($event)"
         (fetchForTableInitIsCompleted)="onFetchForTableInitIsCompletedUpdate($event)"></app-schedule-table>

@@ -26,7 +26,8 @@
                 </td>
                 <td class="table-column task-buttons-column">
                     <div class="task-buttons">
-                        <button class="btn btn-success btn-sm" (click)="runTask(task)">Run Now</button>
+                        <button class="btn btn-success btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#taskSuccessfullyStartedModal" (click)="runTask(task)">Run Now</button>
                         <button class="btn btn-warning btn-sm" (click)="updateTaskStatus(task)">
                             {{ task.status.toString() === 'ACTIVE' ? 'Pause' : 'Resume' }}
                         </button>
@@ -54,3 +55,6 @@
         </div>
     </div>
 </div>
+
+<app-success-message-modal [modalId]="`taskSuccessfullyStartedModal`" [modalTitle]="`Task Started`"
+    [modalBody]="successMessage | async"></app-success-message-modal>
