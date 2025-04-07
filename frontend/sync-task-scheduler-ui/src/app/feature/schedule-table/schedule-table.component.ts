@@ -4,6 +4,7 @@ import { Task } from '../../core/model/task';
 import { TaskStatus } from '../../core/model/task-status';
 import { TaskService } from '../../core/service/task-service';
 import { TaskFetchingError } from '../../core/error/task-fetching-error';
+import { SchedulerService } from '../../core/service/scheduler-service';
 
 @Component({
   selector: 'app-schedule-table',
@@ -14,12 +15,13 @@ import { TaskFetchingError } from '../../core/error/task-fetching-error';
 export class ScheduleTableComponent implements OnInit {
   @Input() tasks: Task[] = [];
   @Output() tasksChange = new EventEmitter<Task[]>();
+  @Output() successMessage = new EventEmitter<string | null>();
   @Output() errorMessage = new EventEmitter<string | null>();
   @Output() fetchForTableInitIsCompleted = new EventEmitter<boolean>();
 
   selectedTask: Task | null = null;
 
-  constructor(private taskService: TaskService) {}
+  constructor(private taskService: TaskService, private schedulerService: SchedulerService) {}
 
   ngOnInit(): void {
     this.taskService.findAllTasks().subscribe({
@@ -47,8 +49,21 @@ export class ScheduleTableComponent implements OnInit {
   }
 
   runTask(task: Task) {
-    //todo Call service method.
-    console.log(`Running task: ${task.name}`);
+    // todo: Remove success message after a user click or press something.
+
+    this.errorMessage.emit(null);
+    this.successMessage.emit(null);
+
+    this.schedulerService.triggerTask(task).subscribe({
+      next: (message: string) => {
+        this.successMessage.emit(message);
+        console.log(message);
+      },
+      error: (error: TaskFetchingError) => {
+        this.errorMessage.emit(error.message);
+        console.error('Error:', error.message);
+      },
+    });
   }
 
   updateTaskStatus(task: Task) {

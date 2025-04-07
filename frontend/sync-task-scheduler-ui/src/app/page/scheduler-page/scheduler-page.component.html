@@ -1,11 +1,15 @@
 <div class="scheduler-page">
     <app-scheduler-search-bar (fetchedTasks)="fetchResultsFromSearchBarComponent($event)"
         (errorMessage)="onErrorMessageUpdate($event)"></app-scheduler-search-bar>
-    <app-schedule-table [(tasks)]="tasks" (errorMessage)="onErrorMessageUpdate($event)"
+
+    <app-success-message [successMessage]="successMessage"></app-success-message>
+
+    <app-schedule-table [(tasks)]="tasks" (successMessage)="onSuccessMessageUpdate($event)"
+        (errorMessage)="onErrorMessageUpdate($event)"
         (fetchForTableInitIsCompleted)="onFetchForTableInitIsCompletedUpdate($event)"></app-schedule-table>
-    <div class="results-message">
-        <app-error-message [errorMessage]="errorMessage"></app-error-message>
-        <app-empty-results [tasks]="tasks" [errorMessage]="errorMessage"
-            [fetchForTableInitIsCompleted]="fetchForTableInitIsCompleted"></app-empty-results>
-    </div>
+
+    <app-error-message [errorMessage]="errorMessage"></app-error-message>
+
+    <app-empty-results [tasks]="tasks" [errorMessage]="errorMessage"
+        [fetchForTableInitIsCompleted]="fetchForTableInitIsCompleted"></app-empty-results>
 </div>

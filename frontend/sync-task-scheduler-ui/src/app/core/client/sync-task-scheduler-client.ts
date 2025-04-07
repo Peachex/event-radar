@@ -10,8 +10,13 @@ import { SearchByFieldsRequest } from '../model/search-by-field-request';
 })
 export class SyncTaskSchedulerClient {
   private readonly syncTaskSchedulerPort: string = '8089';
+
+  // Tasks APIs
   private readonly retrieveAllTasksApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;
   private readonly retrieveTasksByFieldsApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks/search`;
+
+  // Scheduler APIs
+  private readonly triggerTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/scheduler/run`;
 
   constructor(private httpClient: HttpClient) {}
 
@@ -30,5 +35,11 @@ export class SyncTaskSchedulerClient {
         return throwError(() => new TaskFetchingError('Failed to fetch tasks. Please try again later.', error));
       })
     );
+  }
+
+  triggerTask(taskId: number): Observable<{}> {
+    const finalUrl: string = this.triggerTaskApiUrl + '/' + taskId;
+    console.log(finalUrl);
+    return this.httpClient.post(finalUrl, {});
   }
 }
