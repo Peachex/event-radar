@@ -5,7 +5,7 @@ import { TaskStatus } from '../../core/model/task-status';
 import { TaskService } from '../../core/service/task-service';
 import { TaskFetchingError } from '../../core/error/task-fetching-error';
 import { SchedulerService } from '../../core/service/scheduler-service';
-import { SuccessMessageModalComponent } from '../success-message-modal/success-message-modal.component';
+import { SuccessMessageModalComponent } from '../schedule-action-result-modal/schedule-action-result-modal.component';
 import { TaskInfoModalComponent } from '../task-info-modal/task-info-modal.component';
 
 @Component({
@@ -19,7 +19,9 @@ export class ScheduleTableComponent implements OnInit {
   @Output() tasksChange = new EventEmitter<Task[]>();
   @Output() successMessage = new EventEmitter<string | null>();
   @Output() errorMessage = new EventEmitter<string | null>();
+  @Output() modalErrorMessage = new EventEmitter<string | null>();
   @Output() fetchForTableInitIsCompleted = new EventEmitter<boolean>();
+  taskScheduleActionIsCompleted: boolean = false;
 
   selectedTask: Task | null = null;
 
@@ -51,16 +53,17 @@ export class ScheduleTableComponent implements OnInit {
   }
 
   runTask(task: Task) {
-    //fixme: In case of error occurs, the modal is still opened with successfull message.
-    // As a solution, open modal and show spinner to the user while the reuqest is proccessing on the backend.
-
+    this.modalErrorMessage.emit(null);
+    this.taskScheduleActionIsCompleted = false;
     this.schedulerService.triggerTask(task).subscribe({
       next: (message: string) => {
         this.successMessage.emit(message);
+        this.taskScheduleActionIsCompleted = true;
         console.log(message);
       },
       error: (error: TaskFetchingError) => {
-        this.errorMessage.emit(error.message);
+        this.modalErrorMessage.emit(error.message);
+        this.taskScheduleActionIsCompleted = true;
         console.error('Error:', error.message);
       },
     });

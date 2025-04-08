@@ -44,4 +44,5 @@
 <app-task-info-modal [selectedTask]="selectedTask"></app-task-info-modal>
 
 <app-success-message-modal [modalId]="`taskSuccessfullyStartedModal`" [modalTitle]="`Task Started`"
-    [modalBody]="successMessage | async" [errorMessage]="errorMessage | async"></app-success-message-modal>
+    [modalBody]="successMessage | async" [modalErrorMessage]="modalErrorMessage | async"
+    [taskScheduleActionIsCompleted]="taskScheduleActionIsCompleted"></app-success-message-modal>

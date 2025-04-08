@@ -9,7 +9,7 @@ import { SearchByFieldsRequest } from '../model/search-by-field-request';
   providedIn: 'root',
 })
 export class SyncTaskSchedulerClient {
-  private readonly syncTaskSchedulerPort: string = '8089';
+  private readonly syncTaskSchedulerPort: string = '8088';
 
   // Tasks APIs
   private readonly retrieveAllTasksApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;

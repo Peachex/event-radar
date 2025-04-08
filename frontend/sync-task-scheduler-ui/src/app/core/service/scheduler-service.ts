@@ -13,7 +13,6 @@ export class SchedulerService {
 
   triggerTask(task: Task): Observable<string> {
     //todo Refactor handle error.
-
     return this.taskClient.triggerTask(task.id).pipe(
       map(() => 'Task started successfully!'),
       catchError(this.handleError)
