@@ -7,8 +7,8 @@
             </div>
 
             <div class="modal-body">
-                <app-in-progress-process-spinner [actionIsCompleted]="taskScheduleActionIsCompleted"
-                    [errorMessage]="modalErrorMessage"></app-in-progress-process-spinner>
+                <app-in-progress-process-spinner
+                    [actionIsCompleted]="taskScheduleActionIsCompleted"></app-in-progress-process-spinner>
 
                 <div *ngIf="processIsCompletedWithoutErrors()">
                     <app-success-message [successMessage]="modalBody"></app-success-message>

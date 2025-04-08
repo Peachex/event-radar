@@ -9,17 +9,12 @@ import { Component, Input } from '@angular/core';
 })
 export class InProgressProcessSpinnerComponent {
   @Input() actionIsCompleted: boolean = false;
-  @Input() errorMessage: string | null = '';
 
   processIsInProgress(): boolean {
-    return this.actionIsNotCompleted() && this.errorMessageIsNull();
+    return this.actionIsNotCompleted();
   }
 
   actionIsNotCompleted() {
     return !this.actionIsCompleted;
-  }
-
-  errorMessageIsNull() {
-    return !this.errorMessage;
   }
 }

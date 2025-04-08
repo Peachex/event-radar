@@ -28,6 +28,7 @@ export class SchedulerSearchBarComponent {
         this.errorMessage.emit(null);
       },
       error: (error: TaskFetchingError) => {
+        this.searchIsCompleted.emit(true);
         console.error('Error fetching tasks:', error);
         this.errorMessage.emit(error.message);
       },
