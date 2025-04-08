@@ -6,3 +6,5 @@
 ::ng-deep app-success-message .success-message {
   width: 80% !important;
 }
+
+/* Fix issue with styles width*/

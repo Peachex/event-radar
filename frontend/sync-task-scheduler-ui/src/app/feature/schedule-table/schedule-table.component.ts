@@ -21,8 +21,8 @@ export class ScheduleTableComponent implements OnInit {
   @Output() errorMessage = new EventEmitter<string | null>();
   @Output() modalErrorMessage = new EventEmitter<string | null>();
   @Output() fetchForTableInitIsCompleted = new EventEmitter<boolean>();
-  taskScheduleActionIsCompleted: boolean = false;
 
+  taskScheduleActionIsCompleted: boolean = false;
   selectedTask: Task | null = null;
 
   constructor(private taskService: TaskService, private schedulerService: SchedulerService) {}

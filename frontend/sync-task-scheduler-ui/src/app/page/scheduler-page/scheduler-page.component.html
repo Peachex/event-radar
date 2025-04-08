@@ -1,6 +1,13 @@
 <div class="scheduler-page">
     <app-scheduler-search-bar (fetchedTasks)="fetchResultsFromSearchBarComponent($event)"
+        (searchIsCompleted)="onSearchIsCompletedUpdate($event)"
         (errorMessage)="onErrorMessageUpdate($event)"></app-scheduler-search-bar>
+
+    <app-in-progress-process-spinner *ngIf="searchIsCompleted" [actionIsCompleted]="fetchForTableInitIsCompleted"
+        [errorMessage]="errorMessage"></app-in-progress-process-spinner>
+
+    <app-in-progress-process-spinner [actionIsCompleted]="searchIsCompleted"
+        [errorMessage]="errorMessage"></app-in-progress-process-spinner>
 
     <app-schedule-table [(tasks)]="tasks" (successMessage)="onSuccessMessageUpdate($event)"
         (errorMessage)="onErrorMessageUpdate($event)"

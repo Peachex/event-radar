@@ -13,14 +13,18 @@ import { TaskFetchingError } from '../../core/error/task-fetching-error';
 export class SchedulerSearchBarComponent {
   @Input() searchQuery: string = '';
   @Output() fetchedTasks = new EventEmitter<Task[]>();
+  @Output() searchIsCompleted = new EventEmitter<boolean>();
   @Output() errorMessage = new EventEmitter<string | null>();
 
   constructor(private taskService: TaskService) {}
 
   performSearch() {
+    this.searchIsCompleted.emit(false);
+
     this.taskService.findTasksBySearchQuery(this.searchQuery).subscribe({
       next: (tasks: Task[]) => {
         this.fetchedTasks.emit(tasks);
+        this.searchIsCompleted.emit(true);
         this.errorMessage.emit(null);
       },
       error: (error: TaskFetchingError) => {
@@ -31,10 +35,13 @@ export class SchedulerSearchBarComponent {
   }
 
   findAll() {
+    this.searchIsCompleted.emit(false);
+
     this.searchQuery = '';
     this.taskService.findAllTasks().subscribe({
       next: (tasks: Task[]) => {
         this.fetchedTasks.emit(tasks);
+        this.searchIsCompleted.emit(true);
         this.errorMessage.emit(null);
       },
       error: (error: TaskFetchingError) => {
