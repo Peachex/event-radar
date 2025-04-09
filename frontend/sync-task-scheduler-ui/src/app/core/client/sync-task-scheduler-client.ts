@@ -4,6 +4,7 @@ import { Task } from '../model/task';
 import { catchError, Observable, throwError } from 'rxjs';
 import { TaskFetchingError } from '../error/task-fetching-error';
 import { SearchByFieldsRequest } from '../model/search-by-field-request';
+import { ExceptionResponse } from '../model/exception-response';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +24,10 @@ export class SyncTaskSchedulerClient {
   retrieveAllTasks(): Observable<Task[]> {
     return this.httpClient.get<Task[]>(this.retrieveAllTasksApiUrl).pipe(
       catchError((error) => {
-        return throwError(() => new TaskFetchingError('Failed to fetch tasks. Please try again later.', error));
+        console.error(error.error as ExceptionResponse);
+        return throwError(
+          () => new TaskFetchingError('Failed to fetch tasks. Please try again later.', error.error, error)
+        );
       })
     );
   }
@@ -32,7 +36,10 @@ export class SyncTaskSchedulerClient {
     const params = new HttpParams().set('isCombinedMatch', isCombinedMatch);
     return this.httpClient.post<Task[]>(this.retrieveTasksByFieldsApiUrl, searchByFieldsRequest, { params }).pipe(
       catchError((error) => {
-        return throwError(() => new TaskFetchingError('Failed to fetch tasks. Please try again later.', error));
+        console.error(error.error as ExceptionResponse);
+        return throwError(
+          () => new TaskFetchingError('Failed to fetch tasks. Please try again later.', error.error, error)
+        );
       })
     );
   }

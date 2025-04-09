@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import { Task } from '../model/task';
 import { SyncTaskSchedulerClient } from '../client/sync-task-scheduler-client';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { TaskFetchingError } from '../error/task-fetching-error';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TaskSchedulerError } from '../error/task-scheduler-error';
+import { ErrorUtil } from '../util/error-util';
+import { ExceptionResponse } from '../model/exception-response';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +14,6 @@ export class SchedulerService {
   constructor(private taskClient: SyncTaskSchedulerClient) {}
 
   triggerTask(task: Task): Observable<string> {
-    //todo Refactor handle error.
     return this.taskClient.triggerTask(task.id).pipe(
       map(() => 'Task started successfully!'),
       catchError(this.handleError)
@@ -25,20 +26,12 @@ export class SchedulerService {
     if (error.error instanceof ErrorEvent) {
       errorMessage = `Client error: ${error.error.message}`;
     } else {
-      switch (error.status) {
-        case 400:
-          errorMessage = 'Invalid request. Please check your input.';
-          break;
-        case 404:
-          errorMessage = 'Task not found!';
-          break;
-        case 500:
-          errorMessage = 'Internal server error. Try again later.';
-          break;
-        default:
-          errorMessage = `Unexpected error: ${error.status}`;
-      }
+      errorMessage = ErrorUtil.createErrorMessageBasedOnErrorStatus(error.status);
     }
-    return throwError(() => new TaskFetchingError(errorMessage));
+
+    let exceptionResponse = error.error as ExceptionResponse;
+    console.error(exceptionResponse);
+
+    return throwError(() => new TaskSchedulerError(errorMessage, error.error));
   }
 }
