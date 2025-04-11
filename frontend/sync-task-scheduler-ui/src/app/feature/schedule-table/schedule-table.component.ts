@@ -7,16 +7,10 @@ import { TaskFetchingError } from '../../core/error/task-fetching-error';
 import { SchedulerService } from '../../core/service/scheduler-service';
 import { ScheduleActionResultModalComponent } from '../schedule-action-result-modal/schedule-action-result-modal.component';
 import { TaskInfoModalComponent } from '../task-info-modal/task-info-modal.component';
-import { InProgressProcessSpinnerComponent } from '../in-progress-process-spinner/in-progress-process-spinner.component';
 
 @Component({
   selector: 'app-schedule-table',
-  imports: [
-    CommonModule,
-    ScheduleActionResultModalComponent,
-    TaskInfoModalComponent,
-    InProgressProcessSpinnerComponent,
-  ],
+  imports: [CommonModule, ScheduleActionResultModalComponent, TaskInfoModalComponent],
   templateUrl: './schedule-table.component.html',
   styleUrl: './schedule-table.component.css',
 })
@@ -30,9 +24,6 @@ export class ScheduleTableComponent implements OnInit {
 
   taskScheduleActionIsCompleted: boolean = true;
   selectedTask: Task | null = null;
-
-  modalId: string = '';
-  modalTitle: string = '';
 
   constructor(private taskService: TaskService, private schedulerService: SchedulerService) {}
 
@@ -50,11 +41,6 @@ export class ScheduleTableComponent implements OnInit {
         this.fetchForTableInitIsCompleted.emit(true);
       },
     });
-  }
-
-  configureModal(id: string, title: string) {
-    this.modalId = id;
-    this.modalTitle = title;
   }
 
   viewTaskDetails(task: Task, event: Event) {
