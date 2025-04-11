@@ -8,13 +8,13 @@ import { Component, Input } from '@angular/core';
   styleUrl: './in-progress-process-spinner.component.css',
 })
 export class InProgressProcessSpinnerComponent {
-  @Input() actionIsCompleted: boolean = false;
+  @Input() actionsAreCompleted: boolean[] = [];
 
-  processIsInProgress(): boolean {
-    return this.actionIsNotCompleted();
+  processesAreInProgress(): boolean {
+    return this.actionsAreNotCompleted();
   }
 
-  actionIsNotCompleted() {
-    return !this.actionIsCompleted;
+  actionsAreNotCompleted() {
+    return this.actionsAreCompleted.includes(false);
   }
 }

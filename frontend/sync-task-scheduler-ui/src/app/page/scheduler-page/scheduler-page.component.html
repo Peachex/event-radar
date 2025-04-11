@@ -3,10 +3,8 @@
         (searchIsCompleted)="onSearchIsCompletedUpdate($event)"
         (errorMessage)="onErrorMessageUpdate($event)"></app-scheduler-search-bar>
 
-    <app-in-progress-process-spinner *ngIf="searchIsCompleted"
-        [actionIsCompleted]="fetchForTableInitIsCompleted"></app-in-progress-process-spinner>
-
-    <app-in-progress-process-spinner [actionIsCompleted]="searchIsCompleted"></app-in-progress-process-spinner>
+    <app-in-progress-process-spinner
+        [actionsAreCompleted]="[fetchForTableInitIsCompleted,searchIsCompleted]"></app-in-progress-process-spinner>
 
     <app-schedule-table [(tasks)]="tasks" (successMessage)="onSuccessMessageUpdate($event)"
         (errorMessage)="onErrorMessageUpdate($event)"
