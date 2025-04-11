@@ -34,11 +34,6 @@ export class ScheduleTableComponent implements OnInit {
   modalId: string = '';
   modalTitle: string = '';
 
-  configureModal(id: string, title: string) {
-    this.modalId = id;
-    this.modalTitle = title;
-  }
-
   constructor(private taskService: TaskService, private schedulerService: SchedulerService) {}
 
   ngOnInit(): void {
@@ -55,6 +50,11 @@ export class ScheduleTableComponent implements OnInit {
         this.fetchForTableInitIsCompleted.emit(true);
       },
     });
+  }
+
+  configureModal(id: string, title: string) {
+    this.modalId = id;
+    this.modalTitle = title;
   }
 
   viewTaskDetails(task: Task, event: Event) {
