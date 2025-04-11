@@ -7,6 +7,7 @@ import { TaskFetchingError } from '../../core/error/task-fetching-error';
 import { SchedulerService } from '../../core/service/scheduler-service';
 import { ScheduleActionResultModalComponent } from '../schedule-action-result-modal/schedule-action-result-modal.component';
 import { TaskInfoModalComponent } from '../task-info-modal/task-info-modal.component';
+import { TaskSchedulerError } from '../../core/error/task-scheduler-error';
 
 @Component({
   selector: 'app-schedule-table',
@@ -53,49 +54,56 @@ export class ScheduleTableComponent implements OnInit {
   }
 
   runTask(task: Task) {
-    this.modalErrorMessage.emit(null);
-    this.taskScheduleActionIsCompleted = false;
+    this.clearErrorAndCompleteFlag();
     this.schedulerService.triggerTask(task).subscribe({
       next: (message: string) => {
-        this.successMessage.emit(message);
-        this.taskScheduleActionIsCompleted = true;
+        this.setSuccessMessageAndCompleteFlag(message);
       },
-      error: (error: TaskFetchingError) => {
-        this.modalErrorMessage.emit(error.message);
-        this.taskScheduleActionIsCompleted = true;
-        console.error('Error:', error.message);
+      error: (error: TaskSchedulerError) => {
+        this.handleTaskError(error);
       },
     });
   }
 
   updateTaskStatus(task: Task) {
-    this.modalErrorMessage.emit(null);
-    this.taskScheduleActionIsCompleted = false;
-
+    this.clearErrorAndCompleteFlag();
     const statusUpdateMethod = this.selectStatusUpdateMethod(task.status);
 
     statusUpdateMethod(task).subscribe({
       next: (message: string) => {
-        this.successMessage.emit(message);
-        this.taskScheduleActionIsCompleted = true;
+        this.setSuccessMessageAndCompleteFlag(message);
         this.switchTaskStatus(task);
       },
-      error: (error: TaskFetchingError) => {
-        this.modalErrorMessage.emit(error.message);
-        this.taskScheduleActionIsCompleted = true;
-        console.error('Error:', error.message);
+      error: (error: TaskSchedulerError) => {
+        this.handleTaskError(error);
       },
     });
-  }
-
-  private switchTaskStatus(task: Task): void {
-    task.status = task.status === TaskStatus.ACTIVE ? TaskStatus.PAUSED : TaskStatus.ACTIVE;
   }
 
   private selectStatusUpdateMethod(currentTaskStatus: TaskStatus): Function {
     return currentTaskStatus === TaskStatus.ACTIVE
       ? (t: Task) => this.schedulerService.pauseTask(t)
       : (t: Task) => this.schedulerService.resumeTask(t);
+  }
+
+  private switchTaskStatus(task: Task): void {
+    task.status = task.status === TaskStatus.ACTIVE ? TaskStatus.PAUSED : TaskStatus.ACTIVE;
+  }
+
+  private clearErrorAndCompleteFlag() {
+    this.modalErrorMessage.emit(null);
+    this.taskScheduleActionIsCompleted = false;
+  }
+
+  private setSuccessMessageAndCompleteFlag(message: string) {
+    this.successMessage.emit(message);
+    this.taskScheduleActionIsCompleted = true;
+  }
+
+  handleTaskError(error: TaskFetchingError | TaskSchedulerError) {
+    this.modalErrorMessage.emit(error.message);
+    this.taskScheduleActionIsCompleted = true;
+    console.error('Error:', error.message);
   }
 
   deleteTask(taskId: number) {
