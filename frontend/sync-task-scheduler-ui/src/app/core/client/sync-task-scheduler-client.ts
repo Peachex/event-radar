@@ -18,6 +18,8 @@ export class SyncTaskSchedulerClient {
 
   // Scheduler APIs
   private readonly triggerTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/scheduler/run`;
+  private readonly pauseTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/scheduler/pause`;
+  private readonly resumeTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/scheduler/resume`;
 
   constructor(private httpClient: HttpClient) {}
 
@@ -46,7 +48,16 @@ export class SyncTaskSchedulerClient {
 
   triggerTask(taskId: number): Observable<{}> {
     const finalUrl: string = this.triggerTaskApiUrl + '/' + taskId;
-    console.log(finalUrl);
     return this.httpClient.post(finalUrl, {});
+  }
+
+  pauseTask(taskId: number): Observable<Task> {
+    const finalUrl: string = this.pauseTaskApiUrl + '/' + taskId;
+    return this.httpClient.post<Task>(finalUrl, {});
+  }
+
+  resumeTask(taskId: number): Observable<Task> {
+    const finalUrl: string = this.resumeTaskApiUrl + '/' + taskId;
+    return this.httpClient.post<Task>(finalUrl, {});
   }
 }

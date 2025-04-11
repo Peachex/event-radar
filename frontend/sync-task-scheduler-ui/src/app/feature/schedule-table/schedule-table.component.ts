@@ -5,12 +5,18 @@ import { TaskStatus } from '../../core/model/task-status';
 import { TaskService } from '../../core/service/task-service';
 import { TaskFetchingError } from '../../core/error/task-fetching-error';
 import { SchedulerService } from '../../core/service/scheduler-service';
-import { SuccessMessageModalComponent } from '../schedule-action-result-modal/schedule-action-result-modal.component';
+import { ScheduleActionResultModalComponent } from '../schedule-action-result-modal/schedule-action-result-modal.component';
 import { TaskInfoModalComponent } from '../task-info-modal/task-info-modal.component';
+import { InProgressProcessSpinnerComponent } from '../in-progress-process-spinner/in-progress-process-spinner.component';
 
 @Component({
   selector: 'app-schedule-table',
-  imports: [CommonModule, SuccessMessageModalComponent, TaskInfoModalComponent],
+  imports: [
+    CommonModule,
+    ScheduleActionResultModalComponent,
+    TaskInfoModalComponent,
+    InProgressProcessSpinnerComponent,
+  ],
   templateUrl: './schedule-table.component.html',
   styleUrl: './schedule-table.component.css',
 })
@@ -22,8 +28,16 @@ export class ScheduleTableComponent implements OnInit {
   @Output() modalErrorMessage = new EventEmitter<string | null>();
   @Output() fetchForTableInitIsCompleted = new EventEmitter<boolean>();
 
-  taskScheduleActionIsCompleted: boolean = false;
+  taskScheduleActionIsCompleted: boolean = true;
   selectedTask: Task | null = null;
+
+  modalId: string = '';
+  modalTitle: string = '';
+
+  configureModal(id: string, title: string) {
+    this.modalId = id;
+    this.modalTitle = title;
+  }
 
   constructor(private taskService: TaskService, private schedulerService: SchedulerService) {}
 
@@ -59,7 +73,6 @@ export class ScheduleTableComponent implements OnInit {
       next: (message: string) => {
         this.successMessage.emit(message);
         this.taskScheduleActionIsCompleted = true;
-        console.log(message);
       },
       error: (error: TaskFetchingError) => {
         this.modalErrorMessage.emit(error.message);
@@ -70,8 +83,33 @@ export class ScheduleTableComponent implements OnInit {
   }
 
   updateTaskStatus(task: Task) {
-    //todo Call service method.
+    this.modalErrorMessage.emit(null);
+    this.taskScheduleActionIsCompleted = false;
+
+    const statusUpdateMethod = this.selectStatusUpdateMethod(task.status);
+
+    statusUpdateMethod(task).subscribe({
+      next: (message: string) => {
+        this.successMessage.emit(message);
+        this.taskScheduleActionIsCompleted = true;
+        this.switchTaskStatus(task);
+      },
+      error: (error: TaskFetchingError) => {
+        this.modalErrorMessage.emit(error.message);
+        this.taskScheduleActionIsCompleted = true;
+        console.error('Error:', error.message);
+      },
+    });
+  }
+
+  private switchTaskStatus(task: Task): void {
     task.status = task.status === TaskStatus.ACTIVE ? TaskStatus.PAUSED : TaskStatus.ACTIVE;
+  }
+
+  private selectStatusUpdateMethod(currentTaskStatus: TaskStatus): Function {
+    return currentTaskStatus === TaskStatus.ACTIVE
+      ? (t: Task) => this.schedulerService.pauseTask(t)
+      : (t: Task) => this.schedulerService.resumeTask(t);
   }
 
   deleteTask(taskId: number) {

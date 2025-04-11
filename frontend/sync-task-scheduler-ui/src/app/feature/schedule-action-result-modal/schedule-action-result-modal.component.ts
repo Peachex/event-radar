@@ -5,12 +5,12 @@ import { SuccessMessageComponent } from '../success-message/success-message.comp
 import { InProgressProcessSpinnerComponent } from '../in-progress-process-spinner/in-progress-process-spinner.component';
 
 @Component({
-  selector: 'app-success-message-modal',
+  selector: 'app-schedule-action-result-modal',
   imports: [CommonModule, InProgressProcessSpinnerComponent, ErrorMessageComponent, SuccessMessageComponent],
   templateUrl: './schedule-action-result-modal.component.html',
   styleUrl: './schedule-action-result-modal.component.css',
 })
-export class SuccessMessageModalComponent {
+export class ScheduleActionResultModalComponent {
   @Input() modalId: string = '';
   @Input() modalTitle: string | null = '';
   @Input() modalBody: string | null = '';

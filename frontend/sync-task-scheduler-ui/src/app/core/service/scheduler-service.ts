@@ -20,6 +20,20 @@ export class SchedulerService {
     );
   }
 
+  pauseTask(task: Task): Observable<string> {
+    return this.taskClient.pauseTask(task.id).pipe(
+      map(() => 'Task paused successfully!'),
+      catchError(this.handleError)
+    );
+  }
+
+  resumeTask(task: Task): Observable<string> {
+    return this.taskClient.resumeTask(task.id).pipe(
+      map(() => 'Task resumed successfully!'),
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An unknown error occurred!';
 
