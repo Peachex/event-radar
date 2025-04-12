@@ -1,16 +1,16 @@
-<div class="modal fade" *ngIf="selectedTask" id="taskInfoModal" data-bs-backdrop="static" data-bs-keyboard="false"
-    tabindex="-1" aria-labelledby="taskInfoModalLabel" aria-hidden="true">
+<div class="modal fade" id="taskInfoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="taskInfoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="taskInfoModalLabel">{{ selectedTask.name }}</h1>
+                <h1 class="modal-title fs-5" id="taskInfoModalLabel">{{ selectedTask?.name }}</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p><strong>Status:</strong> {{ selectedTask.status }}</p>
-                <p *ngIf="selectedTask.description"><strong>Description:</strong> {{ selectedTask.description }}</p>
-                <p><strong>Task ID to execute:</strong> {{ selectedTask.taskIdToExecute }}</p>
-                <p><strong>Cron Expression:</strong> {{ selectedTask.cronExpression }}</p>
+                <p><strong>Status:</strong> {{ selectedTask?.status }}</p>
+                <p *ngIf="selectedTask?.description"><strong>Description:</strong> {{ selectedTask?.description }}</p>
+                <p><strong>Task ID to execute:</strong> {{ selectedTask?.taskIdToExecute }}</p>
+                <p><strong>Cron Expression:</strong> {{ selectedTask?.cronExpression }}</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
