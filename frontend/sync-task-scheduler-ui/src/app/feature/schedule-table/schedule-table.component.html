@@ -10,7 +10,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let task of tasks; let i = index">
+            <tr *ngFor="let task of getTasksSortedByStatus(); let i = index">
                 <td class="table-column">{{ i + 1 }}</td>
                 <td class="table-column">
                     <a href="#task-info" data-bs-toggle="modal" data-bs-target="#taskInfoModal" class="task-link"

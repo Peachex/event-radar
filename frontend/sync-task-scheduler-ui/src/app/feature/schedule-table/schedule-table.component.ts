@@ -44,6 +44,16 @@ export class ScheduleTableComponent implements OnInit {
     });
   }
 
+  getTasksSortedByStatus(): Task[] {
+    return this.tasks.slice().sort((t1, t2) => {
+      const priority = {
+        [TaskStatus.ACTIVE]: 0,
+        [TaskStatus.PAUSED]: 1,
+      };
+      return priority[t1.status] - priority[t2.status];
+    });
+  }
+
   viewTaskDetails(task: Task, event: Event) {
     event.preventDefault();
     this.selectedTask = task;
