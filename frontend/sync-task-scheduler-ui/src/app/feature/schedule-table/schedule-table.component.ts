@@ -80,6 +80,26 @@ export class ScheduleTableComponent implements OnInit {
     });
   }
 
+  deleteTask(task: Task) {
+    this.clearErrorAndCompleteFlag();
+    this.taskService.deleteTask(task).subscribe({
+      next: (message: string) => {
+        this.setSuccessMessageAndCompleteFlag(message);
+        this.removeTaskFromList(task);
+      },
+      error: (error: TaskSchedulerError) => {
+        this.handleTaskError(error);
+      },
+    });
+  }
+
+  private removeTaskFromList(task: Task) {
+    const index = this.tasks.indexOf(task);
+    if (index > -1) {
+      this.tasks.splice(index, 1);
+    }
+  }
+
   private selectStatusUpdateMethod(currentTaskStatus: TaskStatus): Function {
     return currentTaskStatus === TaskStatus.ACTIVE
       ? (t: Task) => this.schedulerService.pauseTask(t)
@@ -100,14 +120,9 @@ export class ScheduleTableComponent implements OnInit {
     this.taskScheduleActionIsCompleted = true;
   }
 
-  handleTaskError(error: TaskFetchingError | TaskSchedulerError) {
+  private handleTaskError(error: TaskFetchingError | TaskSchedulerError) {
     this.modalErrorMessage.emit(error.message);
     this.taskScheduleActionIsCompleted = true;
     console.error('Error:', error.message);
-  }
-
-  deleteTask(taskId: number) {
-    //todo Call service method.
-    this.tasks = this.tasks.filter((task) => task.id !== taskId);
   }
 }

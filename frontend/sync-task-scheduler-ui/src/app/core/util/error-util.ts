@@ -1,3 +1,8 @@
+import { HttpErrorResponse } from '@angular/common/http';
+import { ExceptionResponse } from '../model/exception-response';
+import { throwError } from 'rxjs';
+import { TaskSchedulerError } from '../error/task-scheduler-error';
+
 export class ErrorUtil {
   static createErrorMessageBasedOnErrorStatus(status: number): string {
     let errorMessage;
@@ -15,5 +20,20 @@ export class ErrorUtil {
         errorMessage = `Unexpected error: ${status}`;
     }
     return errorMessage;
+  }
+
+  static handleError(error: HttpErrorResponse) {
+    let errorMessage = 'An unknown error occurred!';
+
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `Client error: ${error.error.message}`;
+    } else {
+      errorMessage = ErrorUtil.createErrorMessageBasedOnErrorStatus(error.status);
+    }
+
+    let exceptionResponse = error.error as ExceptionResponse;
+    console.error(exceptionResponse);
+
+    return throwError(() => new TaskSchedulerError(errorMessage, error.error));
   }
 }

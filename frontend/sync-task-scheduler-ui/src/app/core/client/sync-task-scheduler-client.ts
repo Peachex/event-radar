@@ -15,6 +15,7 @@ export class SyncTaskSchedulerClient {
   // Tasks APIs
   private readonly retrieveAllTasksApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;
   private readonly retrieveTasksByFieldsApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks/search`;
+  private readonly deleteTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;
 
   // Scheduler APIs
   private readonly triggerTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/scheduler/run`;
@@ -44,6 +45,11 @@ export class SyncTaskSchedulerClient {
         );
       })
     );
+  }
+
+  deleteTask(taskId: number): Observable<Task> {
+    const finalUrl: string = this.deleteTaskApiUrl + '/' + taskId;
+    return this.httpClient.delete<Task>(finalUrl, {});
   }
 
   triggerTask(taskId: number): Observable<{}> {

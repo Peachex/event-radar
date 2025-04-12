@@ -27,14 +27,15 @@
                 </td>
                 <td class="table-column task-buttons-column">
                     <div class="task-buttons">
-                        <button class="btn btn-success btn-sm" data-bs-toggle="modal"
-                            data-bs-target="#taskSuccessfullyStartedModal" (click)="runTask(task)">Run
+                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#taskStartedModal"
+                            (click)="runTask(task)">Run
                             Now</button>
                         <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
                             data-bs-target="#taskStatusUpdatedModal" (click)="updateTaskStatus(task)">
                             {{ task.status.toString() === 'ACTIVE' ? 'Pause' : 'Resume' }}
                         </button>
-                        <button class="btn btn-danger btn-sm" (click)="deleteTask(task.id)">Delete</button>
+                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#taskDeletedModal"
+                            (click)="deleteTask(task)">Delete</button>
                     </div>
                 </td>
             </tr>
@@ -45,10 +46,14 @@
 <!-- Modals -->
 <app-task-info-modal [selectedTask]="selectedTask"></app-task-info-modal>
 
-<app-schedule-action-result-modal [modalId]="`taskSuccessfullyStartedModal`" [modalTitle]="`Task Started`"
+<app-schedule-action-result-modal [modalId]="`taskStartedModal`" [modalTitle]="`Task Start`"
     [modalBody]="successMessage | async" [modalErrorMessage]="modalErrorMessage | async"
     [taskScheduleActionIsCompleted]="taskScheduleActionIsCompleted"></app-schedule-action-result-modal>
 
-<app-schedule-action-result-modal [modalId]="`taskStatusUpdatedModal`" [modalTitle]="`Task status update`"
+<app-schedule-action-result-modal [modalId]="`taskStatusUpdatedModal`" [modalTitle]="`Task Status Update`"
+    [modalBody]="successMessage | async" [modalErrorMessage]="modalErrorMessage | async"
+    [taskScheduleActionIsCompleted]="taskScheduleActionIsCompleted"></app-schedule-action-result-modal>
+
+<app-schedule-action-result-modal [modalId]="`taskDeletedModal`" [modalTitle]="`Task Deletion`"
     [modalBody]="successMessage | async" [modalErrorMessage]="modalErrorMessage | async"
     [taskScheduleActionIsCompleted]="taskScheduleActionIsCompleted"></app-schedule-action-result-modal>
