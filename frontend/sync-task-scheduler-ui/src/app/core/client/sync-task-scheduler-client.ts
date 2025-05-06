@@ -10,7 +10,7 @@ import { ExceptionResponse } from '../model/exception-response';
   providedIn: 'root',
 })
 export class SyncTaskSchedulerClient {
-  private readonly syncTaskSchedulerPort: string = '8088';
+  private readonly syncTaskSchedulerPort: string = '8089';
 
   // Tasks APIs
   private readonly retrieveAllTasksApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;

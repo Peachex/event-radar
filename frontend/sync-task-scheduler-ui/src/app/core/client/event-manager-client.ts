@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ExceptionResponse } from '../model/exception-response';
 import { catchError, Observable, throwError } from 'rxjs';
-import { TaskFetchingError } from '../error/task-fetching-error';
+import { TasksIdsFetchingError } from '../error/tasks-ids-fetching-error';
+import { EventManagerTaskId } from '../model/event-manager-task-id';
 
 @Injectable({
   providedIn: 'root',
@@ -15,12 +16,12 @@ export class EventManagerClient {
 
   constructor(private httpClient: HttpClient) {}
 
-  retrieveAllTasksIds(): Observable<string[]> {
-    return this.httpClient.get<string[]>(this.retrieveAllTasksApiUrl).pipe(
+  retrieveAllTasksIds(): Observable<EventManagerTaskId[]> {
+    return this.httpClient.get<EventManagerTaskId[]>(this.retrieveAllTasksApiUrl).pipe(
       catchError((error) => {
         console.error(error.error as ExceptionResponse);
         return throwError(
-          () => new TaskFetchingError('Failed to fetch tasks. Please try again later.', error.error, error)
+          () => new TasksIdsFetchingError('Failed to fetch tasks ids. Please try again later.', error.error, error)
         );
       })
     );

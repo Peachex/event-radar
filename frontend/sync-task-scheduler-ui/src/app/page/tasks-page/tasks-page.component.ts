@@ -5,7 +5,8 @@ import { InProgressProcessSpinnerComponent } from '../../feature/in-progress-pro
 import { ErrorMessageComponent } from '../../feature/error-message/error-message.component';
 import { EmptyResultsComponent } from '../../feature/empty-results/empty-results.component';
 import { TaskService } from '../../core/service/task-service';
-import { TaskFetchingError } from '../../core/error/task-fetching-error';
+import { EventManagerTaskId } from '../../core/model/event-manager-task-id';
+import { TasksIdsFetchingError } from '../../core/error/tasks-ids-fetching-error';
 
 @Component({
   selector: 'app-tasks-page',
@@ -14,7 +15,7 @@ import { TaskFetchingError } from '../../core/error/task-fetching-error';
   styleUrl: './tasks-page.component.css',
 })
 export class TasksPageComponent implements OnInit {
-  @Input() tasksIds: string[] = [];
+  @Input() tasksIdsResponse: EventManagerTaskId[] = [];
   successMessage: string | null = '';
   errorMessage: string | null = '';
   fetchForTableInitIsCompleted: boolean = false;
@@ -23,20 +24,15 @@ export class TasksPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.taskService.findAllTasksIds().subscribe({
-      next: (ids: string[]) => {
-        console.log(ids);
-
-        //todo Create model for event manager response (taskId list)
-
-        this.tasksIds = ids;
-        // this.tasksChange.emit(tasks);
-        // this.errorMessage.emit(null);
-        // this.fetchForTableInitIsCompleted.emit(true);
+      next: (ids: EventManagerTaskId[]) => {
+        this.tasksIdsResponse = ids;
+        this.errorMessage = null;
+        this.fetchForTableInitIsCompleted = true;
       },
-      error: (error: TaskFetchingError) => {
-        console.error('Error fetching tasks:', error);
-        // this.errorMessage.emit(error.message);
-        // this.fetchForTableInitIsCompleted.emit(true);
+      error: (error: TasksIdsFetchingError) => {
+        console.error('Error fetching tasks ids:', error);
+        this.errorMessage = error.message;
+        this.fetchForTableInitIsCompleted = true;
       },
     });
   }
@@ -54,13 +50,9 @@ export class TasksPageComponent implements OnInit {
     this.fetchForTableInitIsCompleted = isCompleted;
   }
 
-  private resetErrorMessage() {
-    this.errorMessage = null;
-  }
-
   private resetTasksInCaseOfErrorMessageExists(errorMessage: string | null) {
     if (errorMessage) {
-      this.tasksIds = [];
+      this.tasksIdsResponse = [];
     }
   }
 }

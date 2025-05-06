@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Task } from '../../core/model/task';
 import { CommonModule } from '@angular/common';
+import { EventManagerTaskId } from '../../core/model/event-manager-task-id';
 
 @Component({
   selector: 'app-empty-results',
@@ -9,7 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './empty-results.component.css',
 })
 export class EmptyResultsComponent {
-  @Input() tasks: Task[] = [];
+  @Input() tasks: Task[] | EventManagerTaskId[] = [];
   @Input() errorMessage: string | null = '';
   @Input() fetchForTableInitIsCompleted: boolean = false;
 

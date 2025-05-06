@@ -5,6 +5,7 @@ import { catchError, map, Observable } from 'rxjs';
 import { SearchByFieldsRequest } from '../model/search-by-field-request';
 import { ErrorUtil } from '../util/error-util';
 import { EventManagerClient } from '../client/event-manager-client';
+import { EventManagerTaskId } from '../model/event-manager-task-id';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,7 @@ export class TaskService {
     return this.taskClient.retrieveTasksByFields(searchRequest, false);
   }
 
-  findAllTasksIds(): Observable<string[]> {
+  findAllTasksIds(): Observable<EventManagerTaskId[]> {
     return this.eventManagerClient.retrieveAllTasksIds();
   }
 

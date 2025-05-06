@@ -1,8 +1,13 @@
 <div class="tasks-page">
-    <!-- <app-in-progress-process-spinner
-        [actionsAreCompleted]="[fetchForTableInitIsCompleted, searchIsCompleted]"></app-in-progress-process-spinner> -->
+    <app-in-progress-process-spinner
+        [actionsAreCompleted]="[fetchForTableInitIsCompleted]"></app-in-progress-process-spinner>
 
-    {{tasksIds}}
+    <tr *ngFor="let response of tasksIdsResponse">
+        {{response.taskId}}
+    </tr>
 
     <app-error-message [errorMessage]="errorMessage"></app-error-message>
+
+    <app-empty-results [tasks]="tasksIdsResponse" [errorMessage]="errorMessage"
+        [fetchForTableInitIsCompleted]="fetchForTableInitIsCompleted"></app-empty-results>
 </div>
