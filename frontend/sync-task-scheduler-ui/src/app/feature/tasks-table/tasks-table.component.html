@@ -1,0 +1,34 @@
+<div class="task-table-container" *ngIf="tasksIdsResponse.length > 0">
+    <table class="table table-bordered table-hover">
+        <thead class="table-secondary">
+            <tr>
+                <th>#</th>
+                <th>TaskId</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let tasksIdResponse of tasksIdsResponse; let i = index">
+                <td class="table-column">{{ i + 1 }}</td>
+                <td class="table-column">
+                    <span>
+                        {{ tasksIdResponse.taskId }}
+                    </span>
+                </td>
+                <td class="table-column task-buttons-column">
+                    <div class="task-buttons">
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#createScheduleForTaskModal" (click)="1">Create Schedule</button>
+                        <button class="btn btn-success btn-sm" (click)="2">Related Schedules</button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modals -->
+
+<app-schedule-action-result-modal [modalId]="`createScheduleForTaskModal`" [modalTitle]="`Schedule creation`"
+    [modalBody]="successMessage | async" [modalErrorMessage]="modalErrorMessage | async"
+    [taskScheduleActionIsCompleted]="taskScheduleActionIsCompleted"></app-schedule-action-result-modal>

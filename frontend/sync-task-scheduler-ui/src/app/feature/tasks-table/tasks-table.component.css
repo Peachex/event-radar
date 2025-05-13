@@ -1,0 +1,43 @@
+.task-table-container {
+  width: 80%;
+  margin: auto;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  padding: 20px;
+}
+
+.table-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.table-column {
+  background-color: aliceblue;
+}
+
+th {
+  text-align: center;
+}
+
+td {
+  text-align: center;
+}
+
+.task-buttons {
+  display: flex;
+  justify-content: center; /* Centers the buttons */
+  gap: 10px; /* Adds spacing between buttons */
+}
+
+.task-buttons-column {
+  width: 40%;
+}
+
+.task-buttons button {
+  flex: 1; /* Ensures equal width for all buttons */
+  min-width: 90px; /* Prevents buttons from being too small */
+  max-width: 150px; /* Prevents buttons from being too large */
+  padding: 8px 12px;
+  text-align: center;
+}

@@ -2,9 +2,7 @@
     <app-in-progress-process-spinner
         [actionsAreCompleted]="[fetchForTableInitIsCompleted]"></app-in-progress-process-spinner>
 
-    <tr *ngFor="let response of tasksIdsResponse">
-        {{response.taskId}}
-    </tr>
+    <app-tasks-table [tasksIdsResponse]="tasksIdsResponse"></app-tasks-table>
 
     <app-error-message [errorMessage]="errorMessage"></app-error-message>
 

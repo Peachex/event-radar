@@ -7,10 +7,18 @@ import { EmptyResultsComponent } from '../../feature/empty-results/empty-results
 import { TaskService } from '../../core/service/task-service';
 import { EventManagerTaskId } from '../../core/model/event-manager-task-id';
 import { TasksIdsFetchingError } from '../../core/error/tasks-ids-fetching-error';
+import { TasksTableComponent } from '../../feature/tasks-table/tasks-table.component';
 
 @Component({
   selector: 'app-tasks-page',
-  imports: [CommonModule, FormsModule, InProgressProcessSpinnerComponent, ErrorMessageComponent, EmptyResultsComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    TasksTableComponent,
+    InProgressProcessSpinnerComponent,
+    ErrorMessageComponent,
+    EmptyResultsComponent,
+  ],
   templateUrl: './tasks-page.component.html',
   styleUrl: './tasks-page.component.css',
 })
