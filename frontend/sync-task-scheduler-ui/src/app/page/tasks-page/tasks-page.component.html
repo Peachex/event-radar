@@ -1,6 +1,8 @@
 <div class="tasks-page">
-    <app-in-progress-process-spinner
-        [actionsAreCompleted]="[fetchForTableInitIsCompleted]"></app-in-progress-process-spinner>
+    <div class="loading-spinner">
+        <app-in-progress-process-spinner
+            [actionsAreCompleted]="[fetchForTableInitIsCompleted]"></app-in-progress-process-spinner>
+    </div>
 
     <app-tasks-table [tasksIdsResponse]="tasksIdsResponse"></app-tasks-table>
 

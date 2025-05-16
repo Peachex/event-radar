@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { EventManagerTaskId } from '../../core/model/event-manager-task-id';
 import { ScheduleActionResultModalComponent } from '../schedule-action-result-modal/schedule-action-result-modal.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-tasks-table',
-  imports: [CommonModule, ScheduleActionResultModalComponent],
+  imports: [CommonModule, RouterModule, ScheduleActionResultModalComponent],
   templateUrl: './tasks-table.component.html',
   styleUrl: './tasks-table.component.css',
 })
@@ -19,5 +20,4 @@ export class TasksTableComponent {
   taskScheduleActionIsCompleted: boolean = true;
 
   //todo: Create modal for task creation.
-  //todo: Setup 'Related Schedules' to redirect user to the scheduler page and perform search by taskId field.
 }

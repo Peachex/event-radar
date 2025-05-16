@@ -19,7 +19,9 @@
                     <div class="task-buttons">
                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
                             data-bs-target="#createScheduleForTaskModal" (click)="1">Create Schedule</button>
-                        <button class="btn btn-success btn-sm" (click)="2">Related Schedules</button>
+                        <button class="btn btn-success btn-sm" [routerLink]="['/scheduler']"
+                            [queryParams]="{searchQuery: tasksIdResponse.taskId}">Related
+                            Schedules</button>
                     </div>
                 </td>
             </tr>
