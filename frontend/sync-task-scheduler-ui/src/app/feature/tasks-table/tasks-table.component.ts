@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { EventManagerTaskId } from '../../core/model/event-manager-task-id';
-import { ScheduleActionResultModalComponent } from '../schedule-action-result-modal/schedule-action-result-modal.component';
 import { RouterModule } from '@angular/router';
+import { ScheduleCreationModalComponent } from '../schedule-creation-modal/schedule-creation-modal.component';
 
 @Component({
   selector: 'app-tasks-table',
-  imports: [CommonModule, RouterModule, ScheduleActionResultModalComponent],
+  imports: [CommonModule, RouterModule, ScheduleCreationModalComponent],
   templateUrl: './tasks-table.component.html',
   styleUrl: './tasks-table.component.css',
 })
@@ -18,6 +18,11 @@ export class TasksTableComponent {
   @Output() fetchForTableInitIsCompleted = new EventEmitter<boolean>();
 
   taskScheduleActionIsCompleted: boolean = true;
+  taskIdToExecute: string = '';
+
+  setTaskIdToExecute(id: string) {
+    this.taskIdToExecute = id;
+  }
 
   //todo: Create modal for task creation.
 }

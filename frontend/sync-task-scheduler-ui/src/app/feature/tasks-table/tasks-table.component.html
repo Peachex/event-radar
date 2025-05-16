@@ -18,7 +18,8 @@
                 <td class="table-column task-buttons-column">
                     <div class="task-buttons">
                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                            data-bs-target="#createScheduleForTaskModal" (click)="1">Create Schedule</button>
+                            data-bs-target="#createScheduleForTaskModal"
+                            (click)="setTaskIdToExecute(tasksIdResponse.taskId)">Create Schedule</button>
                         <button class="btn btn-success btn-sm" [routerLink]="['/scheduler']"
                             [queryParams]="{searchQuery: tasksIdResponse.taskId}">Related
                             Schedules</button>
@@ -31,6 +32,7 @@
 
 <!-- Modals -->
 
-<app-schedule-action-result-modal [modalId]="`createScheduleForTaskModal`" [modalTitle]="`Schedule creation`"
+<app-schedule-creation-modal [modalId]="`createScheduleForTaskModal`" [modalTitle]="`Schedule creation`"
     [modalBody]="successMessage | async" [modalErrorMessage]="modalErrorMessage | async"
-    [taskScheduleActionIsCompleted]="taskScheduleActionIsCompleted"></app-schedule-action-result-modal>
+    [taskScheduleActionIsCompleted]="taskScheduleActionIsCompleted"
+    [taskIdToExecute]="taskIdToExecute"></app-schedule-creation-modal>
