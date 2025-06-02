@@ -10,12 +10,13 @@ import { ExceptionResponse } from '../model/exception-response';
   providedIn: 'root',
 })
 export class SyncTaskSchedulerClient {
-  private readonly syncTaskSchedulerPort: string = '8089';
+  private readonly syncTaskSchedulerPort: string = '8088';
 
   // Tasks APIs
   private readonly retrieveAllTasksApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;
   private readonly retrieveTasksByFieldsApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks/search`;
   private readonly deleteTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;
+  private readonly createTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;
 
   // Scheduler APIs
   private readonly triggerTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/scheduler/run`;
@@ -65,5 +66,9 @@ export class SyncTaskSchedulerClient {
   resumeTask(taskId: number): Observable<Task> {
     const finalUrl: string = this.resumeTaskApiUrl + '/' + taskId;
     return this.httpClient.post<Task>(finalUrl, {});
+  }
+
+  createTask(task: Task): Observable<Task> {
+    return this.httpClient.post<Task>(this.createTaskApiUrl, task);
   }
 }

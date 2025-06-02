@@ -37,4 +37,11 @@ export class TaskService {
       catchError(ErrorUtil.handleError)
     );
   }
+
+  createTask(task: Task): Observable<string> {
+    return this.taskClient.createTask(task).pipe(
+      map(() => 'Task was created successfully!'),
+      catchError(ErrorUtil.handleError)
+    );
+  }
 }

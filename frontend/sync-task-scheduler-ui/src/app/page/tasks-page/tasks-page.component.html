@@ -6,6 +6,8 @@
 
     <app-tasks-table [tasksIdsResponse]="tasksIdsResponse"></app-tasks-table>
 
+    <app-success-message [successMessage]="successMessageFromChild"></app-success-message>
+
     <app-error-message [errorMessage]="errorMessage"></app-error-message>
 
     <app-empty-results [tasks]="tasksIdsResponse" [errorMessage]="errorMessage"

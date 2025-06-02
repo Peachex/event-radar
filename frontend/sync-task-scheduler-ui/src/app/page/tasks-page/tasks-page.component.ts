@@ -8,6 +8,7 @@ import { TaskService } from '../../core/service/task-service';
 import { EventManagerTaskId } from '../../core/model/event-manager-task-id';
 import { TasksIdsFetchingError } from '../../core/error/tasks-ids-fetching-error';
 import { TasksTableComponent } from '../../feature/tasks-table/tasks-table.component';
+import { SuccessMessageComponent } from '../../feature/success-message/success-message.component';
 
 @Component({
   selector: 'app-tasks-page',
@@ -16,6 +17,7 @@ import { TasksTableComponent } from '../../feature/tasks-table/tasks-table.compo
     FormsModule,
     TasksTableComponent,
     InProgressProcessSpinnerComponent,
+    SuccessMessageComponent,
     ErrorMessageComponent,
     EmptyResultsComponent,
   ],
@@ -24,7 +26,8 @@ import { TasksTableComponent } from '../../feature/tasks-table/tasks-table.compo
 })
 export class TasksPageComponent implements OnInit {
   @Input() tasksIdsResponse: EventManagerTaskId[] = [];
-  successMessage: string | null = '';
+
+  successMessageFromChild: string | null = '';
   errorMessage: string | null = '';
   fetchForTableInitIsCompleted: boolean = false;
 
@@ -45,8 +48,8 @@ export class TasksPageComponent implements OnInit {
     });
   }
 
-  onSuccessMessageUpdate(successMessage: string | null) {
-    this.successMessage = successMessage;
+  onSuccessMessageFromChildUpdate(successMessage: string | null) {
+    this.successMessageFromChild = successMessage;
   }
 
   onErrorMessageUpdate(errorMessage: string | null) {

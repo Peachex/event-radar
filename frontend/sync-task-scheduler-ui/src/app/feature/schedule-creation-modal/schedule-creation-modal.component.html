@@ -8,27 +8,48 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Task Name</label>
-                        <input class="form-control" [(ngModel)]="taskSchedule.name" name="name" required />
+                    <div class="normal-modal-body" *ngIf="!errorMessage && !successMessage">
+                        <div class="mb-3">
+                            <label class="form-label">Task Name</label>
+                            <input class="form-control" [ngClass]="{ 'is-invalid': validationErrors['name'] }"
+                                [(ngModel)]="taskSchedule.name" name="name" required />
+                            <div class="invalid-feedback" *ngIf="validationErrors['name']">
+                                {{ validationErrors['name'] }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" [(ngModel)]="taskSchedule.description"
+                                name="description"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Cron Expression</label>
+                            <input class="form-control" [ngClass]="{ 'is-invalid': validationErrors['cronExpression'] }"
+                                [(ngModel)]="taskSchedule.cronExpression" name="cronExpression" required />
+                            <div class="invalid-feedback" *ngIf="validationErrors['cronExpression']">
+                                {{ validationErrors['cronExpression'] }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="error-modal-body" *ngIf="errorMessage">
+                        <app-error-message [errorMessage]="errorMessage"></app-error-message>
+                    </div>
+                    <div class="success-modal-body" *ngIf="!errorMessage && successMessage">
+                        <app-success-message [successMessage]="successMessage"></app-success-message>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Description</label>
-                        <textarea class="form-control" [(ngModel)]="taskSchedule.description"
-                            name="description"></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Cron Expression</label>
-                        <input class="form-control" [(ngModel)]="taskSchedule.cronExpression" name="cronExpression"
-                            required />
-                    </div>
+                    <app-in-progress-process-spinner *ngIf="creationWasStarted"
+                        [actionsAreCompleted]="[taskScheduleActionIsCompleted]"></app-in-progress-process-spinner>
                 </div>
 
+
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Create Task</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" *ngIf="!successMessage && !errorMessage">Create
+                        Task</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        (click)="resetModal()">Close</button>
                 </div>
             </form>
         </div>

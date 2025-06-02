@@ -12,9 +12,6 @@ import { ScheduleCreationModalComponent } from '../schedule-creation-modal/sched
 })
 export class TasksTableComponent {
   @Input() tasksIdsResponse: EventManagerTaskId[] = [];
-  @Output() successMessage = new EventEmitter<string | null>();
-  @Output() errorMessage = new EventEmitter<string | null>();
-  @Output() modalErrorMessage = new EventEmitter<string | null>();
   @Output() fetchForTableInitIsCompleted = new EventEmitter<boolean>();
 
   taskScheduleActionIsCompleted: boolean = true;
@@ -23,6 +20,4 @@ export class TasksTableComponent {
   setTaskIdToExecute(id: string) {
     this.taskIdToExecute = id;
   }
-
-  //todo: Create modal for task creation.
 }
