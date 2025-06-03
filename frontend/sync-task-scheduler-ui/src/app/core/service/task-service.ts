@@ -6,6 +6,7 @@ import { SearchByFieldsRequest } from '../model/search-by-field-request';
 import { ErrorUtil } from '../util/error-util';
 import { EventManagerClient } from '../client/event-manager-client';
 import { EventManagerTaskId } from '../model/event-manager-task-id';
+import { PaginatedTasksResponse } from '../model/paginated-tasks-response';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +30,10 @@ export class TaskService {
 
   findAllTasks(): Observable<Task[]> {
     return this.taskClient.retrieveAllTasks();
+  }
+
+  findAllTasksPaginated(page: number, size: number): Observable<PaginatedTasksResponse> {
+    return this.taskClient.retrieveAllTasksPaginated(page, size);
   }
 
   deleteTask(task: Task): Observable<string> {

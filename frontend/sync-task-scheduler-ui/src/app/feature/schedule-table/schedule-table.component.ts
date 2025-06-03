@@ -8,10 +8,11 @@ import { SchedulerService } from '../../core/service/scheduler-service';
 import { ScheduleActionResultModalComponent } from '../schedule-action-result-modal/schedule-action-result-modal.component';
 import { TaskInfoModalComponent } from '../task-info-modal/task-info-modal.component';
 import { TaskSchedulerError } from '../../core/error/task-scheduler-error';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-schedule-table',
-  imports: [CommonModule, ScheduleActionResultModalComponent, TaskInfoModalComponent],
+  imports: [CommonModule, ScheduleActionResultModalComponent, TaskInfoModalComponent, FormsModule],
   templateUrl: './schedule-table.component.html',
   styleUrl: './schedule-table.component.css',
 })
@@ -26,13 +27,24 @@ export class ScheduleTableComponent implements OnInit {
   taskScheduleActionIsCompleted: boolean = true;
   selectedTask: Task | null = null;
 
+  currentPage = 0;
+  pageSize = 5;
+  pageSizes = [1, 5, 10, 20];
+  totalPages = 0;
+
   constructor(private taskService: TaskService, private schedulerService: SchedulerService) {}
 
   ngOnInit(): void {
-    this.taskService.findAllTasks().subscribe({
-      next: (tasks: Task[]) => {
-        this.tasks = tasks;
-        this.tasksChange.emit(tasks);
+    this.loadTasksPage(this.currentPage, this.pageSize);
+  }
+
+  loadTasksPage(page: number, size: number): void {
+    this.taskService.findAllTasksPaginated(page, size).subscribe({
+      next: (response) => {
+        this.tasks = response.page.content;
+        this.totalPages = response.page.totalPages;
+        this.currentPage = response.page.number;
+        this.tasksChange.emit(this.tasks);
         this.errorMessage.emit(null);
         this.fetchForTableInitIsCompleted.emit(true);
       },
@@ -42,6 +54,17 @@ export class ScheduleTableComponent implements OnInit {
         this.fetchForTableInitIsCompleted.emit(true);
       },
     });
+  }
+
+  goToPage(page: number): void {
+    if (page >= 0 && page < this.totalPages) {
+      this.loadTasksPage(page, this.pageSize);
+    }
+  }
+
+  onPageSizeChange(event: Event): void {
+    this.currentPage = 0;
+    this.loadTasksPage(this.currentPage, this.pageSize);
   }
 
   getTasksSortedByStatus(): Task[] {

@@ -5,6 +5,7 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { TaskFetchingError } from '../error/task-fetching-error';
 import { SearchByFieldsRequest } from '../model/search-by-field-request';
 import { ExceptionResponse } from '../model/exception-response';
+import { PaginatedTasksResponse } from '../model/paginated-tasks-response';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,7 @@ export class SyncTaskSchedulerClient {
 
   // Tasks APIs
   private readonly retrieveAllTasksApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;
+  private readonly retrieveAllTasksPaginatedApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks/all`;
   private readonly retrieveTasksByFieldsApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks/search`;
   private readonly deleteTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;
   private readonly createTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;
@@ -27,6 +29,22 @@ export class SyncTaskSchedulerClient {
 
   retrieveAllTasks(): Observable<Task[]> {
     return this.httpClient.get<Task[]>(this.retrieveAllTasksApiUrl).pipe(
+      catchError((error) => {
+        console.error(error.error as ExceptionResponse);
+        return throwError(
+          () => new TaskFetchingError('Failed to fetch tasks. Please try again later.', error.error, error)
+        );
+      })
+    );
+  }
+
+  retrieveAllTasksPaginated(page: number, size: number): Observable<PaginatedTasksResponse> {
+    const body = {
+      page,
+      size,
+    };
+
+    return this.httpClient.post<PaginatedTasksResponse>(this.retrieveAllTasksPaginatedApiUrl, body).pipe(
       catchError((error) => {
         console.error(error.error as ExceptionResponse);
         return throwError(
