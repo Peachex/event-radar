@@ -1,6 +1,7 @@
 .pagination-controls {
   display: flex;
   justify-content: center; /* Centers the buttons */
+  padding-top: 10px;
 }
 
 .page-size-selection {

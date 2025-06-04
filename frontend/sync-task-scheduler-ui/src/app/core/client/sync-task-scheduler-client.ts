@@ -17,6 +17,7 @@ export class SyncTaskSchedulerClient {
   private readonly retrieveAllTasksApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;
   private readonly retrieveAllTasksPaginatedApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks/all`;
   private readonly retrieveTasksByFieldsApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks/search`;
+  private readonly retrieveTasksByFieldsPaginatedApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks/search/pagination`;
   private readonly deleteTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;
   private readonly createTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;
 
@@ -55,6 +56,22 @@ export class SyncTaskSchedulerClient {
   }
 
   retrieveTasksByFields(searchByFieldsRequest: SearchByFieldsRequest, isCombinedMatch: boolean): Observable<Task[]> {
+    const params = new HttpParams().set('isCombinedMatch', isCombinedMatch);
+    return this.httpClient.post<Task[]>(this.retrieveTasksByFieldsApiUrl, searchByFieldsRequest, { params }).pipe(
+      catchError((error) => {
+        console.error(error.error as ExceptionResponse);
+        return throwError(
+          () => new TaskFetchingError('Failed to fetch tasks. Please try again later.', error.error, error)
+        );
+      })
+    );
+  }
+
+  //todo: Create model for search by fields paginated request and update the cliebt method below.
+  retrieveTasksByFieldsPaginated(
+    searchByFieldsRequest: SearchByFieldsRequest,
+    isCombinedMatch: boolean
+  ): Observable<Task[]> {
     const params = new HttpParams().set('isCombinedMatch', isCombinedMatch);
     return this.httpClient.post<Task[]>(this.retrieveTasksByFieldsApiUrl, searchByFieldsRequest, { params }).pipe(
       catchError((error) => {

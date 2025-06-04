@@ -33,7 +33,7 @@ export class SchedulerPageComponent implements OnInit, AfterViewInit {
   errorMessage: string | null = '';
   fetchForTableInitIsCompleted: boolean = false;
 
-  pageSize: number = 5;
+  pageSize: number = 1;
   currentPageNumber: number = 0;
 
   constructor(private route: ActivatedRoute) {}

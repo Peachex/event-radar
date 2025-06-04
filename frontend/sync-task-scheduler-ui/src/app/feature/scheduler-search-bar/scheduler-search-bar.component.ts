@@ -25,7 +25,7 @@ export class SchedulerSearchBarComponent {
   constructor(private taskService: TaskService) {}
 
   performSearch() {
-    // Enable pagination for search and take values from the table component.
+    //todo: Enable pagination for search.
 
     this.searchIsCompleted.emit(false);
 
