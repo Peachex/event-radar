@@ -9,10 +9,11 @@ import { ScheduleActionResultModalComponent } from '../schedule-action-result-mo
 import { TaskInfoModalComponent } from '../task-info-modal/task-info-modal.component';
 import { TaskSchedulerError } from '../../core/error/task-scheduler-error';
 import { FormsModule } from '@angular/forms';
+import { PaginationComponent } from '../pagination/pagination.component';
 
 @Component({
   selector: 'app-schedule-table',
-  imports: [CommonModule, ScheduleActionResultModalComponent, TaskInfoModalComponent, FormsModule],
+  imports: [CommonModule, ScheduleActionResultModalComponent, TaskInfoModalComponent, FormsModule, PaginationComponent],
   templateUrl: './schedule-table.component.html',
   styleUrl: './schedule-table.component.css',
 })
@@ -27,15 +28,17 @@ export class ScheduleTableComponent implements OnInit {
   taskScheduleActionIsCompleted: boolean = true;
   selectedTask: Task | null = null;
 
+  @Input() sharedPageSize: number = 5;
+  @Output() pageSizeChange = new EventEmitter<number>();
+  @Output() currentPageNumberChange = new EventEmitter<number>();
+
   currentPage = 0;
-  pageSize = 5;
-  pageSizes = [1, 5, 10, 20];
   totalPages = 0;
 
   constructor(private taskService: TaskService, private schedulerService: SchedulerService) {}
 
   ngOnInit(): void {
-    this.loadTasksPage(this.currentPage, this.pageSize);
+    this.loadTasksPage(this.currentPage, this.sharedPageSize);
   }
 
   loadTasksPage(page: number, size: number): void {
@@ -56,15 +59,16 @@ export class ScheduleTableComponent implements OnInit {
     });
   }
 
-  goToPage(page: number): void {
-    if (page >= 0 && page < this.totalPages) {
-      this.loadTasksPage(page, this.pageSize);
-    }
+  onPageSizeChange(newSize: number) {
+    this.pageSizeChange.emit(newSize);
+    this.currentPage = 0;
+    this.loadTasksPage(this.currentPage, newSize);
   }
 
-  onPageSizeChange(event: Event): void {
-    this.currentPage = 0;
-    this.loadTasksPage(this.currentPage, this.pageSize);
+  goToPage(page: number) {
+    this.currentPage = page;
+    this.currentPageNumberChange.emit(page);
+    this.loadTasksPage(page, this.sharedPageSize);
   }
 
   getTasksSortedByStatus(): Task[] {

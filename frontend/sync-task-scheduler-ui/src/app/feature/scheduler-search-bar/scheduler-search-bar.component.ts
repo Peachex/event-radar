@@ -16,9 +16,16 @@ export class SchedulerSearchBarComponent {
   @Output() searchIsCompleted = new EventEmitter<boolean>();
   @Output() errorMessage = new EventEmitter<string | null>();
 
+  @Input() sharedPageSize: number = 5;
+  @Input() sharedCurrentPage: number = 0;
+
+  totalPages = 0;
+
   constructor(private taskService: TaskService) {}
 
   performSearch() {
+    // Enable pagination for search and take values from the table component.
+
     this.searchIsCompleted.emit(false);
 
     this.taskService.findTasksBySearchQuery(this.searchQuery).subscribe({
@@ -37,13 +44,14 @@ export class SchedulerSearchBarComponent {
 
   findAll() {
     this.searchIsCompleted.emit(false);
-
     this.searchQuery = '';
-    this.taskService.findAllTasks().subscribe({
-      next: (tasks: Task[]) => {
-        this.fetchedTasks.emit(tasks);
-        this.searchIsCompleted.emit(true);
+    this.taskService.findAllTasksPaginated(this.sharedCurrentPage, this.sharedPageSize).subscribe({
+      next: (response) => {
+        this.totalPages = response.page.totalPages;
+        this.sharedCurrentPage = response.page.number;
+        this.fetchedTasks.emit(response.page.content);
         this.errorMessage.emit(null);
+        this.searchIsCompleted.emit(true);
       },
       error: (error: TaskFetchingError) => {
         console.error('Error fetching tasks:', error);

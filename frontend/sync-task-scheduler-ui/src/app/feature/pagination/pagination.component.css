@@ -1,0 +1,12 @@
+.pagination-controls {
+  display: flex;
+  justify-content: center; /* Centers the buttons */
+}
+
+.page-size-selection {
+  padding: 4px 12px;
+}
+
+.page-size-label {
+  padding: 4px 12px;
+}

@@ -1,16 +1,18 @@
 <div class="scheduler-page">
     <app-scheduler-search-bar (fetchedTasks)="fetchResultsFromSearchBarComponent($event)"
-        (searchIsCompleted)="onSearchIsCompletedUpdate($event)"
-        (errorMessage)="onErrorMessageUpdate($event)"></app-scheduler-search-bar>
+        (searchIsCompleted)="onSearchIsCompletedUpdate($event)" (errorMessage)="onErrorMessageUpdate($event)"
+        [sharedPageSize]="pageSize" [sharedCurrentPage]="currentPageNumber"></app-scheduler-search-bar>
 
     <app-in-progress-process-spinner
         [actionsAreCompleted]="[fetchForTableInitIsCompleted, searchIsCompleted]"></app-in-progress-process-spinner>
 
     <app-schedule-table [(tasks)]="tasks" (successMessage)="onSuccessMessageUpdate($event)"
         (errorMessage)="onErrorMessageUpdate($event)"
-        (fetchForTableInitIsCompleted)="onFetchForTableInitIsCompletedUpdate($event)"></app-schedule-table>
+        (fetchForTableInitIsCompleted)="onFetchForTableInitIsCompletedUpdate($event)" [sharedPageSize]="pageSize"
+        (pageSizeChange)="pageSize = $event"
+        (currentPageNumberChange)="currentPageNumber = $event"></app-schedule-table>
 
-    <app-error-message [errorMessage]="errorMessage"></app-error-message>
+    <app-error-message [errorMessage]=" errorMessage"></app-error-message>
 
     <app-empty-results [tasks]="tasks" [errorMessage]="errorMessage"
         [fetchForTableInitIsCompleted]="fetchForTableInitIsCompleted"></app-empty-results>

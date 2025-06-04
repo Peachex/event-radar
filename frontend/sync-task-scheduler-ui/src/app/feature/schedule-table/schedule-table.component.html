@@ -1,28 +1,6 @@
-<div class="pagination-controls">
-    <!-- Page size selection -->
-    <div class="mb-2 page-size-selection">
-        <label class="page-size-label" for="pageSize">Tasks per page:</label>
-        <select id="pageSize" [(ngModel)]="pageSize" (change)="onPageSizeChange($event)">
-            <option *ngFor="let size of pageSizes" [value]="size">{{ size }}</option>
-        </select>
-    </div>
-
-    <!-- Pagination controls -->
-    <nav *ngIf="totalPages > 1">
-        <ul class="pagination">
-            <li class="page-item" [class.disabled]="currentPage === 0">
-                <button class="page-link" (click)="goToPage(currentPage - 1)">Previous</button>
-            </li>
-            <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
-                [class.active]="i === currentPage">
-                <button class="page-link" (click)="goToPage(i)">{{ i + 1 }}</button>
-            </li>
-            <li class="page-item" [class.disabled]="currentPage >= totalPages - 1">
-                <button class="page-link" (click)="goToPage(currentPage + 1)">Next</button>
-            </li>
-        </ul>
-    </nav>
-</div>
+<app-pagination [currentPage]="currentPage" [totalPages]="totalPages" [pageSize]="sharedPageSize"
+    (pageChange)="goToPage($event)" (pageSizeChange)="onPageSizeChange($event)">
+</app-pagination>
 
 <div class="task-table-container" *ngIf="tasks.length > 0">
     <table class="table table-bordered table-hover">

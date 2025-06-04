@@ -25,13 +25,16 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class SchedulerPageComponent implements OnInit, AfterViewInit {
   @ViewChild(SchedulerSearchBarComponent) searchBarComponent!: SchedulerSearchBarComponent;
-
   @Input() searchIsCompleted: boolean = true;
+
   searchQuery: string = '';
   tasks: Task[] = [];
   successMessage: string | null = '';
   errorMessage: string | null = '';
   fetchForTableInitIsCompleted: boolean = false;
+
+  pageSize: number = 5;
+  currentPageNumber: number = 0;
 
   constructor(private route: ActivatedRoute) {}
 
