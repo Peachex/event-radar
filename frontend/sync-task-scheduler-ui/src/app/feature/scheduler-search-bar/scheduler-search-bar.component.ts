@@ -18,6 +18,7 @@ export class SchedulerSearchBarComponent {
 
   @Input() sharedPageSize: number = 5;
   @Input() sharedCurrentPage: number = 0;
+  @Output() currentPageNumberChange = new EventEmitter<number>();
 
   totalPages = 0;
 
@@ -45,7 +46,8 @@ export class SchedulerSearchBarComponent {
   findAll() {
     this.searchIsCompleted.emit(false);
     this.searchQuery = '';
-    this.taskService.findAllTasksPaginated(this.sharedCurrentPage, this.sharedPageSize).subscribe({
+    this.currentPageNumberChange.emit(0);
+    this.taskService.findAllTasksPaginated(0, this.sharedPageSize).subscribe({
       next: (response) => {
         this.totalPages = response.page.totalPages;
         this.sharedCurrentPage = response.page.number;

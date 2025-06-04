@@ -29,16 +29,16 @@ export class ScheduleTableComponent implements OnInit {
   selectedTask: Task | null = null;
 
   @Input() sharedPageSize: number = 5;
+  @Input() sharedCurrentPageNumber: number = 0;
   @Output() pageSizeChange = new EventEmitter<number>();
   @Output() currentPageNumberChange = new EventEmitter<number>();
 
-  currentPage = 0;
   totalPages = 0;
 
   constructor(private taskService: TaskService, private schedulerService: SchedulerService) {}
 
   ngOnInit(): void {
-    this.loadTasksPage(this.currentPage, this.sharedPageSize);
+    this.loadTasksPage(this.sharedCurrentPageNumber, this.sharedPageSize);
   }
 
   loadTasksPage(page: number, size: number): void {
@@ -46,7 +46,7 @@ export class ScheduleTableComponent implements OnInit {
       next: (response) => {
         this.tasks = response.page.content;
         this.totalPages = response.page.totalPages;
-        this.currentPage = response.page.number;
+        this.sharedCurrentPageNumber = response.page.number;
         this.tasksChange.emit(this.tasks);
         this.errorMessage.emit(null);
         this.fetchForTableInitIsCompleted.emit(true);
@@ -61,14 +61,14 @@ export class ScheduleTableComponent implements OnInit {
 
   onPageSizeChange(newSize: number) {
     this.pageSizeChange.emit(newSize);
-    this.currentPage = 0;
-    this.loadTasksPage(this.currentPage, newSize);
+    this.sharedCurrentPageNumber = 0;
+    this.loadTasksPage(this.sharedCurrentPageNumber, newSize);
   }
 
   goToPage(page: number) {
-    this.currentPage = page;
+    this.sharedCurrentPageNumber = page;
     this.currentPageNumberChange.emit(page);
-    this.loadTasksPage(page, this.sharedPageSize);
+    this.loadTasksPage(this.sharedCurrentPageNumber, this.sharedPageSize);
   }
 
   getTasksSortedByStatus(): Task[] {
