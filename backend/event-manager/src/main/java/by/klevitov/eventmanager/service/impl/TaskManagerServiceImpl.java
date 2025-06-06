@@ -58,7 +58,7 @@ public class TaskManagerServiceImpl implements TaskManagerService {
         List<String> foundIds = new ArrayList<>(taskRegistry.getTaskExecutorsMapWithKey().keySet());
         PageRequest pageRequest = pageRequestDTO.createPageRequest();
         long totalCount = foundIds.size();
-        trimToPageSize(foundIds, pageRequest.getPageSize());
+        trimToPageSize(foundIds, pageRequest.getPageSize(), pageRequest.getPageNumber());
         return new PageImpl<>(foundIds, pageRequest, totalCount);
     }
 }

@@ -116,7 +116,7 @@ public class TaskServiceImpl implements TaskService {
                                                           PageRequestDTO pageRequestDTO) {
         List<Task> tasks = repository.findByFields(fields, isCombinedMatch);
         int totalCount = tasks.size();
-        trimToPageSize(tasks, pageRequestDTO.getSize());
+        trimToPageSize(tasks, pageRequestDTO.getSize(), pageRequestDTO.getPage());
         return new PageImpl<>(tasks, pageRequestDTO.createPageRequest(), totalCount);
     }
 
