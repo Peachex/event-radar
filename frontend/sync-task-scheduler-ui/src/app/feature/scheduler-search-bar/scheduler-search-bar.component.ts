@@ -24,16 +24,37 @@ export class SchedulerSearchBarComponent {
 
   constructor(private taskService: TaskService) {}
 
+  // performSearch() {
+  //   //todo: Enable pagination for search.
+
+  //   this.searchIsCompleted.emit(false);
+
+  //   this.taskService.findTasksBySearchQuery(this.searchQuery).subscribe({
+  //     next: (tasks: Task[]) => {
+  //       this.fetchedTasks.emit(tasks);
+  //       this.searchIsCompleted.emit(true);
+  //       this.errorMessage.emit(null);
+  //     },
+  //     error: (error: TaskFetchingError) => {
+  //       this.searchIsCompleted.emit(true);
+  //       console.error('Error fetching tasks:', error);
+  //       this.errorMessage.emit(error.message);
+  //     },
+  //   });
+  // }
+
   performSearch() {
     //todo: Enable pagination for search.
 
     this.searchIsCompleted.emit(false);
 
-    this.taskService.findTasksBySearchQuery(this.searchQuery).subscribe({
-      next: (tasks: Task[]) => {
-        this.fetchedTasks.emit(tasks);
-        this.searchIsCompleted.emit(true);
+    this.taskService.findTasksBySearchQueryPaginated(this.searchQuery, 0, 2).subscribe({
+      next: (response) => {
+        this.totalPages = response.page.totalPages;
+        this.sharedCurrentPage = response.page.number;
+        this.fetchedTasks.emit(response.page.content);
         this.errorMessage.emit(null);
+        this.searchIsCompleted.emit(true);
       },
       error: (error: TaskFetchingError) => {
         this.searchIsCompleted.emit(true);

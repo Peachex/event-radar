@@ -7,6 +7,7 @@ import { ErrorUtil } from '../util/error-util';
 import { EventManagerClient } from '../client/event-manager-client';
 import { EventManagerTaskId } from '../model/event-manager-task-id';
 import { PaginatedTasksResponse } from '../model/paginated-tasks-response';
+import { SearchByFieldsPaginatedRequest } from '../model/search-by-field-paginated-request';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +22,28 @@ export class TaskService {
       searchRequest[field] = searchQuery;
     });
 
+    console.log(searchRequest);
+
     return this.taskClient.retrieveTasksByFields(searchRequest, false);
+  }
+
+  findTasksBySearchQueryPaginated(searchQuery: string, page: number, size: number): Observable<PaginatedTasksResponse> {
+    const searchRequest: SearchByFieldsRequest = {} as SearchByFieldsRequest;
+
+    Task.getTaskFields().forEach((field) => {
+      searchRequest[field] = searchQuery;
+    });
+
+    const searchByFieldsPaginatedRequest: SearchByFieldsPaginatedRequest = {
+      isCombinedMatch: false,
+      fields: searchRequest,
+      pageRequestDTO: {
+        page: page,
+        size: size,
+      },
+    };
+
+    return this.taskClient.retrieveTasksByFieldsPaginated(searchByFieldsPaginatedRequest);
   }
 
   findAllTasksIds(): Observable<EventManagerTaskId[]> {

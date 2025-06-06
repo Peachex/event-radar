@@ -6,12 +6,13 @@ import { TaskFetchingError } from '../error/task-fetching-error';
 import { SearchByFieldsRequest } from '../model/search-by-field-request';
 import { ExceptionResponse } from '../model/exception-response';
 import { PaginatedTasksResponse } from '../model/paginated-tasks-response';
+import { SearchByFieldsPaginatedRequest } from '../model/search-by-field-paginated-request';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SyncTaskSchedulerClient {
-  private readonly syncTaskSchedulerPort: string = '8089';
+  private readonly syncTaskSchedulerPort: string = '8088';
 
   // Tasks APIs
   private readonly retrieveAllTasksApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;
@@ -67,20 +68,19 @@ export class SyncTaskSchedulerClient {
     );
   }
 
-  //todo: Create model for search by fields paginated request and update the cliebt method below.
   retrieveTasksByFieldsPaginated(
-    searchByFieldsRequest: SearchByFieldsRequest,
-    isCombinedMatch: boolean
-  ): Observable<Task[]> {
-    const params = new HttpParams().set('isCombinedMatch', isCombinedMatch);
-    return this.httpClient.post<Task[]>(this.retrieveTasksByFieldsApiUrl, searchByFieldsRequest, { params }).pipe(
-      catchError((error) => {
-        console.error(error.error as ExceptionResponse);
-        return throwError(
-          () => new TaskFetchingError('Failed to fetch tasks. Please try again later.', error.error, error)
-        );
-      })
-    );
+    searchByFieldsPaginatedRequest: SearchByFieldsPaginatedRequest
+  ): Observable<PaginatedTasksResponse> {
+    return this.httpClient
+      .post<PaginatedTasksResponse>(this.retrieveTasksByFieldsPaginatedApiUrl, searchByFieldsPaginatedRequest, {})
+      .pipe(
+        catchError((error) => {
+          console.error(error.error as ExceptionResponse);
+          return throwError(
+            () => new TaskFetchingError('Failed to fetch tasks. Please try again later.', error.error, error)
+          );
+        })
+      );
   }
 
   deleteTask(taskId: number): Observable<Task> {
