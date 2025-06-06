@@ -15,42 +15,24 @@ export class SchedulerSearchBarComponent {
   @Output() fetchedTasks = new EventEmitter<Task[]>();
   @Output() searchIsCompleted = new EventEmitter<boolean>();
   @Output() errorMessage = new EventEmitter<string | null>();
+  @Output() sharedSearchQueryChange = new EventEmitter<string>();
 
   @Input() sharedPageSize: number = 5;
   @Input() sharedCurrentPage: number = 0;
   @Output() currentPageNumberChange = new EventEmitter<number>();
-
-  totalPages = 0;
+  @Output() sharedTotalPages = new EventEmitter<number>();
 
   constructor(private taskService: TaskService) {}
-
-  // performSearch() {
-  //   //todo: Enable pagination for search.
-
-  //   this.searchIsCompleted.emit(false);
-
-  //   this.taskService.findTasksBySearchQuery(this.searchQuery).subscribe({
-  //     next: (tasks: Task[]) => {
-  //       this.fetchedTasks.emit(tasks);
-  //       this.searchIsCompleted.emit(true);
-  //       this.errorMessage.emit(null);
-  //     },
-  //     error: (error: TaskFetchingError) => {
-  //       this.searchIsCompleted.emit(true);
-  //       console.error('Error fetching tasks:', error);
-  //       this.errorMessage.emit(error.message);
-  //     },
-  //   });
-  // }
 
   performSearch() {
     //todo: Enable pagination for search.
 
     this.searchIsCompleted.emit(false);
+    this.sharedSearchQueryChange.emit(this.searchQuery);
 
-    this.taskService.findTasksBySearchQueryPaginated(this.searchQuery, 0, 2).subscribe({
+    this.taskService.findTasksBySearchQueryPaginated(this.searchQuery, 0, this.sharedPageSize).subscribe({
       next: (response) => {
-        this.totalPages = response.page.totalPages;
+        this.sharedTotalPages.emit(response.page.totalPages);
         this.sharedCurrentPage = response.page.number;
         this.fetchedTasks.emit(response.page.content);
         this.errorMessage.emit(null);
@@ -70,7 +52,7 @@ export class SchedulerSearchBarComponent {
     this.currentPageNumberChange.emit(0);
     this.taskService.findAllTasksPaginated(0, this.sharedPageSize).subscribe({
       next: (response) => {
-        this.totalPages = response.page.totalPages;
+        this.sharedTotalPages.emit(response.page.totalPages);
         this.sharedCurrentPage = response.page.number;
         this.fetchedTasks.emit(response.page.content);
         this.errorMessage.emit(null);

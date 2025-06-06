@@ -2,7 +2,8 @@
     <app-scheduler-search-bar (fetchedTasks)="fetchResultsFromSearchBarComponent($event)"
         (searchIsCompleted)="onSearchIsCompletedUpdate($event)" (errorMessage)="onErrorMessageUpdate($event)"
         (currentPageNumberChange)="currentPageNumber = $event" [sharedPageSize]="pageSize"
-        [sharedCurrentPage]="currentPageNumber"></app-scheduler-search-bar>
+        [sharedCurrentPage]="currentPageNumber" (sharedSearchQueryChange)="searchQuery = $event"
+        (sharedTotalPages)="totalPages = $event"></app-scheduler-search-bar>
 
     <app-in-progress-process-spinner
         [actionsAreCompleted]="[fetchForTableInitIsCompleted, searchIsCompleted]"></app-in-progress-process-spinner>
@@ -11,7 +12,8 @@
         (errorMessage)="onErrorMessageUpdate($event)"
         (fetchForTableInitIsCompleted)="onFetchForTableInitIsCompletedUpdate($event)" [sharedPageSize]="pageSize"
         [sharedCurrentPageNumber]="currentPageNumber" (pageSizeChange)="pageSize = $event"
-        (currentPageNumberChange)="currentPageNumber = $event"></app-schedule-table>
+        (currentPageNumberChange)="currentPageNumber = $event" [sharedTotalPages]="totalPages"
+        [searchQuery]="searchQuery"></app-schedule-table>
 
     <app-error-message [errorMessage]=" errorMessage"></app-error-message>
 

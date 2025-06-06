@@ -19,6 +19,7 @@ import { PaginationComponent } from '../pagination/pagination.component';
 })
 export class ScheduleTableComponent implements OnInit {
   @Input() tasks: Task[] = [];
+  @Input() searchQuery: string = '';
   @Output() tasksChange = new EventEmitter<Task[]>();
   @Output() successMessage = new EventEmitter<string | null>();
   @Output() errorMessage = new EventEmitter<string | null>();
@@ -30,10 +31,9 @@ export class ScheduleTableComponent implements OnInit {
 
   @Input() sharedPageSize: number = 5;
   @Input() sharedCurrentPageNumber: number = 0;
+  @Input() sharedTotalPages: number = 0;
   @Output() pageSizeChange = new EventEmitter<number>();
   @Output() currentPageNumberChange = new EventEmitter<number>();
-
-  totalPages = 0;
 
   constructor(private taskService: TaskService, private schedulerService: SchedulerService) {}
 
@@ -45,7 +45,7 @@ export class ScheduleTableComponent implements OnInit {
     this.taskService.findAllTasksPaginated(page, size).subscribe({
       next: (response) => {
         this.tasks = response.page.content;
-        this.totalPages = response.page.totalPages;
+        this.sharedTotalPages = response.page.totalPages;
         this.sharedCurrentPageNumber = response.page.number;
         this.tasksChange.emit(this.tasks);
         this.errorMessage.emit(null);
@@ -59,16 +59,40 @@ export class ScheduleTableComponent implements OnInit {
     });
   }
 
+  performSearch(page: number, size: number, searchQuery: string) {
+    //todo: Enable pagination for search.
+    // Add logic that will swith between findAll and searchByFields methods.
+
+    this.fetchForTableInitIsCompleted.emit(false);
+    this.taskService.findTasksBySearchQueryPaginated(searchQuery, page, size).subscribe({
+      next: (response) => {
+        this.sharedTotalPages = response.page.totalPages;
+        this.sharedCurrentPageNumber = response.page.number;
+        this.tasks = response.page.content;
+        this.errorMessage.emit(null);
+        this.fetchForTableInitIsCompleted.emit(true);
+      },
+      error: (error: TaskFetchingError) => {
+        this.fetchForTableInitIsCompleted.emit(true);
+        console.error('Error fetching tasks:', error);
+        this.errorMessage.emit(error.message);
+      },
+    });
+  }
+
   onPageSizeChange(newSize: number) {
     this.pageSizeChange.emit(newSize);
     this.sharedCurrentPageNumber = 0;
-    this.loadTasksPage(this.sharedCurrentPageNumber, newSize);
+    //this.loadTasksPage(this.sharedCurrentPageNumber, newSize);
+    this.performSearch(this.sharedCurrentPageNumber, newSize, this.searchQuery);
   }
 
   goToPage(page: number) {
     this.sharedCurrentPageNumber = page;
     this.currentPageNumberChange.emit(page);
-    this.loadTasksPage(this.sharedCurrentPageNumber, this.sharedPageSize);
+    //this.loadTasksPage(this.sharedCurrentPageNumber, this.sharedPageSize);
+
+    this.performSearch(this.sharedCurrentPageNumber, this.sharedPageSize, this.searchQuery);
   }
 
   getTasksSortedByStatus(): Task[] {

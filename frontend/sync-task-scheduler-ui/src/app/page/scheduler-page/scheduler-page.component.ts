@@ -35,6 +35,7 @@ export class SchedulerPageComponent implements OnInit, AfterViewInit {
 
   pageSize: number = 1;
   currentPageNumber: number = 0;
+  totalPages: number = 0;
 
   constructor(private route: ActivatedRoute) {}
 
