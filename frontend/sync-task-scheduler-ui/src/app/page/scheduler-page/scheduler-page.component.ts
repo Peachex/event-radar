@@ -37,6 +37,8 @@ export class SchedulerPageComponent implements OnInit, AfterViewInit {
   currentPageNumber: number = 0;
   totalPages: number = 0;
 
+  searchWasTriggered: boolean = false;
+
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {

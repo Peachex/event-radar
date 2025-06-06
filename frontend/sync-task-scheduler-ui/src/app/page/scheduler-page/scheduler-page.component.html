@@ -3,7 +3,8 @@
         (searchIsCompleted)="onSearchIsCompletedUpdate($event)" (errorMessage)="onErrorMessageUpdate($event)"
         (currentPageNumberChange)="currentPageNumber = $event" [sharedPageSize]="pageSize"
         [sharedCurrentPage]="currentPageNumber" (sharedSearchQueryChange)="searchQuery = $event"
-        (sharedTotalPages)="totalPages = $event"></app-scheduler-search-bar>
+        (sharedTotalPages)="totalPages = $event"
+        (searchWasTriggered)="searchWasTriggered = $event"></app-scheduler-search-bar>
 
     <app-in-progress-process-spinner
         [actionsAreCompleted]="[fetchForTableInitIsCompleted, searchIsCompleted]"></app-in-progress-process-spinner>
@@ -13,7 +14,7 @@
         (fetchForTableInitIsCompleted)="onFetchForTableInitIsCompletedUpdate($event)" [sharedPageSize]="pageSize"
         [sharedCurrentPageNumber]="currentPageNumber" (pageSizeChange)="pageSize = $event"
         (currentPageNumberChange)="currentPageNumber = $event" [sharedTotalPages]="totalPages"
-        [searchQuery]="searchQuery"></app-schedule-table>
+        [searchQuery]="searchQuery" [searchWasTriggered]="searchWasTriggered"></app-schedule-table>
 
     <app-error-message [errorMessage]=" errorMessage"></app-error-message>
 

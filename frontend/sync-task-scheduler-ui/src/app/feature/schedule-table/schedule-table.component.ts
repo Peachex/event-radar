@@ -35,6 +35,8 @@ export class ScheduleTableComponent implements OnInit {
   @Output() pageSizeChange = new EventEmitter<number>();
   @Output() currentPageNumberChange = new EventEmitter<number>();
 
+  @Input() searchWasTriggered: boolean = false;
+
   constructor(private taskService: TaskService, private schedulerService: SchedulerService) {}
 
   ngOnInit(): void {
@@ -60,9 +62,6 @@ export class ScheduleTableComponent implements OnInit {
   }
 
   performSearch(page: number, size: number, searchQuery: string) {
-    //todo: Enable pagination for search.
-    // Add logic that will swith between findAll and searchByFields methods.
-
     this.fetchForTableInitIsCompleted.emit(false);
     this.taskService.findTasksBySearchQueryPaginated(searchQuery, page, size).subscribe({
       next: (response) => {
@@ -80,19 +79,24 @@ export class ScheduleTableComponent implements OnInit {
     });
   }
 
+  invokeRetrievingEventsLogic(page: number, pageSize: number, searchQuery: string) {
+    if (this.searchWasTriggered) {
+      this.performSearch(page, pageSize, searchQuery);
+    } else {
+      this.loadTasksPage(page, pageSize);
+    }
+  }
+
   onPageSizeChange(newSize: number) {
     this.pageSizeChange.emit(newSize);
     this.sharedCurrentPageNumber = 0;
-    //this.loadTasksPage(this.sharedCurrentPageNumber, newSize);
-    this.performSearch(this.sharedCurrentPageNumber, newSize, this.searchQuery);
+    this.invokeRetrievingEventsLogic(this.sharedCurrentPageNumber, newSize, this.searchQuery);
   }
 
   goToPage(page: number) {
     this.sharedCurrentPageNumber = page;
     this.currentPageNumberChange.emit(page);
-    //this.loadTasksPage(this.sharedCurrentPageNumber, this.sharedPageSize);
-
-    this.performSearch(this.sharedCurrentPageNumber, this.sharedPageSize, this.searchQuery);
+    this.invokeRetrievingEventsLogic(this.sharedCurrentPageNumber, this.sharedPageSize, this.searchQuery);
   }
 
   getTasksSortedByStatus(): Task[] {

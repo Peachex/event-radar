@@ -22,6 +22,8 @@ export class SchedulerSearchBarComponent {
   @Output() currentPageNumberChange = new EventEmitter<number>();
   @Output() sharedTotalPages = new EventEmitter<number>();
 
+  @Output() searchWasTriggered = new EventEmitter<boolean>();
+
   constructor(private taskService: TaskService) {}
 
   performSearch() {
@@ -29,6 +31,7 @@ export class SchedulerSearchBarComponent {
 
     this.searchIsCompleted.emit(false);
     this.sharedSearchQueryChange.emit(this.searchQuery);
+    this.searchWasTriggered.emit(true);
 
     this.taskService.findTasksBySearchQueryPaginated(this.searchQuery, 0, this.sharedPageSize).subscribe({
       next: (response) => {
@@ -48,7 +51,9 @@ export class SchedulerSearchBarComponent {
 
   findAll() {
     this.searchIsCompleted.emit(false);
+    this.searchWasTriggered.emit(false);
     this.searchQuery = '';
+    this.sharedSearchQueryChange.emit(this.searchQuery);
     this.currentPageNumberChange.emit(0);
     this.taskService.findAllTasksPaginated(0, this.sharedPageSize).subscribe({
       next: (response) => {
