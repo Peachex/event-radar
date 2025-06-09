@@ -1,7 +1,3 @@
-<app-pagination [currentPage]="sharedCurrentPageNumber" [totalPages]="sharedTotalPages" [pageSize]="sharedPageSize"
-    (pageChange)="goToPage($event)" (pageSizeChange)="onPageSizeChange($event)">
-</app-pagination>
-
 <div class="task-table-container" *ngIf="tasks.length > 0">
     <table class="table table-bordered table-hover">
         <thead class="table-secondary">

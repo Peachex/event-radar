@@ -1,20 +1,22 @@
 <div class="scheduler-page">
     <app-scheduler-search-bar (fetchedTasks)="fetchResultsFromSearchBarComponent($event)"
         (searchIsCompleted)="onSearchIsCompletedUpdate($event)" (errorMessage)="onErrorMessageUpdate($event)"
-        (currentPageNumberChange)="currentPageNumber = $event" [sharedPageSize]="pageSize"
-        [sharedCurrentPage]="currentPageNumber" (sharedSearchQueryChange)="searchQuery = $event"
-        (sharedTotalPages)="totalPages = $event"
+        (sharedPageNumberChange)="sharedPageNumber = $event" [sharedPageSize]="sharedPageSize"
+        (sharedSearchQueryChange)="searchQuery = $event" (sharedTotalPages)="sharedTotalPages = $event"
         (searchWasTriggered)="searchWasTriggered = $event"></app-scheduler-search-bar>
 
     <app-in-progress-process-spinner
         [actionsAreCompleted]="[fetchForTableInitIsCompleted, searchIsCompleted]"></app-in-progress-process-spinner>
 
+    <app-pagination [currentPage]="sharedPageNumber" [pageSize]="sharedPageSize" [totalPages]="sharedTotalPages"
+        (pageChange)="goToPage($event)" (pageSizeChange)="onPageSizeChange($event)">
+    </app-pagination>
+
     <app-schedule-table [(tasks)]="tasks" (successMessage)="onSuccessMessageUpdate($event)"
         (errorMessage)="onErrorMessageUpdate($event)"
-        (fetchForTableInitIsCompleted)="onFetchForTableInitIsCompletedUpdate($event)" [sharedPageSize]="pageSize"
-        [sharedCurrentPageNumber]="currentPageNumber" (pageSizeChange)="pageSize = $event"
-        (currentPageNumberChange)="currentPageNumber = $event" [sharedTotalPages]="totalPages"
-        [searchQuery]="searchQuery" [searchWasTriggered]="searchWasTriggered"></app-schedule-table>
+        (fetchForTableInitIsCompleted)="onFetchForTableInitIsCompletedUpdate($event)" [sharedPageSize]="sharedPageSize"
+        [sharedTotalPages]="sharedTotalPages" [searchQuery]="searchQuery"
+        (sharedTotalPagesChange)="sharedTotalPages = $event"></app-schedule-table>
 
     <app-error-message [errorMessage]=" errorMessage"></app-error-message>
 

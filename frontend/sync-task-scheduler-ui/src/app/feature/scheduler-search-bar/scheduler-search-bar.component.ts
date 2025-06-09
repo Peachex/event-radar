@@ -18,17 +18,14 @@ export class SchedulerSearchBarComponent {
   @Output() sharedSearchQueryChange = new EventEmitter<string>();
 
   @Input() sharedPageSize: number = 5;
-  @Input() sharedCurrentPage: number = 0;
-  @Output() currentPageNumberChange = new EventEmitter<number>();
-  @Output() sharedTotalPages = new EventEmitter<number>();
 
+  @Output() sharedPageNumberChange = new EventEmitter<number>();
+  @Output() sharedTotalPages = new EventEmitter<number>();
   @Output() searchWasTriggered = new EventEmitter<boolean>();
 
   constructor(private taskService: TaskService) {}
 
   performSearch() {
-    //todo: Enable pagination for search.
-
     this.searchIsCompleted.emit(false);
     this.sharedSearchQueryChange.emit(this.searchQuery);
     this.searchWasTriggered.emit(true);
@@ -36,7 +33,7 @@ export class SchedulerSearchBarComponent {
     this.taskService.findTasksBySearchQueryPaginated(this.searchQuery, 0, this.sharedPageSize).subscribe({
       next: (response) => {
         this.sharedTotalPages.emit(response.page.totalPages);
-        this.sharedCurrentPage = response.page.number;
+        this.sharedPageNumberChange.emit(0);
         this.fetchedTasks.emit(response.page.content);
         this.errorMessage.emit(null);
         this.searchIsCompleted.emit(true);
@@ -54,11 +51,11 @@ export class SchedulerSearchBarComponent {
     this.searchWasTriggered.emit(false);
     this.searchQuery = '';
     this.sharedSearchQueryChange.emit(this.searchQuery);
-    this.currentPageNumberChange.emit(0);
+    this.sharedPageNumberChange.emit(0);
+
     this.taskService.findAllTasksPaginated(0, this.sharedPageSize).subscribe({
       next: (response) => {
         this.sharedTotalPages.emit(response.page.totalPages);
-        this.sharedCurrentPage = response.page.number;
         this.fetchedTasks.emit(response.page.content);
         this.errorMessage.emit(null);
         this.searchIsCompleted.emit(true);

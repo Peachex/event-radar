@@ -1,5 +1,5 @@
 <div class="pagination-controls">
-    <!-- Styled Page Size Selection -->
+    <!-- Page Size Selection -->
     <div class="mb-2 page-size-selection">
         <label class="page-size-label" for="pageSize">Items per page:</label>
         <select id="pageSize" [value]="pageSize" (change)="onPageSizeChange($event)">
@@ -7,7 +7,7 @@
         </select>
     </div>
 
-    <!-- Styled Pagination Controls -->
+    <!-- Pagination Controls -->
     <nav *ngIf="totalPages > 1">
         <ul class="pagination">
             <li class="page-item" [class.disabled]="currentPage === 0">
