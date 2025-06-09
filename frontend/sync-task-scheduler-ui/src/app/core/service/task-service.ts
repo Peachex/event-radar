@@ -8,6 +8,8 @@ import { EventManagerClient } from '../client/event-manager-client';
 import { EventManagerTaskId } from '../model/event-manager-task-id';
 import { PaginatedTasksResponse } from '../model/paginated-tasks-response';
 import { SearchByFieldsPaginatedRequest } from '../model/search-by-field-paginated-request';
+import { SortingDirection } from '../model/sorting-direction';
+import { SortField } from '../model/sort-field';
 
 @Injectable({
   providedIn: 'root',
@@ -40,6 +42,12 @@ export class TaskService {
       pageRequestDTO: {
         page: page,
         size: size,
+        sortFields: [
+          {
+            field: 'status',
+            direction: SortingDirection.ASC,
+          },
+        ],
       },
     };
 
@@ -55,7 +63,13 @@ export class TaskService {
   }
 
   findAllTasksPaginated(page: number, size: number): Observable<PaginatedTasksResponse> {
-    return this.taskClient.retrieveAllTasksPaginated(page, size);
+    const enableSortingByStatus: SortField[] = [
+      {
+        field: 'status',
+        direction: SortingDirection.ASC,
+      },
+    ];
+    return this.taskClient.retrieveAllTasksPaginated(page, size, enableSortingByStatus);
   }
 
   deleteTask(task: Task): Observable<string> {

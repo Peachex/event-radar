@@ -7,6 +7,7 @@ import { SearchByFieldsRequest } from '../model/search-by-field-request';
 import { ExceptionResponse } from '../model/exception-response';
 import { PaginatedTasksResponse } from '../model/paginated-tasks-response';
 import { SearchByFieldsPaginatedRequest } from '../model/search-by-field-paginated-request';
+import { SortField } from '../model/sort-field';
 
 @Injectable({
   providedIn: 'root',
@@ -40,10 +41,11 @@ export class SyncTaskSchedulerClient {
     );
   }
 
-  retrieveAllTasksPaginated(page: number, size: number): Observable<PaginatedTasksResponse> {
+  retrieveAllTasksPaginated(page: number, size: number, sortFields?: SortField[]): Observable<PaginatedTasksResponse> {
     const body = {
       page,
       size,
+      sortFields,
     };
 
     return this.httpClient.post<PaginatedTasksResponse>(this.retrieveAllTasksPaginatedApiUrl, body).pipe(
