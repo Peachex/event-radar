@@ -10,6 +10,7 @@ import { PaginatedTasksResponse } from '../model/paginated-tasks-response';
 import { SearchByFieldsPaginatedRequest } from '../model/search-by-field-paginated-request';
 import { SortingDirection } from '../model/sorting-direction';
 import { SortField } from '../model/sort-field';
+import { PaginatedEventManagerTaskIdResponse } from '../model/paginated-event-manager-task-id-response';
 
 @Injectable({
   providedIn: 'root',
@@ -56,6 +57,16 @@ export class TaskService {
 
   findAllTasksIds(): Observable<EventManagerTaskId[]> {
     return this.eventManagerClient.retrieveAllTasksIds();
+  }
+
+  findAllTasksIdsPaginated(page: number, size: number): Observable<PaginatedEventManagerTaskIdResponse> {
+    const enableSortingByStatus: SortField[] = [
+      {
+        field: 'taskId',
+        direction: SortingDirection.ASC,
+      },
+    ];
+    return this.eventManagerClient.retrieveAllTasksIdsPaginated(page, size, enableSortingByStatus);
   }
 
   findAllTasks(): Observable<Task[]> {

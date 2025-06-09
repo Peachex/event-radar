@@ -4,6 +4,10 @@
             [actionsAreCompleted]="[fetchForTableInitIsCompleted]"></app-in-progress-process-spinner>
     </div>
 
+    <app-pagination [currentPage]="sharedPageNumber" [pageSize]="sharedPageSize" [totalPages]="sharedTotalPages"
+        (pageChange)="goToPage($event)" (pageSizeChange)="onPageSizeChange($event)">
+    </app-pagination>
+
     <app-tasks-table [tasksIdsResponse]="tasksIdsResponse"></app-tasks-table>
 
     <app-success-message [successMessage]="successMessageFromChild"></app-success-message>
