@@ -26,4 +26,49 @@ export class PaginationComponent {
     const newSize = parseInt((event.target as HTMLSelectElement).value, 10);
     this.pageSizeChange.emit(newSize);
   }
+
+  getVisiblePages(): (number | string)[] {
+    const pages: (number | string)[] = [];
+    const total = this.totalPages;
+    const current = this.currentPage;
+    const maxMiddlePages = 5;
+
+    if (total <= maxMiddlePages + 2) {
+      // Small number of pages — show all
+      return Array.from({ length: total }, (_, i) => i);
+    }
+
+    const showLeft = Math.max(current - 1, 1);
+    const showRight = Math.min(current + 1, total - 2);
+
+    pages.push(0); // First page
+
+    if (showLeft > 1) {
+      if (showLeft > 2) {
+        pages.push('...');
+      } else {
+        pages.push(1);
+      }
+    }
+
+    for (let i = showLeft; i <= showRight; i++) {
+      pages.push(i);
+    }
+
+    if (showRight < total - 2) {
+      if (showRight < total - 3) {
+        pages.push('...');
+      } else {
+        pages.push(total - 2);
+      }
+    }
+
+    pages.push(total - 1); // Last page
+
+    return pages;
+  }
+
+  isNumber(value: any): value is number {
+    return typeof value === 'number';
+  }
 }

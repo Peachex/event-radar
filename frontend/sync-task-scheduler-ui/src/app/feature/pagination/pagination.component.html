@@ -10,15 +10,23 @@
     <!-- Pagination Controls -->
     <nav *ngIf="totalPages > 1">
         <ul class="pagination">
+            <!-- Previous Button -->
             <li class="page-item" [class.disabled]="currentPage === 0">
                 <button class="page-link" (click)="goToPage(currentPage - 1)">Previous</button>
             </li>
 
-            <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
-                [class.active]="i === currentPage">
-                <button class="page-link" (click)="goToPage(i)">{{ i + 1 }}</button>
+            <!-- Page Numbers with Ellipsis -->
+            <li class="page-item" *ngFor="let page of getVisiblePages()" [class.active]="page === currentPage"
+                [class.disabled]="!isNumber(page)">
+                <button class="page-link" *ngIf="isNumber(page); else dots" (click)="goToPage(page)">
+                    {{ page + 1 }}
+                </button>
+                <ng-template #dots>
+                    <span class="page-link">…</span>
+                </ng-template>
             </li>
 
+            <!-- Next Button -->
             <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
                 <button class="page-link" (click)="goToPage(currentPage + 1)">Next</button>
             </li>
