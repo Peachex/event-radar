@@ -60,13 +60,7 @@ export class TaskService {
   }
 
   findAllTasksIdsPaginated(page: number, size: number): Observable<PaginatedEventManagerTaskIdResponse> {
-    const enableSortingByStatus: SortField[] = [
-      {
-        field: 'taskId',
-        direction: SortingDirection.ASC,
-      },
-    ];
-    return this.eventManagerClient.retrieveAllTasksIdsPaginated(page, size, enableSortingByStatus);
+    return this.eventManagerClient.retrieveAllTasksIdsPaginated(page, size);
   }
 
   findAllTasks(): Observable<Task[]> {
