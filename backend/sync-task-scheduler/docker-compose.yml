@@ -25,6 +25,7 @@ services:
       - 'RABBITMQ_USERNAME=rabbitmq_user'
       - 'RABBITMQ_PASSWORD=rabbitmq_password'
       - 'QUEUE_TASK_SCHEDULER=task-scheduler-queue'
+      - 'CORS_ALLOWED_ORIGINS=http://localhost:4210'
     ports:
       - '8089:8088'
     restart: 'on-failure'
