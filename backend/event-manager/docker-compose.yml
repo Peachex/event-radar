@@ -15,7 +15,7 @@ services:
       - 'EVENT_PERSISTOR_CLIENT_CONTEXT_PATH=/EventPersistor'
       - 'EVENT_PERSISTOR_CLIENT_CONNECT_TIMEOUT=3000'
       - 'EVENT_PERSISTOR_CLIENT_READ_TIMEOUT=3000'
-      - 'CORS_ALLOWED_ORIGINS=http://localhost:4210'
+      - 'CORS_ALLOWED_ORIGINS=http://localhost:4200,http://localhost:4210'
     ports:
       - '8091:8090'
     restart: 'on-failure'
