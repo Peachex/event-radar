@@ -8,25 +8,30 @@ import { ExceptionResponse } from '../model/exception-response';
 import { PaginatedTasksResponse } from '../model/paginated-tasks-response';
 import { SearchByFieldsPaginatedRequest } from '../model/search-by-field-paginated-request';
 import { SortField } from '../model/sort-field';
+import { ConfigLoader } from '../util/config-loader';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SyncTaskSchedulerClient {
-  private readonly syncTaskSchedulerPort: string = '8088';
+  config = ConfigLoader.get();
+
+  private readonly syncTaskSchedulerHost: string = this.config.syncTaskSchedulerHost;
+  private readonly syncTaskSchedulerPort: string = this.config.syncTaskSchedulerPort;
+  private readonly syncTaskSchedulerContextPath: string = this.config.syncTaskSchedulerContextPath;
 
   // Tasks APIs
-  private readonly retrieveAllTasksApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;
-  private readonly retrieveAllTasksPaginatedApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks/all`;
-  private readonly retrieveTasksByFieldsApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks/search`;
-  private readonly retrieveTasksByFieldsPaginatedApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks/search/pagination`;
-  private readonly deleteTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;
-  private readonly createTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/tasks`;
+  private readonly retrieveAllTasksApiUrl: string = `${this.syncTaskSchedulerHost}:${this.syncTaskSchedulerPort}/${this.syncTaskSchedulerContextPath}/tasks`;
+  private readonly retrieveAllTasksPaginatedApiUrl: string = `${this.syncTaskSchedulerHost}:${this.syncTaskSchedulerPort}/${this.syncTaskSchedulerContextPath}/tasks/all`;
+  private readonly retrieveTasksByFieldsApiUrl: string = `${this.syncTaskSchedulerHost}:${this.syncTaskSchedulerPort}/${this.syncTaskSchedulerContextPath}/tasks/search`;
+  private readonly retrieveTasksByFieldsPaginatedApiUrl: string = `${this.syncTaskSchedulerHost}:${this.syncTaskSchedulerPort}/${this.syncTaskSchedulerContextPath}/tasks/search/pagination`;
+  private readonly deleteTaskApiUrl: string = `${this.syncTaskSchedulerHost}:${this.syncTaskSchedulerPort}/${this.syncTaskSchedulerContextPath}/tasks`;
+  private readonly createTaskApiUrl: string = `${this.syncTaskSchedulerHost}:${this.syncTaskSchedulerPort}/${this.syncTaskSchedulerContextPath}/tasks`;
 
   // Scheduler APIs
-  private readonly triggerTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/scheduler/run`;
-  private readonly pauseTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/scheduler/pause`;
-  private readonly resumeTaskApiUrl: string = `http://localhost:${this.syncTaskSchedulerPort}/SyncTaskScheduler/scheduler/resume`;
+  private readonly triggerTaskApiUrl: string = `${this.syncTaskSchedulerHost}:${this.syncTaskSchedulerPort}/${this.syncTaskSchedulerContextPath}/scheduler/run`;
+  private readonly pauseTaskApiUrl: string = `${this.syncTaskSchedulerHost}:${this.syncTaskSchedulerPort}/${this.syncTaskSchedulerContextPath}/scheduler/pause`;
+  private readonly resumeTaskApiUrl: string = `${this.syncTaskSchedulerHost}:${this.syncTaskSchedulerPort}/${this.syncTaskSchedulerContextPath}/scheduler/resume`;
 
   constructor(private httpClient: HttpClient) {}
 

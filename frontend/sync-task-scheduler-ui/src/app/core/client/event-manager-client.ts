@@ -6,15 +6,20 @@ import { TasksIdsFetchingError } from '../error/tasks-ids-fetching-error';
 import { EventManagerTaskId } from '../model/event-manager-task-id';
 import { PaginatedEventManagerTaskIdResponse } from '../model/paginated-event-manager-task-id-response';
 import { SortField } from '../model/sort-field';
+import { ConfigLoader } from '../util/config-loader';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EventManagerClient {
-  private readonly eventManagerPort: string = '8090';
+  config = ConfigLoader.get();
+
+  private eventManagerHost: string = this.config.eventManagerHost;
+  private eventManagerPort: string = this.config.eventManagerPort;
+  private readonly eventManagerContextPath: string = this.config.eventManagerContextPath;
 
   // Tasks APIs
-  private readonly retrieveAllTasksApiUrl: string = `http://localhost:${this.eventManagerPort}/EventManager/tasks`;
+  private readonly retrieveAllTasksApiUrl: string = `${this.eventManagerHost}:${this.eventManagerPort}/${this.eventManagerContextPath}/tasks`;
 
   constructor(private httpClient: HttpClient) {}
 

@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  applicaiton:
+    build: .
+    ports:
+      - "4210:80"
+    environment:
+      EVENT_MANAGER_HOST: "event-manager-application"
+      EVENT_MANAGER_PORT: "8090"
+      EVENT_MANAGER_CONTEXT_PATH: "EventManager"
+      SYNC_TASK_SCHEDULER_HOST: "sync-task-scheduler-application"
+      SYNC_TASK_SCHEDULER_PORT: "8088"
+      SYNC_TASK_SCHEDULER_CONTEXT_PATH: "SyncTaskScheduler"
