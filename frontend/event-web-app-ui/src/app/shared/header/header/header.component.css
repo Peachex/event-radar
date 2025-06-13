@@ -1,0 +1,78 @@
+.nav-links {
+  flex-grow: 0.5; /* Allows items to expand */
+  display: flex;
+  justify-content: space-evenly; /* Evenly space links */
+}
+
+.navbar-nav .nav-link {
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 10px 20px; /* Adds more padding on the sides to increase clickable area */
+  transition: color 0.3s ease-in-out;
+  color: rgb(216, 216, 216);
+  display: inline-block; /* Make sure link is treated as block to handle padding */
+}
+
+/* Nav links alignment to display the links right under the logo nav text. Total size = (.logo width + .nav-text-gap) */
+.nav-link-gap {
+  margin-left: calc(50px + 30px);
+  margin-right: calc(50px + 30px);
+}
+
+/* Hover effect on the nav links text */
+.navbar-nav .nav-link:hover,
+.navbar-nav {
+  color: #ac20fd;
+  text-decoration: underline;
+  transition: transform 0.5s ease-in-out;
+  transform: scale(1.1);
+}
+
+/* Highlight active tab */
+.nav-link.active,
+.navbar-brand.active .nav-text {
+  color: #ffffff9c !important;
+  text-decoration: underline;
+}
+
+/* Adjust logo size */
+.logo {
+  width: 50px;
+  height: 50px;
+}
+
+/* Gap between logo and text */
+.nav-text-gap {
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
+.nav-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: rgb(216, 216, 216);
+  padding: 10px 20px; /* Adds padding around the logo text to increase clickable area */
+  display: inline-block; /* Make the logo text behave like a block */
+  transition: color 0.3s ease-in-out; /* Smooth color transition */
+}
+
+/* Hover effect on the logo text */
+.navbar-brand:hover .nav-text {
+  text-decoration: underline;
+  color: #ac20fd;
+  transition: transform 0.5s ease-in-out;
+}
+
+/* Hover effect on the logo image and logo text */
+.navbar-brand:hover {
+  color: #ac20fd;
+  transition: transform 0.5s ease-in-out;
+  transform: scale(1.1);
+}
+
+.disabled-link {
+  pointer-events: none; /* Prevents clicking */
+  color: rgba(216, 216, 216, 0.5); /* Dimmed look */
+  cursor: not-allowed;
+  text-decoration: none;
+}
