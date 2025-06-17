@@ -29,12 +29,12 @@ export class EventCardComponent {
       clearTimeout(this.loadTimeout);
     }
 
-    // Start 1 second timer to fallback to default image if not loaded
+    // Start 5 seconds timer to fallback to default image if not loaded
     this.loadTimeout = setTimeout(() => {
       if (this.imageSrc !== this.defaultImage) {
         this.imageSrc = this.defaultImage;
       }
-    }, 1000);
+    }, 5000);
   }
 
   onImageLoad() {
