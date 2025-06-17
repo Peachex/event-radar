@@ -1,5 +1,5 @@
 <div class="card h-100 shadow-sm" style="width: 18rem;">
-    <img [src]="event.imageLink || defaultImage" (error)="onImageError($event)" class="card-img-top" alt="Event image"
+    <img [src]="imageSrc" (load)="onImageLoad()" (error)="onImageError($event)" class="card-img-top" alt="Event image"
         style="height: 240px; object-fit: cover;" />
     <div class="card-header bg-light fw-bold text-truncate" style="height: 60px;" title="{{ event.title }}">
         {{ event.title }}
