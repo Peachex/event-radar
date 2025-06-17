@@ -1,0 +1,16 @@
+.card {
+  min-height: 100%;
+
+  border: 1.5mm solid #c4c4c4;
+  border-radius: 0.5rem;
+}
+.card-header {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-img-top {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}

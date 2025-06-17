@@ -1,3 +1,5 @@
-<div class="d-flex flex-wrap gap-3">
-    <app-event-card *ngFor="let ev of events" [event]="ev"></app-event-card>
+<div class="cards-container container">
+    <div class="d-flex flex-wrap gap-5 justify-content-start">
+        <app-event-card *ngFor="let ev of events" [event]="ev"></app-event-card>
+    </div>
 </div>

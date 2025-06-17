@@ -1,25 +1,25 @@
-<div class="card mb-3" style="max-width: 540px;">
-    <div class="row g-0">
-        <div class="col-md-4">
-            <img [src]="event.imageLink || defaultImage" (error)="onImageError($event)" class="img-fluid rounded-start"
-                alt="Event image" />
-        </div>
-        <div class="col-md-8">
-            <div class="card-body">
-                <h5 class="card-title">{{ event.title }}</h5>
-                <p class="card-text mb-1">
-                    <strong>Дата:</strong> {{ event.dateStr }}
-                </p>
-                <p class="card-text mb-1" *ngIf="event.priceStr">
-                    <strong>Цена:</strong> {{ event.priceStr }}
-                </p>
-                <p class="card-text mb-2">
-                    <strong>Категория:</strong> {{ event.category }}
-                </p>
-                <a [href]="event.eventLink" class="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer">
-                    Подробнее
-                </a>
-            </div>
-        </div>
+<div class="card h-100 shadow-sm" style="width: 18rem;">
+    <img [src]="event.imageLink || defaultImage" (error)="onImageError($event)" class="card-img-top" alt="Event image"
+        style="height: 240px; object-fit: cover;" />
+    <div class="card-header bg-light fw-bold text-truncate" style="height: 60px;" title="{{ event.title }}">
+        {{ event.title }}
+    </div>
+    <div class="card-body d-flex flex-column" style="height: 200px;">
+        <p class="card-text mb-1">
+            <strong>Дата:</strong> {{ event.dateStr }}
+        </p>
+        <p class="card-text mb-1" *ngIf="event.priceStr">
+            <strong>Цена:</strong> {{ event.priceStr }}
+        </p>
+        <p class="card-text mb-1">
+            <strong>Категория:</strong> {{ event.category }}
+        </p>
+        <p class="card-text mb-1">
+            <strong>Город:</strong> {{ event.location.city }} ({{ event.location.country }})
+        </p>
+        <a [href]="event.eventLink" class="btn btn-outline-primary btn-sm mt-auto align-self-start" target="_blank"
+            rel="noopener noreferrer">
+            Подробнее
+        </a>
     </div>
 </div>
