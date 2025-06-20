@@ -38,4 +38,10 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST.value(), e);
         return ResponseEntity.badRequest().body(exceptionResponse);
     }
+
+    @ExceptionHandler(value = Throwable.class)
+    protected ResponseEntity<ExceptionResponse> handleUncaughtException(final Throwable e) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
+        return ResponseEntity.internalServerError().body(exceptionResponse);
+    }
 }
