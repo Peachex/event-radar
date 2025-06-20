@@ -4,8 +4,8 @@
   border-radius: 0.5rem;
 }
 .card-header {
-  /* white-space: nowrap; */
-  /* overflow: hidden; */
+  white-space: nowrap;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
