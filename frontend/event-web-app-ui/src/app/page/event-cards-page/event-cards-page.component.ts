@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { EventCardComponent } from '../../feature/event-card/event-card.component';
 import { EventData } from '../../core/model/event-data';
-import { EventsHolder } from './events-holder';
 import { EventService } from '../../core/service/event-service';
 
 @Component({
