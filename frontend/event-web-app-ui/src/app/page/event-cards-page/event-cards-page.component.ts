@@ -9,6 +9,8 @@ import { ScrollToTopComponent } from '../../feature/scroll-to-top/scroll-to-top.
 import { InProgressProcessSpinnerComponent } from '../../feature/in-progress-process-spinner/in-progress-process-spinner.component';
 import { EmptyResultsComponent } from '../../feature/empty-results/empty-results.component';
 import { ErrorMessageComponent } from '../../feature/error-message/error-message.component';
+import { EventSearchBarComponent } from '../../feature/event-search-bar/event-search-bar.component';
+import { SearchBarData } from '../../core/model/search-bar-data';
 
 @Component({
   selector: 'app-event-cards-page',
@@ -16,6 +18,7 @@ import { ErrorMessageComponent } from '../../feature/error-message/error-message
     CommonModule,
     EventCardComponent,
     PaginationComponent,
+    EventSearchBarComponent,
     ScrollToTopComponent,
     InProgressProcessSpinnerComponent,
     ErrorMessageComponent,
@@ -55,13 +58,12 @@ export class EventCardsPageComponent implements OnInit {
     this.invokeRetrievingEventsLogic(this.pageNumber, this.pageSize, this.searchQuery);
   }
 
-  invokeRetrievingEventsLogic(page: number, pageSize: number, searchQuery: string) {
+  invokeRetrievingEventsLogic(page: number, size: number, searchQuery: string) {
     this.resetEventsAndFlags();
     if (this.searchWasTriggered) {
-      //this.performSearch(page, pageSize, searchQuery);
-      this.retrieveEvents(page, pageSize);
+      this.findEventsBySearchQuery(searchQuery, page, size);
     } else {
-      this.retrieveEvents(page, pageSize);
+      this.retrieveEvents(page, size);
     }
   }
 
@@ -85,5 +87,29 @@ export class EventCardsPageComponent implements OnInit {
         this.eventsRetrievingIsCompleted = true;
       },
     });
+  }
+
+  findEventsBySearchQuery(searchQuery: string, page: number, size: number): void {
+    this.eventService.findEventsBySearchQueryPaginated(searchQuery, page, size).subscribe({
+      next: (response) => {
+        this.events = response.page.content;
+        this.totalPages = response.page.totalPages;
+        this.pageNumber = response.page.number;
+        this.errorMessage = null;
+        this.eventsRetrievingIsCompleted = true;
+      },
+      error: (error: EventsFetchingError) => {
+        console.error('Error fetching events:', error);
+        this.errorMessage = error.message;
+        this.eventsRetrievingIsCompleted = true;
+      },
+    });
+  }
+
+  onSearchBarDataChange(searchBarData: SearchBarData) {
+    this.pageNumber = 0;
+    this.searchQuery = searchBarData.searchQuery;
+    this.searchWasTriggered = searchBarData.searchWasTriggered;
+    this.invokeRetrievingEventsLogic(this.pageNumber, this.pageSize, this.searchQuery);
   }
 }
