@@ -87,7 +87,10 @@ public class EventRepositoryImpl implements EventRepository {
 
         final Query locationQuery = new Query();
         final Query eventQueryForSimpleSearch = new Query();
-        eventQueryForSimpleSearch.with(pageRequest);
+
+        //fixme: totalCount depends on pageRequest, so only the first page of events is returned.
+        // If there are more matching events than pageSize, they are not included.
+        //eventQueryForSimpleSearch.with(pageRequest);
 
         processCriteriaAdditions(fields, isCombinedMatch, locationQuery, eventQueryForSimpleSearch);
 
@@ -101,7 +104,7 @@ public class EventRepositoryImpl implements EventRepository {
                 eventsFromSimpleFieldSearch, isCombinedMatch);
 
         long totalCount = foundEvents.size();
-        trimToPageSize(foundEvents, pageRequest.getPageSize());
+        trimToPageSize(foundEvents, pageRequest.getPageSize(), pageRequest.getPageNumber());
         return new PageImpl<>(foundEvents, pageRequest, totalCount);
     }
 
