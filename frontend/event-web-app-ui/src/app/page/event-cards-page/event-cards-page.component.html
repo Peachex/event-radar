@@ -5,9 +5,19 @@
         </app-pagination>
     </div>
 
+    <div class="in-progress-spinner">
+        <app-in-progress-process-spinner
+            [actionsAreCompleted]="[eventsRetrievingIsCompleted]"></app-in-progress-process-spinner>
+    </div>
+
     <div class="d-flex flex-wrap gap-5 justify-content-start">
         <app-event-card *ngFor="let ev of events" [event]="ev"></app-event-card>
     </div>
+
+    <app-error-message [errorMessage]=" errorMessage"></app-error-message>
+
+    <app-empty-results [events]="events" [errorMessage]="errorMessage"
+        [eventsRetrievingIsCompleted]="eventsRetrievingIsCompleted"></app-empty-results>
 
     <app-scroll-to-top></app-scroll-to-top>
 </div>
