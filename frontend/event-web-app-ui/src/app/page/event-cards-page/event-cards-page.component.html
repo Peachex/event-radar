@@ -1,5 +1,13 @@
 <div class="cards-container container">
+    <div class="pagination-controls">
+        <app-pagination [currentPage]="pageNumber" [pageSize]="pageSize" [totalPages]="totalPages"
+            (pageChange)="goToPage($event)" (pageSizeChange)="onPageSizeChange($event)">
+        </app-pagination>
+    </div>
+
     <div class="d-flex flex-wrap gap-5 justify-content-start">
         <app-event-card *ngFor="let ev of events" [event]="ev"></app-event-card>
     </div>
+
+    <app-scroll-to-top></app-scroll-to-top>
 </div>

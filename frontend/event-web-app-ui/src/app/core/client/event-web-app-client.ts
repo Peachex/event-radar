@@ -5,6 +5,8 @@ import { EventData } from '../model/event-data';
 import { HttpClient } from '@angular/common/http';
 import { ExceptionResponse } from '../model/exception-response';
 import { EventsFetchingError } from '../error/events-fetching-error';
+import { SortField } from '../model/sort-field';
+import { PaginatedEventDataResponse } from '../model/paginated-event-data-response';
 
 @Injectable({
   providedIn: 'root',
@@ -14,11 +16,11 @@ export class EventWebAppClient {
 
   private readonly eventWebAppHost: string = this.config.eventWebAppHost;
   private readonly eventWebAppPort: string = this.config.eventWebAppPort;
-  private readonly eventWebAppContextPath: string =
-    this.config.eventWebAppContextPath;
+  private readonly eventWebAppContextPath: string = this.config.eventWebAppContextPath;
 
   // Events APIs
   private readonly retrieveAllEventsApiUrl: string = `${this.eventWebAppHost}:${this.eventWebAppPort}/${this.eventWebAppContextPath}/events`;
+  private readonly retrieveAllEventsPaginatedApiUrl: string = `${this.eventWebAppHost}:${this.eventWebAppPort}/${this.eventWebAppContextPath}/events/all`;
 
   constructor(private httpClient: HttpClient) {}
 
@@ -27,12 +29,28 @@ export class EventWebAppClient {
       catchError((error) => {
         console.error(error.error as ExceptionResponse);
         return throwError(
-          () =>
-            new EventsFetchingError(
-              'Failed to fetch events. Please try again later.',
-              error.error,
-              error
-            )
+          () => new EventsFetchingError('Failed to fetch events. Please try again later.', error.error, error)
+        );
+      })
+    );
+  }
+
+  retrieveAllEventsPaginated(
+    page: number,
+    size: number,
+    sortFields?: SortField[]
+  ): Observable<PaginatedEventDataResponse> {
+    const body = {
+      page,
+      size,
+      sortFields,
+    };
+
+    return this.httpClient.post<PaginatedEventDataResponse>(this.retrieveAllEventsPaginatedApiUrl, body).pipe(
+      catchError((error) => {
+        console.error(error.error as ExceptionResponse);
+        return throwError(
+          () => new EventsFetchingError('Failed to fetch events. Please try again later.', error.error, error)
         );
       })
     );
