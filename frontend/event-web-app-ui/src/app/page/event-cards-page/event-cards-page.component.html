@@ -1,5 +1,13 @@
 <div class="cards-container container">
-    <app-event-search-bar (searchBarDataChange)="onSearchBarDataChange($event)"></app-event-search-bar>
+    <!-- <app-event-search-bar (searchBarDataChange)="onSearchBarDataChange($event)"></app-event-search-bar>
+
+    <app-event-sort-bar (sortBarDataChange)="onSortBarDataChange($event)"></app-event-sort-bar> -->
+
+
+    <div class="d-flex justify-content-center align-items-center flex-wrap gap-3 mb-3">
+        <app-event-sort-bar (sortBarDataChange)="onSortBarDataChange($event)"></app-event-sort-bar>
+        <app-event-search-bar (searchBarDataChange)="onSearchBarDataChange($event)"></app-event-search-bar>
+    </div>
 
     <div class="pagination-controls">
         <app-pagination [currentPage]="pageNumber" [pageSize]="pageSize" [totalPages]="totalPages"

@@ -19,20 +19,20 @@ export class EventService {
     return this.eventClient.retrieveAllEvents();
   }
 
-  retrieveEventsPaginated(page: number, size: number): Observable<PaginatedEventDataResponse> {
-    const enableSortingByCategory: SortField[] = [
-      {
-        field: 'category',
-        direction: SortingDirection.ASC,
-      },
-    ];
-    return this.eventClient.retrieveAllEventsPaginated(page, size, enableSortingByCategory);
+  retrieveEventsPaginated(
+    page: number,
+    size: number,
+    sortFields?: SortField[]
+  ): Observable<PaginatedEventDataResponse> {
+    const resolvedSortFields: SortField[] = this.resolveSortFields(sortFields);
+    return this.eventClient.retrieveAllEventsPaginated(page, size, resolvedSortFields);
   }
 
   findEventsBySearchQueryPaginated(
     searchQuery: string,
     page: number,
-    size: number
+    size: number,
+    sortFields?: SortField[]
   ): Observable<PaginatedEventDataResponse> {
     const searchRequest: SearchByFieldsRequest = {} as SearchByFieldsRequest;
 
@@ -46,15 +46,25 @@ export class EventService {
       pageRequestDTO: {
         page: page,
         size: size,
-        sortFields: [
-          {
-            field: 'category',
-            direction: SortingDirection.ASC,
-          },
-        ],
+        sortFields: this.resolveSortFields(sortFields),
       },
     };
 
+    console.log(searchByFieldsPaginatedRequest);
+
     return this.eventClient.retrieveEventsByFieldsPaginated(searchByFieldsPaginatedRequest);
+  }
+
+  private resolveSortFields(sortFields?: SortField[]): SortField[] {
+    if (sortFields && sortFields.length > 0) {
+      return sortFields;
+    }
+
+    return [
+      {
+        field: 'title',
+        direction: SortingDirection.ASC,
+      },
+    ];
   }
 }

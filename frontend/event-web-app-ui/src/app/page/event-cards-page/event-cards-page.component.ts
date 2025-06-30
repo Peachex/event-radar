@@ -11,6 +11,9 @@ import { EmptyResultsComponent } from '../../feature/empty-results/empty-results
 import { ErrorMessageComponent } from '../../feature/error-message/error-message.component';
 import { EventSearchBarComponent } from '../../feature/event-search-bar/event-search-bar.component';
 import { SearchBarData } from '../../core/model/search-bar-data';
+import { EventSortBarComponent } from '../../feature/event-sort-bar/event-sort-bar.component';
+import { SortField } from '../../core/model/sort-field';
+import { SortingDirection } from '../../core/model/sorting-direction';
 
 @Component({
   selector: 'app-event-cards-page',
@@ -19,6 +22,7 @@ import { SearchBarData } from '../../core/model/search-bar-data';
     EventCardComponent,
     PaginationComponent,
     EventSearchBarComponent,
+    EventSortBarComponent,
     ScrollToTopComponent,
     InProgressProcessSpinnerComponent,
     ErrorMessageComponent,
@@ -36,6 +40,8 @@ export class EventCardsPageComponent implements OnInit {
 
   searchQuery: string = '';
   searchWasTriggered: boolean = false;
+
+  sortFields: SortField[] = [{ field: 'title', direction: SortingDirection.ASC }];
 
   eventsRetrievingIsCompleted: boolean = false;
 
@@ -73,7 +79,7 @@ export class EventCardsPageComponent implements OnInit {
   }
 
   retrieveEvents(page: number, size: number): void {
-    this.eventService.retrieveEventsPaginated(page, size).subscribe({
+    this.eventService.retrieveEventsPaginated(page, size, this.sortFields).subscribe({
       next: (response) => {
         this.events = response.page.content;
         this.totalPages = response.page.totalPages;
@@ -90,7 +96,7 @@ export class EventCardsPageComponent implements OnInit {
   }
 
   findEventsBySearchQuery(searchQuery: string, page: number, size: number): void {
-    this.eventService.findEventsBySearchQueryPaginated(searchQuery, page, size).subscribe({
+    this.eventService.findEventsBySearchQueryPaginated(searchQuery, page, size, this.sortFields).subscribe({
       next: (response) => {
         this.events = response.page.content;
         this.totalPages = response.page.totalPages;
@@ -110,6 +116,11 @@ export class EventCardsPageComponent implements OnInit {
     this.pageNumber = 0;
     this.searchQuery = searchBarData.searchQuery;
     this.searchWasTriggered = searchBarData.searchWasTriggered;
+    this.invokeRetrievingEventsLogic(this.pageNumber, this.pageSize, this.searchQuery);
+  }
+
+  onSortBarDataChange(sortFields: SortField[]) {
+    this.sortFields = sortFields;
     this.invokeRetrievingEventsLogic(this.pageNumber, this.pageSize, this.searchQuery);
   }
 }
