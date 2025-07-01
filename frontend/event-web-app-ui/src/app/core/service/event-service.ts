@@ -8,6 +8,7 @@ import { SortingDirection } from '../model/sorting-direction';
 import { SearchByFieldsRequest } from '../model/search-by-field-request';
 import { EventDataUtil } from '../util/event-data-util';
 import { SearchByFieldsPaginatedRequest } from '../model/search-by-field-paginated-request';
+import { FilterField } from '../model/filter-field';
 
 @Injectable({
   providedIn: 'root',
@@ -32,12 +33,19 @@ export class EventService {
     searchQuery: string,
     page: number,
     size: number,
-    sortFields?: SortField[]
+    sortFields: SortField[],
+    filterFields: FilterField[]
   ): Observable<PaginatedEventDataResponse> {
     const searchRequest: SearchByFieldsRequest = {} as SearchByFieldsRequest;
 
-    EventDataUtil.getEventDataSearchableFields().forEach((field) => {
-      searchRequest[field] = searchQuery;
+    if (searchQuery) {
+      EventDataUtil.getEventDataSearchableFields().forEach((field) => {
+        searchRequest[field] = searchQuery;
+      });
+    }
+
+    filterFields.forEach((filter) => {
+      searchRequest[filter.name] = filter.value;
     });
 
     const searchByFieldsPaginatedRequest: SearchByFieldsPaginatedRequest = {
@@ -49,8 +57,6 @@ export class EventService {
         sortFields: this.resolveSortFields(sortFields),
       },
     };
-
-    console.log(searchByFieldsPaginatedRequest);
 
     return this.eventClient.retrieveEventsByFieldsPaginated(searchByFieldsPaginatedRequest);
   }

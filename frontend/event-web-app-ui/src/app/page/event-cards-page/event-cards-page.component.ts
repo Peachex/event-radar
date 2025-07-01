@@ -14,6 +14,8 @@ import { SearchBarData } from '../../core/model/search-bar-data';
 import { EventSortBarComponent } from '../../feature/event-sort-bar/event-sort-bar.component';
 import { SortField } from '../../core/model/sort-field';
 import { SortingDirection } from '../../core/model/sorting-direction';
+import { EventFilterBarComponent } from '../../feature/event-filter-bar/event-filter-bar.component';
+import { FilterField } from '../../core/model/filter-field';
 
 @Component({
   selector: 'app-event-cards-page',
@@ -23,6 +25,7 @@ import { SortingDirection } from '../../core/model/sorting-direction';
     PaginationComponent,
     EventSearchBarComponent,
     EventSortBarComponent,
+    EventFilterBarComponent,
     ScrollToTopComponent,
     InProgressProcessSpinnerComponent,
     ErrorMessageComponent,
@@ -42,6 +45,7 @@ export class EventCardsPageComponent implements OnInit {
   searchWasTriggered: boolean = false;
 
   sortFields: SortField[] = [{ field: 'title', direction: SortingDirection.ASC }];
+  filterFields: FilterField[] = [];
 
   eventsRetrievingIsCompleted: boolean = false;
 
@@ -96,20 +100,22 @@ export class EventCardsPageComponent implements OnInit {
   }
 
   findEventsBySearchQuery(searchQuery: string, page: number, size: number): void {
-    this.eventService.findEventsBySearchQueryPaginated(searchQuery, page, size, this.sortFields).subscribe({
-      next: (response) => {
-        this.events = response.page.content;
-        this.totalPages = response.page.totalPages;
-        this.pageNumber = response.page.number;
-        this.errorMessage = null;
-        this.eventsRetrievingIsCompleted = true;
-      },
-      error: (error: EventsFetchingError) => {
-        console.error('Error fetching events:', error);
-        this.errorMessage = error.message;
-        this.eventsRetrievingIsCompleted = true;
-      },
-    });
+    this.eventService
+      .findEventsBySearchQueryPaginated(searchQuery, page, size, this.sortFields, this.filterFields)
+      .subscribe({
+        next: (response) => {
+          this.events = response.page.content;
+          this.totalPages = response.page.totalPages;
+          this.pageNumber = response.page.number;
+          this.errorMessage = null;
+          this.eventsRetrievingIsCompleted = true;
+        },
+        error: (error: EventsFetchingError) => {
+          console.error('Error fetching events:', error);
+          this.errorMessage = error.message;
+          this.eventsRetrievingIsCompleted = true;
+        },
+      });
   }
 
   onSearchBarDataChange(searchBarData: SearchBarData) {
@@ -121,6 +127,12 @@ export class EventCardsPageComponent implements OnInit {
 
   onSortBarDataChange(sortFields: SortField[]) {
     this.sortFields = sortFields;
+    this.invokeRetrievingEventsLogic(this.pageNumber, this.pageSize, this.searchQuery);
+  }
+
+  onFilterBarDataChange(filterFields: FilterField[]) {
+    this.filterFields = filterFields;
+    this.searchWasTriggered = Object.keys(filterFields).length > 0 || !!this.searchQuery;
     this.invokeRetrievingEventsLogic(this.pageNumber, this.pageSize, this.searchQuery);
   }
 }

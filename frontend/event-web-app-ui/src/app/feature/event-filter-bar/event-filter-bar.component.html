@@ -1,0 +1,15 @@
+<div class="filter-bar">
+    <label for="sourceType">Source:</label>
+    <select [(ngModel)]="selectedSourceType" (change)="applyFilters()">
+        <option value="">All</option>
+        <option *ngFor="let sourceType of sourceTypes" [value]="sourceType.value">{{ sourceType.label }}</option>
+    </select>
+
+    <label for="category">Category:</label>
+    <select [(ngModel)]="selectedCategory" (change)="applyFilters()">
+        <option value="">All</option>
+        <option *ngFor="let cat of categories" [value]="cat.value">{{ cat.label }}</option>
+    </select>
+
+    <button class="btn btn-secondary" (click)="resetFilters()">Reset Filters</button>
+</div>
