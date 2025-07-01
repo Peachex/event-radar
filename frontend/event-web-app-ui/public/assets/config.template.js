@@ -1,7 +1,7 @@
 (function (window) {
   window.__env = {
-    eventWebAppHost: "${EVENT_MANAGER_HOST}",
-    eventWebAppPort: "${EVENT_MANAGER_PORT}",
-    eventWebAppContextPath: "${EVENT_MANAGER_CONTEXT_PATH}",
+    eventWebAppHost: "${EVENT_WEB_APP_HOST}",
+    eventWebAppPort: "${EVENT_WEB_APP_PORT}",
+    eventWebAppContextPath: "${EVENT_WEB_APP_CONTEXT_PATH}",
   };
 })(this);
