@@ -2,10 +2,11 @@ version: "3.8"
 
 services:
   applicaiton:
-    build: .
+    image: "peachex/event-web-app-ui:latest"
     ports:
       - "4211:80"
     environment:
+      #fixme: Environment variables are not working as expected, local properties are used instead.
       EVENT_WEB_APP_HOST: "event-web-application"
       EVENT_WEB_APP_PORT: "8095"
       EVENT_WEB_APP_CONTEXT_PATH: "EventWebApp"

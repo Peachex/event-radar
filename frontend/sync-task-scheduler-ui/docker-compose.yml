@@ -2,10 +2,11 @@ version: "3.8"
 
 services:
   applicaiton:
-    build: .
+    image: "peachex/sync-task-scheduler-ui:latest"
     ports:
       - "4210:80"
     environment:
+      #fixme: Environment variables are not working as expected, local properties are used instead.
       EVENT_MANAGER_HOST: "event-manager-application"
       EVENT_MANAGER_PORT: "8090"
       EVENT_MANAGER_CONTEXT_PATH: "EventManager"
