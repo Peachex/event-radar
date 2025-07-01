@@ -37,11 +37,13 @@ export class EventService {
     filterFields: FilterField[]
   ): Observable<PaginatedEventDataResponse> {
     const searchRequest: SearchByFieldsRequest = {} as SearchByFieldsRequest;
+    var isCombinedMatch = true;
 
     if (searchQuery) {
       EventDataUtil.getEventDataSearchableFields().forEach((field) => {
         searchRequest[field] = searchQuery;
       });
+      isCombinedMatch = false;
     }
 
     filterFields.forEach((filter) => {
@@ -49,7 +51,7 @@ export class EventService {
     });
 
     const searchByFieldsPaginatedRequest: SearchByFieldsPaginatedRequest = {
-      isCombinedMatch: false,
+      isCombinedMatch: isCombinedMatch,
       fields: searchRequest,
       pageRequestDTO: {
         page: page,

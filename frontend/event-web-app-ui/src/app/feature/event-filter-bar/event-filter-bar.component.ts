@@ -20,6 +20,7 @@ export class EventFilterBarComponent {
 
   //todo: Replace hardcoded values with dynamically loaded ones.
   categories = [
+    { value: '', label: 'All' },
     { value: 'Активный отдых', label: 'Active Leisure' },
     { value: 'Кино', label: 'Cinema' },
     { value: 'Концерты', label: 'Concerts' },
@@ -34,6 +35,7 @@ export class EventFilterBarComponent {
   ];
 
   sourceTypes = [
+    { value: '', label: 'All' },
     { value: 'AFISHA_RELAX', label: 'Afisha Relax' },
     { value: 'BYCARD', label: 'Bycard' },
   ];
