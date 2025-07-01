@@ -1,15 +1,20 @@
-<div class="filter-bar">
-    <label for="sourceType">Source:</label>
-    <select [(ngModel)]="selectedSourceType" (change)="applyFilters()">
-        <option value="">All</option>
-        <option *ngFor="let sourceType of sourceTypes" [value]="sourceType.value">{{ sourceType.label }}</option>
-    </select>
+<div class="filter-bar d-flex flex-wrap align-items-center gap-2 p-2 rounded shadow-sm">
+    <div class="d-flex align-items-center">
+        <label for="sourceType" class="form-label me-1 mb-0 small">Source:</label>
+        <select id="sourceType" class="form-select form-select-sm" [(ngModel)]="selectedSourceType"
+            (change)="applyFilters()">
+            <option *ngFor="let sourceType of sourceTypes" [value]="sourceType.value">{{ sourceType.label }}</option>
+        </select>
+    </div>
 
-    <label for="category">Category:</label>
-    <select [(ngModel)]="selectedCategory" (change)="applyFilters()">
-        <option value="">All</option>
-        <option *ngFor="let cat of categories" [value]="cat.value">{{ cat.label }}</option>
-    </select>
-
-    <button class="btn btn-secondary" (click)="resetFilters()">Reset Filters</button>
+    <div class="d-flex align-items-center">
+        <label for="category" class="form-label me-1 mb-0 small">Category:</label>
+        <select id="category" class="form-select form-select-sm" [(ngModel)]="selectedCategory"
+            (change)="applyFilters()">
+            <option *ngFor="let cat of categories" [value]="cat.value">{{ cat.label }}</option>
+        </select>
+    </div>
+    <div class="d-flex align-items-center">
+        <button class="btn btn-outline-secondary btn-sm" (click)="resetFilters()">Reset Filters</button>
+    </div>
 </div>
