@@ -1,0 +1,13 @@
+.event-radar-home-info {
+  text-align: start;
+  margin: 20px;
+}
+
+.event-radar-home-info h2 {
+  font-size: 2rem;
+}
+
+.event-radar-home-info p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
