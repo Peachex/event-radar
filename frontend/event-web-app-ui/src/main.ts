@@ -11,11 +11,8 @@ function loadConfig(): Promise<void> {
     });
 }
 
-const shouldUseRuntimeConfig =
-  environment.production && environment.useRuntimeConfig;
+const shouldUseRuntimeConfig = environment.production && environment.useRuntimeConfig;
 
 (shouldUseRuntimeConfig ? loadConfig() : Promise.resolve()).then(() => {
-  bootstrapApplication(AppComponent, appConfig).catch((err) =>
-    console.error(err)
-  );
+  bootstrapApplication(AppComponent, appConfig).catch((err) => console.error(err));
 });

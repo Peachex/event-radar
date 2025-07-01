@@ -6,6 +6,6 @@ services:
     ports:
       - "4211:80"
     environment:
-      EVENT_WEB_APP_HOST: "event-web-app-application"
+      EVENT_WEB_APP_HOST: "event-web-application"
       EVENT_WEB_APP_PORT: "8095"
       EVENT_WEB_APP_CONTEXT_PATH: "EventWebApp"

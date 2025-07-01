@@ -27,7 +27,8 @@
 
                         <div class="mb-3">
                             <label class="form-label">Cron Expression</label>
-                            <input class="form-control" [ngClass]="{ 'is-invalid': validationErrors['cronExpression'] }"
+                            <input class="form-control" placeholder="0 0/10 * * * ?"
+                                [ngClass]="{ 'is-invalid': validationErrors['cronExpression'] }"
                                 [(ngModel)]="taskSchedule.cronExpression" name="cronExpression" required />
                             <div class="invalid-feedback" *ngIf="validationErrors['cronExpression']">
                                 {{ validationErrors['cronExpression'] }}
