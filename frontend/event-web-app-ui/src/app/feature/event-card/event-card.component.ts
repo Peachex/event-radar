@@ -11,8 +11,7 @@ import { CommonModule } from '@angular/common';
 export class EventCardComponent {
   @Input() event!: EventData;
 
-  defaultImage =
-    'https://cdn-cjhkj.nitrocdn.com/krXSsXVqwzhduXLVuGLToUwHLNnSxUxO/assets/images/optimized/rev-d98e8d7/spotme.com/wp-content/uploads/2020/07/Hero-1.jpg';
+  defaultImage = '/assets/event/event_default_image.jpg';
 
   imageSrc: string = '';
   private loadTimeout?: any;
