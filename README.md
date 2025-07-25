@@ -6,6 +6,7 @@ One of the core features of this system is its flexibility and ease in adding su
 1. **Create a parser implementation** to extract event data from the new site.
 2. **Define an event DTO (Data Transfer Object)** to standardize the transfer of event data across modules and to the user.
 3. **Create an event entity class** for interaction with the database.
+4. **Create an event model** to display new events in the UI.
 
 ## Project Modules
 
@@ -34,35 +35,48 @@ The `event-radar` project is composed of several modules, each responsible for s
 - **Description**: A web application used by customers to retrieve event information.
 - **Details**: It communicates with the `event-persistor` module via a REST endpoint, using a Feign client to fetch data and display it to the user.
 
+### 7. SyncTaskSchedulerUI
+- **Description**: User interface component of the `sync-task-scheduler` module.
+
+### 8. EventWebAppUI
+- **Description**: User interface component of the `event-web-app` module.
+
 ## Getting Started
 
 ### Prerequisites
 
-- Docker & Docker Compose (**necessary** for the **automatic startup** of the application via the `start_services.sh` script).
+- Docker & Docker Compose (**necessary** for the **automatic startup** of the application via the `start_event-radar.sh` script).
 - Java 17 (**necessary** for the **manual startup** of the application).
 - Gradle (**optional**). All modules include a Gradle Wrapper, which can be used to perform tasks.
+- Node.js v20.13.1 (**necessary** for the **manual startup** of the UI part of the application).
+- Angular CLI 19.0.7 (**necessary** for the **manual startup** of the UI part of the application).
 
 
-To start the backend part of `event-radar` application, you can use the provided `start_services.sh` script in the `backend` folder. This script will automatically set up all required services, including databases, message brokers, and other necessary containers.
+To start the `event-radar` application, use the provided `start_event_radar.sh` script in the `root` folder. This script will automatically set up all required backend and frontend services, including databases, message brokers, and other necessary containers.
 
 ### Steps to Run
-To start the Event-Radar application, follow these steps:
+To start the `event-radar` application, follow these steps:
 
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/Peachex/event-radar.git
-2. **Run the `start_services.sh` script**.
-   This will start all required services and containers, including the event parsers, task scheduler, database, and more:
+2. **Run the `start_event_radar.sh` script**.
+   This will start all required backend/frontend services and containers, including the event parsers, task scheduler, database, and more:
    ```bash
-   cd event-radar/backend
-   ./start_services.sh
+   cd event-radar/
+   ./start_event_radar.sh
 3. **Access Swagger Documentation**.
    Each web module in the system provides Swagger documentation to explore and test available REST endpoints. You can access it by navigating to the following URL:
      ```bash
      http://localhost:PORT/CONTEXT_PATH/swagger-ui/index.html
   - Replace `PORT` with the appropriate port number for the module.
   - Replace `CONTEXT_PATH` with the context path for the module.
-
+4. **Access UI applications**.
+    Access the UI applications by navigating to the following URLs in your browser:
+   ```bash
+   http://localhost:4210  # sync-task-scheduler  
+   http://localhost:4211  # event-web-app
+  
   ### Local development
   **Before launching the `event-persistor` module locally, verify the `Add the *.docker.internal names to the host's /etc/hosts file (Requires password)` checkbox status in Docker settings.** If it is unchecked, check it. If it is already checked, uncheck it and then check it again to ensure Docker is properly set up. This is necessary to enable the local `event-persistor` module (outside the Docker container) to connect to the MondoDB database inside the Docker container.
    
