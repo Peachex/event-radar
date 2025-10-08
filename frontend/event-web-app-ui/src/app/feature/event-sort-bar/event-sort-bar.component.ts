@@ -23,8 +23,10 @@ export class EventSortBarComponent {
   sortOptions = [
     { label: 'Title', value: 'title' },
     { label: 'Category', value: 'category' },
-    { label: 'Price', value: 'price' },
-    { label: 'Date', value: 'date' },
+
+    //fixme: Temporarily hide this until searchByFields in EventPersistor supports pagination correctly.
+    // { label: 'Price', value: 'price' },
+    // { label: 'Date', value: 'date' },
   ];
 
   directionOptions = [
