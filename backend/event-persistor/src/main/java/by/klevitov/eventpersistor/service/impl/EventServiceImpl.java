@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -79,12 +80,20 @@ public class EventServiceImpl implements EventService {
     }
 
     private List<AbstractEvent> createEventsWithoutDuplication(final List<AbstractEvent> events) {
-        List<AbstractEvent> existentEvents = repository.findFirstByTitleAndCategoryIgnoreCaseAndSourceType(events);
-        List<AbstractEvent> nonExistentEvents = createNonExistentEventsList(events, existentEvents);
+        Map<String, AbstractEvent> eventsWithKeys = createEventsMapWithTitleAndSourceTypeKey(events);
+        List<AbstractEvent> uniqueEvents = eventsWithKeys.values().stream().toList();
+        List<AbstractEvent> existentEvents = repository.findByTitleAndSourceTypeIgnoreCase(uniqueEvents);
+        List<AbstractEvent> nonExistentEvents = createNonExistentEventsList(uniqueEvents, existentEvents);
+
         existentEvents.addAll(repository.saveAll(nonExistentEvents));
+
         Map<String, AbstractEvent> existentEventsWithKey = createEventsMapWithTitleAndSourceTypeKey(existentEvents);
-        updateEventsWithId(events, existentEventsWithKey);
-        return events;
+        updateEventsWithId(uniqueEvents, existentEventsWithKey);
+
+        // Ensure that returned events contain the correct fields if they already exist in the database.
+        eventsWithKeys.putAll(existentEventsWithKey);
+
+        return eventsWithKeys.values().stream().toList();
     }
 
     private List<AbstractEvent> createNonExistentEventsList(final List<AbstractEvent> events,
@@ -101,7 +110,7 @@ public class EventServiceImpl implements EventService {
     }
 
     private Map<String, AbstractEvent> createEventsMapWithTitleAndSourceTypeKey(final List<AbstractEvent> events) {
-        Map<String, AbstractEvent> eventsMap = new HashMap<>();
+        Map<String, AbstractEvent> eventsMap = new LinkedHashMap<>();
         events.forEach(e -> eventsMap.put(e.createKeyForComparing(), e));
         return eventsMap;
     }

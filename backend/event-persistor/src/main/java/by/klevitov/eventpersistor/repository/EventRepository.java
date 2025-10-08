@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface EventRepository {
-    List<AbstractEvent> findFirstByTitleAndCategoryIgnoreCaseAndSourceType(List<AbstractEvent> events);
+    List<AbstractEvent> findByTitleAndSourceTypeIgnoreCase(List<AbstractEvent> events);
 
     List<AbstractEvent> findByFields(Map<String, Object> fields, boolean isCombinedMatch);
 

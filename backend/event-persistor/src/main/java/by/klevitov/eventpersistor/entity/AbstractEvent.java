@@ -31,7 +31,7 @@ public abstract class AbstractEvent extends AbstractEntity {
     private EventSourceType sourceType;
 
     public String createKeyForComparing() {
-        return String.format("%s:%s:%s", title.toLowerCase(), category, sourceType.name().toLowerCase());
+        return String.format("%s:%s", title.toLowerCase(), sourceType.name().toLowerCase());
     }
 
     public void copyValuesForNullOrEmptyFieldsFromEvent(final AbstractEvent source) {

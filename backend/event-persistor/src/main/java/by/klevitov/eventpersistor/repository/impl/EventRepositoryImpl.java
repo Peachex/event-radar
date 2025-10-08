@@ -4,7 +4,6 @@ import by.klevitov.eventpersistor.entity.AbstractEvent;
 import by.klevitov.eventpersistor.entity.Location;
 import by.klevitov.eventpersistor.repository.EventRepository;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
-import by.klevitov.eventradarcommon.pagination.util.PaginationUtil;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,7 +31,6 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 @Repository
 public class EventRepositoryImpl implements EventRepository {
     private static final String TITLE_FIELD_NAME = "title";
-    private static final String CATEGORY_FIELD_NAME = "category";
     private static final String SOURCE_TYPE_FIELD_NAME = "sourceType";
     private static final String LOCATION_PREFIX = "location.";
     private static final String COMPLEX_FIELD_SPLIT_REGEX = "\\.";
@@ -45,16 +43,13 @@ public class EventRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public List<AbstractEvent> findFirstByTitleAndCategoryIgnoreCaseAndSourceType(final List<AbstractEvent> events) {
+    public List<AbstractEvent> findByTitleAndSourceTypeIgnoreCase(final List<AbstractEvent> events) {
         List<String> titles = events.stream().map(AbstractEvent::getTitle).toList();
-        List<String> categories = events.stream().map(AbstractEvent::getCategory).toList();
         List<EventSourceType> sourceTypes = events.stream().map(AbstractEvent::getSourceType).toList();
         final Query query = new Query();
         query.addCriteria(
                 where(TITLE_FIELD_NAME)
                         .in(titles)
-                        .and(CATEGORY_FIELD_NAME)
-                        .in(categories)
                         .and(SOURCE_TYPE_FIELD_NAME)
                         .in(sourceTypes));
         return mongoTemplate.find(query, AbstractEvent.class);
