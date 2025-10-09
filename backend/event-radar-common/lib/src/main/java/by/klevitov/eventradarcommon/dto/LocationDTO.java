@@ -13,8 +13,12 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class LocationDTO extends AbstractDTO {
     private String id;
+    private String name;
     private String country;
     private String city;
+    private String rawAddress;
+    private double latitude;
+    private double longitude;
 
     public LocationDTO(String country, String city) {
         this.country = country;

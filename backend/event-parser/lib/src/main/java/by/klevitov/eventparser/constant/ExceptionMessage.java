@@ -10,6 +10,7 @@ public final class ExceptionMessage {
             + " More details: %s";
 
     public static final String NULL_PARSER = "Parser cannot be null.";
+
     public static final String UNKNOWN_PARSER = "Unknown parser: %s";
 
     public static final String PROPERTIES_FILE_NOT_FOUND = "Property file not found. File name: %s";
@@ -42,6 +43,11 @@ public final class ExceptionMessage {
             + "actual array size: %s";
 
     public static final String ERROR_DURING_PRICE_CONVERSION = "Price cannot be parsed from string: %s";
+
+    public static final String ERROR_INTERRUPTED_THREAD_DURING_DELAY = "Thread was interrupted during delay between "
+            + "requests. More details: %s";
+
+    public static final String ERROR_PARSING_LOCATION = "Error while parsing event location: %s";
 
     private ExceptionMessage() {
     }

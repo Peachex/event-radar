@@ -6,7 +6,10 @@ import by.klevitov.eventparser.parser.EventParser;
 import by.klevitov.eventparser.util.PropertyUtil;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
+import by.klevitov.eventradarcommon.dto.LocationDTO;
 import lombok.extern.log4j.Log4j2;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -20,25 +23,36 @@ import static by.klevitov.eventparser.constant.EventField.CATEGORY;
 import static by.klevitov.eventparser.constant.EventField.DATE_STR;
 import static by.klevitov.eventparser.constant.EventField.EVENT_LINK;
 import static by.klevitov.eventparser.constant.EventField.IMAGE_LINK;
-import static by.klevitov.eventparser.constant.EventField.LOCATION_CITY;
-import static by.klevitov.eventparser.constant.EventField.LOCATION_COUNTRY;
 import static by.klevitov.eventparser.constant.EventField.PRICE_STR;
 import static by.klevitov.eventparser.constant.EventField.SOURCE_TYPE;
 import static by.klevitov.eventparser.constant.EventField.TITLE;
-import static by.klevitov.eventparser.constant.EventLocation.BELARUS;
-import static by.klevitov.eventparser.constant.EventLocation.MINSK;
+import static by.klevitov.eventparser.constant.ExceptionMessage.ERROR_PARSING_LOCATION;
+import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_ADDRESS;
+import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_ADDRESS_COUNTRY;
+import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_ADDRESS_LOCALITY;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_CAPSULE_MAIN_ELEMENT;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_CATEGORY;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_DATE;
+import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_DESCRIPTION;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_EVENTS_ROW;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_EVENT_LINK_HREF;
+import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_GEO;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_IMAGE_LINK;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_IMAGE_LINK_SRC;
+import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_LATITUDE;
+import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_LOCATION;
+import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_LONGITUDE;
+import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_NAME;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_PRICE;
+import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_SCRIPT;
+import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_STREET_ADDRESS;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_TITLE;
+import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_TYPE_KEY;
+import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_TYPE_VALUE;
 import static by.klevitov.eventparser.constant.PropertyConstant.PROPERTY_FILE_WITH_SITES_FOR_PARSING;
 import static by.klevitov.eventparser.util.ByCardEventParserUtil.parsePriceAndAddToMap;
 import static by.klevitov.eventparser.util.EventParserUtil.parseDateAndAddToMap;
+import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 
 @Log4j2
 public class ByCardEventParser implements EventParser {
@@ -65,7 +79,8 @@ public class ByCardEventParser implements EventParser {
         return events;
     }
 
-    private List<AbstractEventDTO> createEventsFromInnerElements(final Elements innerElements, final String category) {
+    private List<AbstractEventDTO> createEventsFromInnerElements(final Elements innerElements,
+                                                                 final String category) {
         List<AbstractEventDTO> events = new ArrayList<>();
         for (Element innerElement : innerElements) {
             Map<String, String> fields = createFieldsMap(innerElement, category);
@@ -78,8 +93,6 @@ public class ByCardEventParser implements EventParser {
     private static Map<String, String> createFieldsMap(final Element element, String category) {
         Map<String, String> fields = new HashMap<>();
         fields.put(TITLE, element.getElementsByClass(BYCARD_TITLE).text());
-        fields.put(LOCATION_COUNTRY, BELARUS);
-        fields.put(LOCATION_CITY, MINSK);
         fields.put(CATEGORY, category);
         fields.put(SOURCE_TYPE, BYCARD_SOURCE_TYPE.name());
         fields.put(DATE_STR, element.getElementsByClass(BYCARD_DATE).text());
@@ -90,6 +103,50 @@ public class ByCardEventParser implements EventParser {
         parseDateAndAddToMap(fields);
         parsePriceAndAddToMap(fields);
         return fields;
+    }
+
+    @Override
+    public LocationDTO parseLocation(Document htmlDocument) {
+        Elements scripts = htmlDocument.select(BYCARD_SCRIPT);
+        for (Element script : scripts) {
+            try {
+                JSONObject htmlScript = new JSONObject(script.html());
+                if (htmlScriptContainsLocationData(htmlScript)) {
+                    return createLocationDTOFromHtmlScript(htmlScript);
+                }
+            } catch (JSONException e) {
+                log.error(String.format(ERROR_PARSING_LOCATION, e.getMessage()));
+            }
+        }
+        return new LocationDTO();
+    }
+
+    private boolean htmlScriptContainsLocationData(JSONObject htmlScript) {
+        return (htmlScript.has(BYCARD_TYPE_KEY) && BYCARD_TYPE_VALUE.equals(htmlScript.getString(BYCARD_TYPE_KEY))
+                && isNoneBlank(htmlScript.optString(BYCARD_DESCRIPTION)));
+    }
+
+    private static LocationDTO createLocationDTOFromHtmlScript(final JSONObject htmlScript) {
+        JSONObject location = htmlScript.getJSONObject(BYCARD_LOCATION);
+        String locationName = location.optString(BYCARD_NAME);
+
+        JSONObject address = location.getJSONObject(BYCARD_ADDRESS);
+        String country = address.optString(BYCARD_ADDRESS_COUNTRY);
+        String city = address.optString(BYCARD_ADDRESS_LOCALITY);
+        String rawAddress = address.optString(BYCARD_STREET_ADDRESS);
+
+        JSONObject geo = location.getJSONObject(BYCARD_GEO);
+        double longitude = geo.optDouble(BYCARD_LONGITUDE);
+        double latitude = geo.optDouble(BYCARD_LATITUDE);
+
+        return LocationDTO.builder()
+                .name(locationName)
+                .country(country)
+                .city(city)
+                .rawAddress(rawAddress)
+                .latitude(latitude)
+                .longitude(longitude)
+                .build();
     }
 
     @Override

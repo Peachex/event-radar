@@ -5,6 +5,7 @@ import by.klevitov.eventparser.parser.EventParser;
 import by.klevitov.eventparser.util.PropertyUtil;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
+import by.klevitov.eventradarcommon.dto.LocationDTO;
 import lombok.extern.log4j.Log4j2;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -60,6 +61,12 @@ public class AfishaRelaxEventParser implements EventParser {
             events.add(event);
         }
         return events;
+    }
+
+    @Override
+    public LocationDTO parseLocation(Document htmlDocument) {
+        //todo: Implement logic
+        return null;
     }
 
     private static Map<String, String> createFieldsMap(final Element element) {

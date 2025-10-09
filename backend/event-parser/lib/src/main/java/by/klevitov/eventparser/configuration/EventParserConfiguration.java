@@ -7,10 +7,15 @@ import by.klevitov.eventparser.parser.impl.AfishaRelaxEventParser;
 import by.klevitov.eventparser.parser.impl.ByCardEventParser;
 import by.klevitov.eventradarcommon.dto.EventSourceType;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
 
 public final class EventParserConfiguration {
+    @Getter
+    @Setter
+    private static long requestsDelayMillis = 5000L;
+
     @Getter
     private static final Map<EventSourceType, EventParser> availableParsers = Map.of(
             EventSourceType.AFISHA_RELAX, new AfishaRelaxEventParser(new AfishaRelaxEventCreator()),
