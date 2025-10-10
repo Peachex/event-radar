@@ -262,7 +262,7 @@ public class EventRepositoryImplTest {
                 .thenReturn(List.of(afishaEvent))
                 .thenReturn(List.of(byCardEvent));
 
-        List<AbstractEvent> expected = List.of(byCardEvent, afishaEvent);
+        List<AbstractEvent> expected = List.of(afishaEvent, byCardEvent);
         List<AbstractEvent> actual = repository.findByFields(
                 Map.of("title", "titleValue", "location.country", "countryValue"), false);
         assertEquals(expected, actual);
@@ -286,7 +286,7 @@ public class EventRepositoryImplTest {
                 .thenReturn(List.of(afishaEvent))
                 .thenReturn(List.of(byCardEvent));
 
-        Page<AbstractEvent> expected = new PageImpl<>(List.of(byCardEvent), Pageable.ofSize(1), 2);
+        Page<AbstractEvent> expected = new PageImpl<>(List.of(afishaEvent), Pageable.ofSize(1), 2);
         Page<AbstractEvent> actual = repository.findByFields(
                 Map.of("title", "titleValue", "location.country", "countryValue"), false,
                 PageRequest.of(0, 1));

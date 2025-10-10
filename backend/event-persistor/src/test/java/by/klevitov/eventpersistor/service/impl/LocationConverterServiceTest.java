@@ -5,7 +5,6 @@ import by.klevitov.eventpersistor.converter.impl.LocationConverter;
 import by.klevitov.eventpersistor.entity.Location;
 import by.klevitov.eventpersistor.factory.EntityConverterFactory;
 import by.klevitov.eventpersistor.service.EntityConverterService;
-import by.klevitov.eventpersistor.service.impl.LocationConverterService;
 import by.klevitov.eventradarcommon.dto.LocationDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,8 +36,16 @@ public class LocationConverterServiceTest {
 
     @Test
     public void tes_convertFromDTO_withSingleLocationDTO() {
-        LocationDTO locationDTO = new LocationDTO("id", "country", "city");
-        Location expected = new Location(locationDTO.getId(), locationDTO.getCountry(), locationDTO.getCity());
+        LocationDTO locationDTO = new LocationDTO("id", "name", "country", "city", "rawAddress", 1, 2);
+        Location expected = new Location(
+                locationDTO.getId(),
+                locationDTO.getName(),
+                locationDTO.getCountry(),
+                locationDTO.getCity(),
+                locationDTO.getRawAddress(),
+                locationDTO.getLatitude(),
+                locationDTO.getLongitude()
+        );
         when(mockedConverter.convertFromDTO(locationDTO))
                 .thenReturn(expected);
         Location actual = service.convertFromDTO(locationDTO);
@@ -48,18 +55,21 @@ public class LocationConverterServiceTest {
     @Test
     public void tes_convertFromDTO_withMultipleLocationsDTO() {
         List<LocationDTO> locationsDTO = List.of(
-                new LocationDTO("id1", "country1", "city1"),
-                new LocationDTO("id2", "country2", "city2"),
-                new LocationDTO("id3", "country3", "city3")
+                new LocationDTO("id1", "name1", "country1", "city1", "rawAddress1", 1, 1),
+                new LocationDTO("id2", "name2", "country2", "city2", "rawAddress2", 2, 2),
+                new LocationDTO("id3", "name3", "country3", "city3", "rawAddress3", 3, 3)
         );
-        List<Location> expected = List.of(
-                new Location(locationsDTO.get(0).getId(), locationsDTO.get(0).getCountry(),
-                        locationsDTO.get(0).getCity()),
-                new Location(locationsDTO.get(1).getId(), locationsDTO.get(1).getCountry(),
-                        locationsDTO.get(1).getCity()),
-                new Location(locationsDTO.get(2).getId(), locationsDTO.get(2).getCountry(),
-                        locationsDTO.get(2).getCity())
-        );
+        List<Location> expected = locationsDTO.stream()
+                .map(dto -> new Location(
+                        dto.getId(),
+                        dto.getName(),
+                        dto.getCountry(),
+                        dto.getCity(),
+                        dto.getRawAddress(),
+                        dto.getLatitude(),
+                        dto.getLongitude()
+                ))
+                .toList();
 
         when(mockedConverter.convertFromDTO(locationsDTO.get(0)))
                 .thenReturn(expected.get(0));

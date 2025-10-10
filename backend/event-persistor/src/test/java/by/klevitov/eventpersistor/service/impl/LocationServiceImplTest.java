@@ -54,7 +54,7 @@ public class LocationServiceImplTest {
         try (MockedStatic<LocationValidator> validator = Mockito.mockStatic(LocationValidator.class)) {
             validator.when(() -> LocationValidator.validateLocationBeforeCreation(any(Location.class)))
                     .then(invocationOnMock -> null);
-            when(locationRepository.findByCountryAndCityIgnoreCase(Mockito.anyString(), Mockito.anyString()))
+            when(locationRepository.findByRawAddressAndNameIgnoreCase(Mockito.anyString(), Mockito.anyString()))
                     .thenReturn(Optional.empty());
 
             Location location = new Location("country", "city");
@@ -76,11 +76,13 @@ public class LocationServiceImplTest {
             validator.when(() -> LocationValidator.validateLocationBeforeCreation(any(Location.class)))
                     .then(invocationOnMock -> null);
 
-            Location location = new Location("country", "city");
-            when(locationRepository.findByCountryAndCityIgnoreCase(Mockito.anyString(), Mockito.anyString()))
-                    .thenReturn(Optional.of(new Location("id", location.getCountry(), location.getCity())));
+            Location location = new Location(null, "name", "country", "city", "rawAddress", 1, 2);
+            when(locationRepository.findByRawAddressAndNameIgnoreCase(Mockito.anyString(), Mockito.anyString()))
+                    .thenReturn(Optional.of(new Location("id", location.getName(), location.getCountry(),
+                            location.getCity(), location.getRawAddress(), location.getLatitude(), location.getLongitude())));
 
-            Location expected = new Location("id", location.getCountry(), location.getCity());
+            Location expected = new Location("id", location.getName(), location.getCountry(), location.getCity(),
+                    location.getRawAddress(), location.getLatitude(), location.getLongitude());
             Location actual = service.create(location);
 
             verify(locationRepository, never()).insert(any(Location.class));
@@ -112,21 +114,34 @@ public class LocationServiceImplTest {
                     .thenReturn(new ArrayList<>());
 
             List<Location> locations = List.of(
-                    new Location("country1", "city1"),
-                    new Location("country2", "city2"),
-                    new Location("country3", "city3")
+                    new Location("id1", "name1", "country1", "city1", "rawAddress1", 1, 1),
+                    new Location("id2", "name2", "country2", "city2", "rawAddress2", 2, 2),
+                    new Location("id3", "name3", "country4", "city3", "rawAddress3", 3, 3)
             );
             when(locationRepository.saveAll(anyList()))
-                    .thenReturn(List.of(
-                            new Location("id1", locations.get(0).getCountry(), locations.get(0).getCity()),
-                            new Location("id2", locations.get(1).getCountry(), locations.get(1).getCity()),
-                            new Location("id3", locations.get(2).getCountry(), locations.get(2).getCity())));
+                    .thenReturn(locations.stream()
+                            .map(l -> new Location(
+                                    l.getId(),
+                                    l.getName(),
+                                    l.getCountry(),
+                                    l.getCity(),
+                                    l.getRawAddress(),
+                                    l.getLatitude(),
+                                    l.getLongitude()
+                            ))
+                            .toList());
 
-            List<Location> expected = List.of(
-                    new Location("id1", locations.get(0).getCountry(), locations.get(0).getCity()),
-                    new Location("id2", locations.get(1).getCountry(), locations.get(1).getCity()),
-                    new Location("id3", locations.get(2).getCountry(), locations.get(2).getCity())
-            );
+            List<Location> expected = locations.stream()
+                    .map(l -> new Location(
+                            l.getId(),
+                            l.getName(),
+                            l.getCountry(),
+                            l.getCity(),
+                            l.getRawAddress(),
+                            l.getLatitude(),
+                            l.getLongitude()
+                    ))
+                    .toList();
             List<Location> actual = service.create(locations);
 
             verify(locationRepository, times(1)).saveAll(anyList());
@@ -140,28 +155,29 @@ public class LocationServiceImplTest {
         try (MockedStatic<LocationValidator> validator = Mockito.mockStatic(LocationValidator.class)) {
             validator.when(() -> LocationValidator.validateLocationBeforeCreation(any(Location.class)))
                     .then(invocationOnMock -> null);
-            when(locationRepository.findByCountryAndCityIgnoreCase(anyList()))
+            when(locationRepository.findByRawAddressAndNameIgnoreCase(anyList()))
                     .thenAnswer(invocationOnMock -> {
                         List<Location> existentLocations = new ArrayList<>();
-                        existentLocations.add(new Location("id1", "country1", "city1"));
-                        existentLocations.add(new Location("id2", "country2", "city2"));
+                        existentLocations.add(new Location("id1", "name1", "country1", "city1", "rawAddress1", 1, 1));
+                        existentLocations.add(new Location("id2", "name2", "country2", "city2", "rawAddress2", 2, 2));
                         return existentLocations;
                     });
 
             List<Location> locations = List.of(
-                    new Location("country1", "city1"),
-                    new Location("country2", "city2"),
-                    new Location("country3", "city3")
+                    new Location(null, "name1", "country1", "city1", "rawAddress1", 1, 1),
+                    new Location(null, "name2", "country2", "city2", "rawAddress2", 2, 2),
+                    new Location(null, "name3", "country3", "city3", "rawAddress3", 3, 3)
             );
             when(locationRepository.saveAll(anyList()))
-                    .thenReturn(List.of(
-                            new Location("id3", locations.get(2).getCountry(), locations.get(2).getCity())
-                    ));
+                    .thenReturn(List.of(new Location("id3", locations.get(2).getName(), locations.get(2).getCountry(),
+                            locations.get(2).getCity(), locations.get(2).getRawAddress(),
+                            locations.get(2).getLatitude(), locations.get(2).getLongitude()
+                    )));
 
             List<Location> expected = List.of(
-                    new Location("id1", locations.get(0).getCountry(), locations.get(0).getCity()),
-                    new Location("id2", locations.get(1).getCountry(), locations.get(1).getCity()),
-                    new Location("id3", locations.get(2).getCountry(), locations.get(2).getCity())
+                    new Location("id1", "name1", "country1", "city1", "rawAddress1", 1, 1),
+                    new Location("id2", "name2", "country2", "city2", "rawAddress2", 2, 2),
+                    new Location("id3", "name3", "country3", "city3", "rawAddress3", 3, 3)
             );
             List<Location> actual = service.create(locations);
 
@@ -322,7 +338,7 @@ public class LocationServiceImplTest {
                     .then(invocationOnMock -> null);
             when(locationRepository.findById(anyString()))
                     .thenReturn(Optional.of(new Location("id", "oldCountry", "city")));
-            when(locationRepository.findByCountryAndCityIgnoreCase(anyString(), anyString()))
+            when(locationRepository.findByRawAddressAndNameIgnoreCase(anyString(), anyString()))
                     .thenReturn(Optional.empty());
 
             Location updatedLocation = new Location("id", "newCountry", null);
@@ -348,7 +364,7 @@ public class LocationServiceImplTest {
 
             verify(locationRepository, times(1)).findById(anyString());
             verify(locationRepository, never()).save(any());
-            verify(locationRepository, never()).findByCountryAndCityIgnoreCase(anyString(),
+            verify(locationRepository, never()).findByRawAddressAndNameIgnoreCase(anyString(),
                     anyString());
         }
     }
@@ -364,7 +380,7 @@ public class LocationServiceImplTest {
 
             verify(locationRepository, never()).findById(anyString());
             verify(locationRepository, never()).save(any());
-            verify(locationRepository, never()).findByCountryAndCityIgnoreCase(anyString(),
+            verify(locationRepository, never()).findByRawAddressAndNameIgnoreCase(anyString(),
                     anyString());
         }
     }
@@ -375,17 +391,17 @@ public class LocationServiceImplTest {
             validator.when(() -> LocationValidator.validateLocationBeforeUpdating(any(Location.class)))
                     .then(invocationOnMock -> null);
             when(locationRepository.findById(anyString()))
-                    .thenReturn(Optional.of(new Location("id", "country", "city")));
-            when(locationRepository.findByCountryAndCityIgnoreCase(anyString(), anyString()))
-                    .thenReturn(Optional.of(new Location("other_id", "updatedCountry", "city")));
+                    .thenReturn(Optional.of(new Location("id", "name", "country", "city", "rawAddress", 1, 2)));
+            when(locationRepository.findByRawAddressAndNameIgnoreCase(anyString(), anyString()))
+                    .thenReturn(Optional.of(new Location("other_id", "name", "country", "city", "updatedRawAddress", 3, 4)));
 
-            Location updatedLocation = new Location("id", "updatedCountry", "city");
+            Location updatedLocation = new Location("id", "name", "country", "city", "updatedRawAddress", 3, 4);
             assertThrows(LocationAlreadyExistsException.class,
                     () -> service.update(updatedLocation));
 
             verify(locationRepository, times(1)).findById(anyString());
             verify(locationRepository, never()).save(any());
-            verify(locationRepository, times(1)).findByCountryAndCityIgnoreCase(anyString(),
+            verify(locationRepository, times(1)).findByRawAddressAndNameIgnoreCase(anyString(),
                     anyString());
         }
     }

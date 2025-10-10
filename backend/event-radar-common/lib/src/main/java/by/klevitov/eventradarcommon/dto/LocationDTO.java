@@ -20,6 +20,11 @@ public class LocationDTO extends AbstractDTO {
     private double latitude;
     private double longitude;
 
+    public LocationDTO(String id, String country, String city) {
+        this(country, city);
+        this.id = id;
+    }
+
     public LocationDTO(String country, String city) {
         this.country = country;
         this.city = city;

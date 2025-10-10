@@ -20,8 +20,8 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Repository
 public class LocationRepositoryImpl implements LocationRepository {
-    private static final String COUNTRY_FIELD_NAME = "country";
-    private static final String CITY_FIELD_NAME = "city";
+    private static final String RAW_ADDRESS_FIELD_NAME = "rawAddress";
+    private static final String LOCATION_NAME_FIELD_NAME = "name";
     private final MongoTemplate mongoTemplate;
 
     public LocationRepositoryImpl(MongoTemplate mongoTemplate) {
@@ -29,15 +29,15 @@ public class LocationRepositoryImpl implements LocationRepository {
     }
 
     @Override
-    public List<Location> findByCountryAndCityIgnoreCase(final List<Location> locations) {
-        List<String> countries = locations.stream().map(Location::getCountry).toList();
-        List<String> cities = locations.stream().map(Location::getCity).toList();
+    public List<Location> findByRawAddressAndNameIgnoreCase(final List<Location> locations) {
+        List<String> rawAddresses = locations.stream().map(Location::getRawAddress).toList();
+        List<String> names = locations.stream().map(Location::getName).toList();
         final Query query = new Query();
         query.addCriteria(
-                where(COUNTRY_FIELD_NAME)
-                        .in(countries)
-                        .and(CITY_FIELD_NAME)
-                        .in(cities));
+                where(RAW_ADDRESS_FIELD_NAME)
+                        .in(rawAddresses)
+                        .and(LOCATION_NAME_FIELD_NAME)
+                        .in(names));
         return mongoTemplate.find(query, Location.class);
     }
 

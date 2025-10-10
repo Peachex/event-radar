@@ -31,9 +31,9 @@ public class LocationValidatorTest {
     private static Stream<Pair<Location, Boolean>> locationsForCreation() {
         return Stream.of(
                 Pair.of(null, false),
-                Pair.of(new Location(), false),
-                Pair.of(new Location("", ""), false),
-                Pair.of(new Location("country", "city"), true)
+                Pair.of(new Location(), true),
+                Pair.of(new Location(null, null, null, null, null, 0.0, 0.0), true),
+                Pair.of(new Location("id", "name", "country", "city", "rawAddress", 1.0, 2.0), true)
         );
     }
 
@@ -53,10 +53,11 @@ public class LocationValidatorTest {
         return Stream.of(
                 Pair.of(null, false),
                 Pair.of(new Location(), false),
-                Pair.of(new Location("country", "city"), false),
-                Pair.of(new Location("id", "", ""), false),
-                Pair.of(new Location("id", "country", ""), true),
-                Pair.of(new Location("id", "country", "city"), true)
+                Pair.of(new Location(null, null, null, null, null, 0.0, 0.0), false),
+                Pair.of(new Location(null, "name", "country", "city", "rawAddress", 1.0, 2.0), false),
+                Pair.of(new Location("id", null, "country", "city", "rawAddress", 1.0, 2.0), false),
+                Pair.of(new Location("id", "name", "country", "city", null, 1.0, 2.0), false),
+                Pair.of(new Location("id", "name", "country", "city", "rawAddress", 1.0, 2.0), true)
         );
     }
 

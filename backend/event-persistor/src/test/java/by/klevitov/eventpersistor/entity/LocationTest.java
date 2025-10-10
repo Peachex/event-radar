@@ -1,6 +1,5 @@
 package by.klevitov.eventpersistor.entity;
 
-import by.klevitov.eventpersistor.entity.Location;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,21 +11,37 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LocationTest {
     @Test
-    public void test_createIdBasedOnCountryAndCity() {
-        Location location = new Location("id", "country", "city");
-        String expected = "country:city";
-        String actual = location.createIdBasedOnCountryAndCity();
+    public void test_createIdBasedOnRawAddressAndName() {
+        Location location = new Location();
+        location.setRawAddress("RawAddress");
+        location.setName("Name");
+
+        String expected = "rawaddress:name";
+        String actual = location.createIdBasedOnRawAddressAndName();
         assertEquals(expected, actual);
     }
 
     @ParameterizedTest
     @MethodSource("doublePairProvider")
     public void test_copyValuesForNullOrEmptyFieldsFromLocation(Pair<Location, Pair<Location, Location>> doublePair) {
-        Location existentLocation = doublePair.getKey();
-        Location actual = doublePair.getValue().getValue();
-        actual.copyValuesForNullOrEmptyFieldsFromLocation(existentLocation);
-        Location expected = doublePair.getValue().getKey();
+        Location source = doublePair.getKey();
+        Location expected = doublePair.getValue().getLeft();
+        Location actual = doublePair.getValue().getRight();
+
+        actual.copyValuesForNullOrEmptyFieldsFromLocation(source);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void test_updateRawAddressAndNameWithDefaultsIfNull() {
+        Location location = new Location();
+        location.setRawAddress(null);
+        location.setName(null);
+
+        location.updateRawAddressAndNameWithDefaultsIfNull();
+
+        assertEquals("", location.getRawAddress());
+        assertEquals("", location.getName());
     }
 
     private static Stream<Pair<Location, Pair<Location, Location>>> doublePairProvider() {

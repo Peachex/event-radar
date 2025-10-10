@@ -13,37 +13,22 @@ public final class LocationValidator {
     }
 
     public static void validateLocationBeforeCreation(final Location location) {
-        throwExceptionInCaseOfNullOrEmptyLocation(location);
-        throwExceptionInCaseOfEmptyCountry(location.getCountry());
-        throwExceptionInCaseOfEmptyCity(location.getCity());
+        throwExceptionInCaseOfNullLocation(location);
+        location.updateRawAddressAndNameWithDefaultsIfNull();
         location.setId(null);
     }
 
-    private static void throwExceptionInCaseOfNullOrEmptyLocation(final Location location) {
+    private static void throwExceptionInCaseOfNullLocation(final Location location) {
         if (location == null) {
             log.error(PersistorExceptionMessage.NULL_LOCATION);
             throw new LocationValidatorException(PersistorExceptionMessage.NULL_LOCATION);
         }
     }
 
-    private static void throwExceptionInCaseOfEmptyCountry(final String country) {
-        if (isEmpty(country)) {
-            log.error(PersistorExceptionMessage.NULL_OR_EMPTY_LOCATION_COUNTRY);
-            throw new LocationValidatorException(PersistorExceptionMessage.NULL_OR_EMPTY_LOCATION_COUNTRY);
-        }
-    }
-
-    private static void throwExceptionInCaseOfEmptyCity(final String city) {
-        if (isEmpty(city)) {
-            log.error(PersistorExceptionMessage.NULL_OR_EMPTY_LOCATION_CITY);
-            throw new LocationValidatorException(PersistorExceptionMessage.NULL_OR_EMPTY_LOCATION_CITY);
-        }
-    }
-
     public static void validateLocationBeforeUpdating(final Location location) {
-        throwExceptionInCaseOfNullOrEmptyLocation(location);
+        throwExceptionInCaseOfNullLocation(location);
         throwExceptionInCaseOfEmptyId(location.getId());
-        throwExceptionInCaseOfEmptyCountryAndCity(location.getCountry(), location.getCity());
+        throwExceptionInCaseOfEmptyRawAddressAndName(location.getRawAddress(), location.getName());
     }
 
     public static void throwExceptionInCaseOfEmptyId(final String id) {
@@ -53,10 +38,10 @@ public final class LocationValidator {
         }
     }
 
-    private static void throwExceptionInCaseOfEmptyCountryAndCity(final String country, final String city) {
-        if (isEmpty(country) && isEmpty(city)) {
-            log.error(PersistorExceptionMessage.NULL_OR_EMPTY_LOCATION_COUNTRY_OR_CITY);
-            throw new LocationValidatorException(PersistorExceptionMessage.NULL_OR_EMPTY_LOCATION_COUNTRY_OR_CITY);
+    private static void throwExceptionInCaseOfEmptyRawAddressAndName(final String rawAddress, final String name) {
+        if (isEmpty(rawAddress) || isEmpty(name)) {
+            log.error(PersistorExceptionMessage.NULL_OR_EMPTY_RAW_ADDRESSOR_LOCATION_NAME);
+            throw new LocationValidatorException(PersistorExceptionMessage.NULL_OR_EMPTY_RAW_ADDRESSOR_LOCATION_NAME);
         }
     }
 }

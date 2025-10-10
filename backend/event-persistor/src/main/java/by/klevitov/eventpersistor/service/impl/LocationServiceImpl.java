@@ -1,14 +1,14 @@
 package by.klevitov.eventpersistor.service.impl;
 
-import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
+import by.klevitov.eventpersistor.entity.Location;
 import by.klevitov.eventpersistor.exception.LocationAlreadyExistsException;
 import by.klevitov.eventpersistor.exception.LocationInUseException;
 import by.klevitov.eventpersistor.exception.LocationNotFoundException;
-import by.klevitov.eventpersistor.entity.Location;
 import by.klevitov.eventpersistor.repository.EventMongoRepository;
 import by.klevitov.eventpersistor.repository.LocationMongoRepository;
 import by.klevitov.eventpersistor.service.LocationService;
 import by.klevitov.eventpersistor.util.LocationValidator;
+import by.klevitov.eventradarcommon.pagination.dto.PageRequestDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,13 +23,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static by.klevitov.eventradarcommon.pagination.util.PageRequestValidator.validatePageRequest;
 import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.LOCATION_ALREADY_EXISTS;
 import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.LOCATION_IS_IN_USE;
 import static by.klevitov.eventpersistor.constant.PersistorExceptionMessage.LOCATION_NOT_FOUND;
 import static by.klevitov.eventpersistor.util.LocationValidator.throwExceptionInCaseOfEmptyId;
 import static by.klevitov.eventpersistor.util.LocationValidator.validateLocationBeforeCreation;
 import static by.klevitov.eventpersistor.util.LocationValidator.validateLocationBeforeUpdating;
+import static by.klevitov.eventradarcommon.pagination.util.PageRequestValidator.validatePageRequest;
 import static org.apache.commons.collections4.MapUtils.isNotEmpty;
 
 @Log4j2
@@ -51,7 +51,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     private Location createLocationOrGetExistingOne(final Location location) {
-        return locationRepository.findByCountryAndCityIgnoreCase(location.getCountry(), location.getCity())
+        return locationRepository.findByRawAddressAndNameIgnoreCase(location.getRawAddress(), location.getName())
                 .orElseGet(() -> locationRepository.insert(location));
     }
 
@@ -62,7 +62,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     private List<Location> createLocationsWithoutDuplication(final List<Location> locations) {
-        List<Location> existentLocations = locationRepository.findByCountryAndCityIgnoreCase(locations);
+        List<Location> existentLocations = locationRepository.findByRawAddressAndNameIgnoreCase(locations);
         List<Location> nonExistentLocations = createNonExistentLocationsList(locations, existentLocations);
         existentLocations.addAll(locationRepository.saveAll(nonExistentLocations));
         Map<String, Location> existentLocationsWithKey = createLocationsMapWithCountryCityKey(existentLocations);
@@ -75,7 +75,7 @@ public class LocationServiceImpl implements LocationService {
         Set<Location> nonExistentLocations = new HashSet<>();
         Map<String, Location> locationsWithKey = createLocationsMapWithCountryCityKey(existentLocations);
         locations.forEach(l -> {
-            String locationKey = l.createIdBasedOnCountryAndCity();
+            String locationKey = l.createIdBasedOnRawAddressAndName();
             if (!locationsWithKey.containsKey(locationKey)) {
                 nonExistentLocations.add(l);
             }
@@ -85,13 +85,13 @@ public class LocationServiceImpl implements LocationService {
 
     private Map<String, Location> createLocationsMapWithCountryCityKey(final List<Location> locations) {
         Map<String, Location> locationsMap = new HashMap<>();
-        locations.forEach(l -> locationsMap.put(l.createIdBasedOnCountryAndCity(), l));
+        locations.forEach(l -> locationsMap.put(l.createIdBasedOnRawAddressAndName(), l));
         return locationsMap;
     }
 
     private void updateLocationsWithId(final List<Location> locations,
                                        final Map<String, Location> existentLocationsWithKey) {
-        locations.forEach(l -> l.setId(existentLocationsWithKey.get(l.createIdBasedOnCountryAndCity()).getId()));
+        locations.forEach(l -> l.setId(existentLocationsWithKey.get(l.createIdBasedOnRawAddressAndName()).getId()));
     }
 
     @Override
@@ -143,16 +143,16 @@ public class LocationServiceImpl implements LocationService {
 
     private void throwExceptionInCaseOfLocationAlreadyExists(final Location updatedLocation) {
         if (updatedLocationAlreadyExists(updatedLocation)) {
-            final String exceptionMessage = String.format(LOCATION_ALREADY_EXISTS, updatedLocation.getCountry(),
-                    updatedLocation.getCity(), updatedLocation.getId());
+            final String exceptionMessage = String.format(LOCATION_ALREADY_EXISTS, updatedLocation.getRawAddress(),
+                    updatedLocation.getName(), updatedLocation.getId());
             log.error(exceptionMessage);
             throw new LocationAlreadyExistsException(exceptionMessage);
         }
     }
 
     private boolean updatedLocationAlreadyExists(final Location updatedLocation) {
-        final Optional<Location> existentLocation = locationRepository.findByCountryAndCityIgnoreCase(
-                updatedLocation.getCountry(), updatedLocation.getCity());
+        final Optional<Location> existentLocation = locationRepository.findByRawAddressAndNameIgnoreCase(
+                updatedLocation.getRawAddress(), updatedLocation.getName());
         return (existentLocation.isPresent() && !existentLocation.get().getId().equals(updatedLocation.getId()));
     }
 
