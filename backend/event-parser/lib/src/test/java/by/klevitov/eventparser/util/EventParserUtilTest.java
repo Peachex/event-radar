@@ -18,13 +18,57 @@ import static by.klevitov.eventparser.util.EventParserUtil.DEFAULT_DATE_FORMATTE
 import static by.klevitov.eventparser.util.EventParserUtil.EventDateLocale.RUSSIAN;
 import static by.klevitov.eventparser.util.EventParserUtil.convertStringToLocalDate;
 import static by.klevitov.eventparser.util.EventParserUtil.parseDateAndAddToMap;
+import static by.klevitov.eventparser.util.EventParserUtil.sanitizeJsonString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EventParserUtilTest {
+    @Test
+    public void test_sanitizeJsonString_withNewlinesAndCarriageReturns() {
+        String input = """
+                {
+                	"description": "Some description",
+                	"status": "active"
+                }
+                """;
+        String expected = "{ \t\"description\": \"Some description\", \t\"status\": \"active\" } ";
+        assertEquals(expected, sanitizeJsonString(input));
+    }
+
+    @Test
+    public void test_sanitizeJsonString_withNoNewlines() {
+        String jsonString = "{\"description\": \"Some description\", \"status\": \"active\"}";
+        assertEquals(jsonString, sanitizeJsonString(jsonString));
+    }
+
+    @Test
+    public void test_sanitizeJsonString_emptyString() {
+        String input = "";
+        assertEquals("", sanitizeJsonString(input));
+    }
+
+    @Test
+    public void test_sanitizeJsonString_blankString() {
+        String input = "   ";
+        assertEquals("   ", sanitizeJsonString(input));
+    }
+
+    @Test
+    public void test_sanitizeJsonString_nullInput() {
+        String input = null;
+        assertNull(sanitizeJsonString(input));
+    }
+
+    @Test
+    public void test_sanitizeJsonString_withTabsAndNoNewlines() {
+        String input = "{\t\"key\": \"value\"\t}";
+        assertEquals(input, sanitizeJsonString(input));
+    }
+
     @ParameterizedTest
     @MethodSource("pairProvider")
     public void test_parseDateAndAddToMap(Pair<Map<String, String>, Map<String, String>> arguments) {

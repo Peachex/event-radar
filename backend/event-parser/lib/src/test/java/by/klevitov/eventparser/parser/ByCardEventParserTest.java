@@ -194,39 +194,6 @@ public class ByCardEventParserTest {
     }
 
     @Test
-    public void test_parseLocation_withMissingDescription() {
-        String html = """
-                    <html>
-                      <head>
-                        <script type="application/ld+json">
-                          {
-                            "@type": "Event",
-                            "location": {
-                              "name": "Sample Venue",
-                              "address": {
-                                "addressCountry": "Countryland",
-                                "addressLocality": "Cityville",
-                                "streetAddress": "123 Sample St"
-                              },
-                              "geo": {
-                                "longitude": 10.1234,
-                                "latitude": 20.5678
-                              }
-                            }
-                          }
-                        </script>
-                      </head>
-                    </html>
-                """;
-
-        Document htmlDocument = Jsoup.parse(html);
-        LocationDTO location = parser.parseLocation(htmlDocument);
-
-        assertNull(location.getName());
-        assertEquals(0.0, location.getLongitude());
-    }
-
-    @Test
     public void test_parseLocation_withMultipleScripts() {
         String html = """
                     <html>

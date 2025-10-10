@@ -33,7 +33,6 @@ import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_ADDRESS_LO
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_CAPSULE_MAIN_ELEMENT;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_CATEGORY;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_DATE;
-import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_DESCRIPTION;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_EVENTS_ROW;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_EVENT_LINK_HREF;
 import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_GEO;
@@ -52,7 +51,7 @@ import static by.klevitov.eventparser.constant.HTMLSiteElement.BYCARD_TYPE_VALUE
 import static by.klevitov.eventparser.constant.PropertyConstant.PROPERTY_FILE_WITH_SITES_FOR_PARSING;
 import static by.klevitov.eventparser.util.ByCardEventParserUtil.parsePriceAndAddToMap;
 import static by.klevitov.eventparser.util.EventParserUtil.parseDateAndAddToMap;
-import static org.apache.commons.lang3.StringUtils.isNoneBlank;
+import static by.klevitov.eventparser.util.EventParserUtil.sanitizeJsonString;
 
 @Log4j2
 public class ByCardEventParser implements EventParser {
@@ -90,7 +89,7 @@ public class ByCardEventParser implements EventParser {
         return events;
     }
 
-    private static Map<String, String> createFieldsMap(final Element element, String category) {
+    private Map<String, String> createFieldsMap(final Element element, String category) {
         Map<String, String> fields = new HashMap<>();
         fields.put(TITLE, element.getElementsByClass(BYCARD_TITLE).text());
         fields.put(CATEGORY, category);
@@ -110,8 +109,8 @@ public class ByCardEventParser implements EventParser {
         Elements scripts = htmlDocument.select(BYCARD_SCRIPT);
         for (Element script : scripts) {
             try {
-                JSONObject htmlScript = new JSONObject(script.html());
-                if (htmlScriptContainsLocationData(htmlScript)) {
+                JSONObject htmlScript = new JSONObject(sanitizeJsonString(script.html()));
+                if (isEventHtmlScript(htmlScript)) {
                     return createLocationDTOFromHtmlScript(htmlScript);
                 }
             } catch (JSONException e) {
@@ -121,12 +120,11 @@ public class ByCardEventParser implements EventParser {
         return new LocationDTO();
     }
 
-    private boolean htmlScriptContainsLocationData(JSONObject htmlScript) {
-        return (htmlScript.has(BYCARD_TYPE_KEY) && BYCARD_TYPE_VALUE.equals(htmlScript.getString(BYCARD_TYPE_KEY))
-                && isNoneBlank(htmlScript.optString(BYCARD_DESCRIPTION)));
+    private boolean isEventHtmlScript(JSONObject htmlScript) {
+        return (htmlScript.has(BYCARD_TYPE_KEY) && BYCARD_TYPE_VALUE.equals(htmlScript.getString(BYCARD_TYPE_KEY)));
     }
 
-    private static LocationDTO createLocationDTOFromHtmlScript(final JSONObject htmlScript) {
+    private LocationDTO createLocationDTOFromHtmlScript(final JSONObject htmlScript) {
         JSONObject location = htmlScript.getJSONObject(BYCARD_LOCATION);
         String locationName = location.optString(BYCARD_NAME);
 

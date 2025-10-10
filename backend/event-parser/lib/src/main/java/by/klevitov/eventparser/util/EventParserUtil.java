@@ -4,6 +4,7 @@ import by.klevitov.eventparser.exception.DateConversionException;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ import static by.klevitov.eventparser.constant.ExceptionMessage.NULL_OR_EMPTY_DA
 import static by.klevitov.eventparser.constant.ExceptionMessage.NULL_OR_EMPTY_FIELDS_MAP;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Log4j2
@@ -36,8 +38,15 @@ public final class EventParserUtil {
     private static final String DATE_SPLIT_REGEX = "-";
     private static final String START_DATE_PREFIX = "с";
     private static final int EXPECTED_ARRAY_DATES_SIZE = 2;
+    private static final String SANITIZE_JSON_STRING_PATTERN = "[\\r\\n]+";
 
     private EventParserUtil() {
+    }
+
+    public static String sanitizeJsonString(String inputJson) {
+        return (isNotBlank(inputJson)
+                ? inputJson.replaceAll(SANITIZE_JSON_STRING_PATTERN, StringUtils.SPACE)
+                : inputJson);
     }
 
     public static void parseDateAndAddToMap(final Map<String, String> fields) {

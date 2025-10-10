@@ -17,6 +17,26 @@ public final class HTMLSiteElement {
 
     public static final String AFISHA_RELAX_IMAGE_LINK_SRC = "src";
 
+    public static final String AFISHA_RELAX_SCRIPT = "script[type=application/ld+json]";
+
+    public static final String AFISHA_RELAX_TYPE_KEY = "@type";
+
+    public static final String AFISHA_RELAX_TYPE_VALUE = "Event";
+
+    public static final String AFISHA_RELAX_DESCRIPTION = "description";
+
+    public static final String AFISHA_RELAX_LOCATION = "location";
+
+    public static final String AFISHA_RELAX_ADDRESS = "address";
+
+    public static final String AFISHA_RELAX_NAME = "name";
+
+    public static final String AFISHA_RELAX_ADDRESS_COUNTRY = "addressCountry";
+
+    public static final String AFISHA_RELAX_ADDRESS_LOCALITY = "addressLocality";
+
+    public static final String AFISHA_RELAX_STREET_ADDRESS = "streetAddress";
+
     public static final String BYCARD_EVENTS_ROW = "events-row";
 
     public static final String BYCARD_CATEGORY = "events-row__headline";

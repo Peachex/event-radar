@@ -6,6 +6,7 @@ import by.klevitov.eventparser.util.EventParserUtil;
 import by.klevitov.eventparser.util.PropertyUtil;
 import by.klevitov.eventradarcommon.dto.AbstractEventDTO;
 import by.klevitov.eventradarcommon.dto.AfishaRelaxEventDTO;
+import by.klevitov.eventradarcommon.dto.LocationDTO;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -35,6 +36,7 @@ import static by.klevitov.eventparser.constant.EventLocation.BELARUS;
 import static by.klevitov.eventparser.constant.EventLocation.MINSK;
 import static by.klevitov.eventradarcommon.dto.EventSourceType.AFISHA_RELAX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class AfishaRelaxEventParserTest {
     private static EventParser parser;
@@ -88,6 +90,122 @@ public class AfishaRelaxEventParserTest {
             String actual = parser.retrieveSiteURL();
             assertEquals(expected, actual);
         }
+    }
+
+    @Test
+    public void test_parseLocation_withValidScript() {
+        String html = """
+                    <html>
+                      <head>
+                        <script type="application/ld+json">
+                          {
+                            "@type": "Event",
+                            "description": "An awesome event",
+                            "location": {
+                              "name": "Sample Venue",
+                              "address": {
+                                "addressCountry": "Countryland",
+                                "addressLocality": "Cityville",
+                                "streetAddress": "123 Sample St"
+                              }
+                            }
+                          }
+                        </script>
+                      </head>
+                    </html>
+                """;
+
+        Document htmlDocument = Jsoup.parse(html);
+        LocationDTO location = parser.parseLocation(htmlDocument);
+
+        assertEquals("Sample Venue", location.getName());
+        assertEquals("Countryland", location.getCountry());
+        assertEquals("Cityville", location.getCity());
+        assertEquals("123 Sample St", location.getRawAddress());
+    }
+
+    @Test
+    public void test_parseLocation_withoutScriptTags() {
+        String html = "<html><head></head><body><p>No scripts here</p></body></html>";
+        Document htmlDocument = Jsoup.parse(html);
+
+        LocationDTO location = parser.parseLocation(htmlDocument);
+
+        assertNull(location.getName());
+        assertNull(location.getCountry());
+        assertNull(location.getCity());
+        assertNull(location.getRawAddress());
+    }
+
+    @Test
+    public void test_parseLocation_withInvalidJson() {
+        String html = """
+                    <html>
+                      <head>
+                        <script type="application/ld+json">{ invalid json </script>
+                      </head>
+                    </html>
+                """;
+
+        Document htmlDocument = Jsoup.parse(html);
+        LocationDTO location = parser.parseLocation(htmlDocument);
+
+        assertNull(location.getName());
+    }
+
+    @Test
+    public void test_parseLocation_withInvalidScriptType() {
+        String html = """
+                    <html>
+                      <head>
+                        <script type="application/ld+json">
+                          {
+                            "@type": "Organization",
+                            "description": "Not an event"
+                          }
+                        </script>
+                      </head>
+                    </html>
+                """;
+
+        Document htmlDocument = Jsoup.parse(html);
+        LocationDTO location = parser.parseLocation(htmlDocument);
+
+        assertNull(location.getName());
+    }
+
+    @Test
+    public void test_parseLocation_withMultipleScripts() {
+        String html = """
+                    <html>
+                      <head>
+                        <script type="application/ld+json">{ invalid json }</script>
+                        <script type="application/ld+json">
+                          {
+                            "@type": "Event",
+                            "description": "Real event",
+                            "location": {
+                              "name": "Valid Venue",
+                              "address": {
+                                "addressCountry": "X",
+                                "addressLocality": "Y",
+                                "streetAddress": "Z"
+                              }
+                              }
+                            }
+                          }
+                        </script>
+                      </head>
+                    </html>
+                """;
+
+        Document htmlDocument = Jsoup.parse(html);
+        LocationDTO location = parser.parseLocation(htmlDocument);
+
+        assertEquals("Valid Venue", location.getName());
+        assertEquals("X", location.getCountry());
+        assertEquals("Y", location.getCity());
+        assertEquals("Z", location.getRawAddress());
     }
 
     private Element createElement() {
