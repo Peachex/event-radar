@@ -5,57 +5,85 @@ import by.klevitov.coordinateresolver.model.GeoCoordinates;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.extern.log4j.Log4j2;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.Optional;
 
+@Log4j2
 public class OpenStreetMapGeocodingClient implements GeocodingClient {
     private static final String NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
-    private final OkHttpClient httpClient = new OkHttpClient();
+    private static final String USER_AGENT_HEADER_NAME = "User-Agent";
+    private static final String USER_AGENT_HEADER_VALUE = "event-coordinate-resolver/1.0";
+    private static final String URL_FORMAT_PATTERN = "%s?q=%s&format=json&limit=1";
+    private static final String LATITUDE_RESPONSE_KEY = "lat";
+    private static final String LONGITUDE_RESPONSE_KEY = "lon";
 
+    private final OkHttpClient httpClient;
 
-    //todo: Think about object creation for all classes.
     public OpenStreetMapGeocodingClient() {
+        this(new OkHttpClient());
+    }
+
+    public OpenStreetMapGeocodingClient(OkHttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 
     @Override
     public Optional<GeoCoordinates> fetchCoordinates(final String rawAddress) {
-        if (rawAddress == null || rawAddress.isBlank()) {
+        if (StringUtils.isBlank(rawAddress)) {
             return Optional.empty();
         }
 
-        String encoded = URLEncoder.encode(rawAddress, StandardCharsets.UTF_8);
-        String url = String.format("%s?q=%s&format=json&limit=1", NOMINATIM_URL, encoded);
-
-        Request request = new Request.Builder()
-                .url(url)
-                .header("User-Agent", "event-coordinate-resolver/1.0")
-                .get()
-                .build();
+        final Request request = buildRequest(rawAddress);
+        Optional<GeoCoordinates> geoCoordinates;
 
         try (Response response = httpClient.newCall(request).execute()) {
-            if (!response.isSuccessful() || response.body() == null) {
+            if (isNotValidResponse(response)) {
                 return Optional.empty();
             }
+            String jsonBody = Objects.requireNonNull(response.body()).string();
+            geoCoordinates = parseResponse(jsonBody);
+        } catch (Exception e) {
+            log.error("Error fetching coordinates for rawAddress={}.", rawAddress, e);
+            geoCoordinates = Optional.empty();
+        }
 
-            String body = response.body().string();
-            JsonArray results = JsonParser.parseString(body).getAsJsonArray();
+        return geoCoordinates;
+    }
 
-            if (results.isEmpty()) return Optional.empty();
+    private Request buildRequest(final String rawAddress) {
+        String encodedAddress = URLEncoder.encode(rawAddress, StandardCharsets.UTF_8);
+        String url = String.format(URL_FORMAT_PATTERN, NOMINATIM_URL, encodedAddress);
 
-            JsonObject obj = results.get(0).getAsJsonObject();
-            double lat = Double.parseDouble(obj.get("lat").getAsString());
-            double lon = Double.parseDouble(obj.get("lon").getAsString());
+        return new Request.Builder()
+                .url(url)
+                .header(USER_AGENT_HEADER_NAME, USER_AGENT_HEADER_VALUE)
+                .get()
+                .build();
+    }
 
-            return Optional.of(new GeoCoordinates(lat, lon));
+    private boolean isNotValidResponse(Response response) {
+        return (response == null || !response.isSuccessful() || response.body() == null);
+    }
 
-        } catch (IOException e) {
+    private Optional<GeoCoordinates> parseResponse(final String body) {
+        JsonArray results = JsonParser.parseString(body).getAsJsonArray();
+
+        if (results.isEmpty()) {
             return Optional.empty();
         }
+
+        JsonObject obj = results.get(0).getAsJsonObject();
+        double lat = Double.parseDouble(obj.get(LATITUDE_RESPONSE_KEY).getAsString());
+        double lon = Double.parseDouble(obj.get(LONGITUDE_RESPONSE_KEY).getAsString());
+
+        return Optional.of(new GeoCoordinates(lat, lon));
     }
 }

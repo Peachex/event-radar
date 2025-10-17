@@ -8,4 +8,6 @@ public interface CoordinateResolverService {
     LocationDTO resolve(final LocationDTO location);
 
     List<LocationDTO> resolve(final List<LocationDTO> locations);
+
+    CoordinateResolverService withDelay(final long delayInMillis);
 }
