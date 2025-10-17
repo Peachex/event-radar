@@ -14,7 +14,7 @@ import java.util.Map;
 public final class EventParserConfiguration {
     @Getter
     @Setter
-    private static long requestsDelayMillis = 5000L;
+    private static long requestsDelayMillis = 3000L;
 
     @Getter
     private static final Map<EventSourceType, EventParser> availableParsers = Map.of(

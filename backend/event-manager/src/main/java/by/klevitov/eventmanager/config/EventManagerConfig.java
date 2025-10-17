@@ -1,5 +1,7 @@
 package by.klevitov.eventmanager.config;
 
+import by.klevitov.coordinateresolver.factory.CoordinateResolverFactory;
+import by.klevitov.coordinateresolver.service.CoordinateResolverService;
 import by.klevitov.eventparser.configuration.EventParserConfiguration;
 import by.klevitov.eventparser.service.EventParserService;
 import by.klevitov.eventparser.service.impl.EventParserServiceImpl;
@@ -15,5 +17,10 @@ public class EventManagerConfig {
     @Bean
     public EventParserService eventParserService() {
         return new EventParserServiceImpl();
+    }
+
+    @Bean
+    public CoordinateResolverService coordinateResolverService() {
+        return CoordinateResolverFactory.defaultService();
     }
 }

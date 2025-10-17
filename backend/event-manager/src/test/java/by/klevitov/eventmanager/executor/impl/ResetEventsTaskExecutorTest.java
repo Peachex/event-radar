@@ -1,6 +1,6 @@
 package by.klevitov.eventmanager.executor.impl;
 
-import by.klevitov.eventmanager.executor.impl.ResetEventsTaskExecutor;
+import by.klevitov.coordinateresolver.service.CoordinateResolverService;
 import by.klevitov.eventmanager.service.EventFetcherService;
 import by.klevitov.eventmanager.service.EventPersistorClientService;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,12 +18,13 @@ public class ResetEventsTaskExecutorTest {
     private ResetEventsTaskExecutor resetEventsTaskExecutor;
     private EventFetcherService mockedFetcherService;
     private EventPersistorClientService mockedClientService;
+    private CoordinateResolverService mockedCoordinateResolver;
 
     @BeforeEach
     public void setUp() {
         mockedFetcherService = Mockito.mock(EventFetcherService.class);
         mockedClientService = Mockito.mock(EventPersistorClientService.class);
-        resetEventsTaskExecutor = new ResetEventsTaskExecutor(mockedFetcherService, mockedClientService);
+        resetEventsTaskExecutor = new ResetEventsTaskExecutor(mockedFetcherService, mockedClientService, mockedCoordinateResolver);
     }
 
     @Test

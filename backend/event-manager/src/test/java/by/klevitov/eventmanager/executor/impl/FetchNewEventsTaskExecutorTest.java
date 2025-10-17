@@ -1,6 +1,6 @@
 package by.klevitov.eventmanager.executor.impl;
 
-import by.klevitov.eventmanager.executor.impl.FetchNewEventsTaskExecutor;
+import by.klevitov.coordinateresolver.service.CoordinateResolverService;
 import by.klevitov.eventmanager.service.EventFetcherService;
 import by.klevitov.eventmanager.service.EventPersistorClientService;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,12 +18,13 @@ public class FetchNewEventsTaskExecutorTest {
     private FetchNewEventsTaskExecutor fetchNewEventsTaskExecutor;
     private EventFetcherService mockedFetcherService;
     private EventPersistorClientService mockedClientService;
+    private CoordinateResolverService mockedCoordinateResolver;
 
     @BeforeEach
     public void setUp() {
         mockedFetcherService = Mockito.mock(EventFetcherService.class);
         mockedClientService = Mockito.mock(EventPersistorClientService.class);
-        fetchNewEventsTaskExecutor = new FetchNewEventsTaskExecutor(mockedFetcherService, mockedClientService);
+        fetchNewEventsTaskExecutor = new FetchNewEventsTaskExecutor(mockedFetcherService, mockedClientService, mockedCoordinateResolver);
     }
 
     @Test
