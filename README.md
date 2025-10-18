@@ -82,3 +82,20 @@ To start the `event-radar` application, follow these steps:
    
    ![image](https://github.com/user-attachments/assets/c22bcf1c-8a3c-4e63-b2b7-2723644cb8ab)
 
+#### MapTiler API Key Setup
+
+To make map styles load correctly during development, you need to generate a MapTiler API key and apply it to your style configuration.
+
+1. Go to [https://cloud.maptiler.com/account/keys/](https://cloud.maptiler.com/account/keys/).
+2. Create a new API key if needed, or copy an existing one.
+3. Open the file: `public/assets/map-styles/osm-bright-gl-style/style.json`
+4. Update the following fields by replacing `{key}` with your actual API key:
+
+```json
+"sources": {
+  "openmaptiles": {
+    "url": "https://api.maptiler.com/tiles/v3-openmaptiles/tiles.json?key=YOUR_API_KEY"
+  }
+},
+
+"glyphs": "https://api.maptiler.com/fonts/{fontstack}/{range}.pbf?key=YOUR_API_KEY"
