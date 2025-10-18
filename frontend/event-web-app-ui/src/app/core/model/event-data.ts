@@ -16,8 +16,12 @@ export interface EventData {
   eventLink: string;
   location: {
     id: string;
+    name: string;
     country: string;
     city: string;
+    rawAddress: string;
+    latitude: number;
+    longitude: number;
   };
   sourceType: string;
 }

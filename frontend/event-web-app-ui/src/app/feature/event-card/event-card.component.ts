@@ -54,4 +54,12 @@ export class EventCardComponent {
       this.loadTimeout = undefined;
     }
   }
+
+  get locationName(): string {
+    return this.event?.location?.name?.trim() || 'не указано';
+  }
+
+  get rawAddress(): string {
+    return this.event?.location?.rawAddress?.trim() || 'не указан';
+  }
 }
