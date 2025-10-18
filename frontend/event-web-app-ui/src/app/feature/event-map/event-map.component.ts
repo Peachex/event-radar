@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import maplibregl, { Map, Marker, LngLatLike } from 'maplibre-gl';
+import maplibregl, { Map } from 'maplibre-gl';
 import { EventService } from '../../core/service/event-service';
 import { EventData } from '../../core/model/event-data';
 import { EventsFetchingError } from '../../core/error/events-fetching-error';
@@ -36,7 +36,7 @@ export class EventMapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.eventService.retrieveEvents().subscribe({
       next: (response) => {
         this.events = response;
-        this.addEventMarkers(); // Add markers after data loads
+        this.addEventMarkers();
       },
       error: (error: EventsFetchingError) => {
         console.error('Error fetching events:', error);
@@ -49,40 +49,25 @@ export class EventMapComponent implements OnInit, AfterViewInit, OnDestroy {
       container: 'map',
       style: '/assets/map-styles/osm-bright-gl-style/style.json',
       center: [27.567374, 53.893791],
-      zoom: 16,
+      zoom: 14,
     });
 
     this.map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
-    // Custom "locate me" control
-    const locateFn = () => {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const coords: LngLatLike = [position.coords.longitude, position.coords.latitude];
-          this.addUserMarker(coords);
-          this.map.flyTo({ center: coords, zoom: 16 });
-        },
-        (err) => {
-          console.warn('Geolocation error:', err);
-        }
-      );
-    };
+    const geolocate = new maplibregl.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true,
+      },
+      trackUserLocation: true,
+      showUserLocation: true,
+    });
 
-    this.map.addControl(new LocateControl(locateFn), 'top-right');
+    this.map.addControl(geolocate, 'top-right');
 
-    // Automatically locate on load
-    locateFn();
-  }
-
-  private addUserMarker(coords: LngLatLike) {
-    const el = document.createElement('div');
-    el.className = 'user-marker';
-    el.title = 'Вы находитесь здесь';
-
-    new maplibregl.Marker(el)
-      .setLngLat(coords)
-      .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(`<strong>${el.title}</strong>`))
-      .addTo(this.map);
+    // Wait for the map to finish loading, then trigger geolocation
+    this.map.on('load', () => {
+      geolocate.trigger();
+    });
   }
 
   private addEventMarkers(): void {
@@ -97,43 +82,23 @@ export class EventMapComponent implements OnInit, AfterViewInit, OnDestroy {
           <div class="event-label">${event.title}</div>
         `;
 
+        const locationStr = event.location.rawAddress
+          ? `${event.location.rawAddress}${event.location.name ? ` (${event.location.name})` : ''}<br>`
+          : '';
+
+        const popupHtml = `
+          <strong>${event.title}</strong><br>
+          ${event.category ? `${event.category}<br>` : ''}
+          ${event.dateStr ? `${event.dateStr}<br>` : ''}
+          ${event.priceStr ? `${event.priceStr}<br>` : ''}
+          ${locationStr}
+        `;
+
         new maplibregl.Marker(el)
           .setLngLat([event.location.longitude, event.location.latitude])
-          .setPopup(
-            new maplibregl.Popup({ offset: 25 }).setHTML(
-              `<strong>${event.title}</strong><br>${event.location.rawAddress}`
-            )
-          )
+          .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(popupHtml))
           .addTo(this.map);
       }
     });
-  }
-}
-
-class LocateControl {
-  private container!: HTMLElement;
-  private map!: maplibregl.Map;
-
-  constructor(private locateFn: () => void) {}
-
-  onAdd(map: maplibregl.Map) {
-    this.map = map;
-    this.container = document.createElement('div');
-    this.container.className = 'maplibregl-ctrl maplibregl-ctrl-group';
-
-    const button = document.createElement('button');
-    button.className = 'locate-button';
-    button.type = 'button';
-    button.title = 'Go to my location';
-    button.innerHTML = '📍'; // You can use an icon here instead
-
-    button.onclick = () => this.locateFn();
-
-    this.container.appendChild(button);
-    return this.container;
-  }
-
-  onRemove() {
-    this.container.parentNode?.removeChild(this.container);
   }
 }

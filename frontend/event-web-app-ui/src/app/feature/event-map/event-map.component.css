@@ -34,16 +34,8 @@
   white-space: nowrap;
 }
 
-.locate-button {
-  font-size: 18px;
-  line-height: 1;
-  padding: 6px;
-  background: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.locate-button:hover {
-  background: #eee;
+.event-category {
+  font-size: 10px;
+  color: #ff0a0a;
+  display: block;
 }

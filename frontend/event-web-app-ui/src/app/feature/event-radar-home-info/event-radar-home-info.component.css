@@ -11,3 +11,10 @@
   font-size: 1.2rem;
   margin-bottom: 20px;
 }
+
+.section-divider {
+  width: 90%;
+  height: 2px;
+  background-color: #343a402f;
+  margin: 4%;
+}
