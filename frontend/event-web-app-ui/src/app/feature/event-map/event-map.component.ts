@@ -92,6 +92,7 @@ export class EventMapComponent implements OnInit, AfterViewInit, OnDestroy {
           ${event.dateStr ? `${event.dateStr}<br>` : ''}
           ${event.priceStr ? `${event.priceStr}<br>` : ''}
           ${locationStr}
+          <a href="${event.eventLink}" target="_blank" class="btn btn-sm btn-outline-primary mt-2">Подробнее</a>
         `;
 
         new maplibregl.Marker(el)
