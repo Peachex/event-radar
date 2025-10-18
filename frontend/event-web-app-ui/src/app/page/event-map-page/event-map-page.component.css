@@ -1,0 +1,12 @@
+.map-page {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+app-event-map {
+  width: 100%;
+  max-width: 1000px;
+  height: 600px;
+}
