@@ -54,7 +54,7 @@ export class EventMapComponent implements OnInit, AfterViewInit, OnDestroy {
               .map((e) => e.category?.trim())
               .filter((c) => c && c.length > 0)
           )
-        );
+        ).sort((a, b) => a.localeCompare(b));
 
         this.updateMarkers();
       },
@@ -84,7 +84,6 @@ export class EventMapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.map.addControl(geolocate, 'top-right');
 
-    // Add custom filter button
     this.map.addControl(new FilterControl(() => this.openFilterDialog()), 'top-right');
 
     this.map.on('load', () => {
@@ -93,9 +92,6 @@ export class EventMapComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  // -----------------------------
-  //       FILTER LOGIC
-  // -----------------------------
   openFilterDialog() {
     this.showFilterDialog = true;
   }
@@ -122,7 +118,7 @@ export class EventMapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     this.updateMarkers();
-    this.showFilterDialog = false; // Close dialog ✔ FIXED
+    this.showFilterDialog = false;
   }
 
   clearFilters() {
@@ -131,9 +127,6 @@ export class EventMapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.updateMarkers();
   }
 
-  // -----------------------------
-  //       MARKERS UPDATE
-  // -----------------------------
   private updateMarkers(): void {
     if (!this.map) return;
 
@@ -175,9 +168,6 @@ export class EventMapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 }
 
-// --------------------------------------------------
-// Custom MapLibre Filter Button
-// --------------------------------------------------
 class FilterControl implements IControl {
   private container: HTMLElement;
 
