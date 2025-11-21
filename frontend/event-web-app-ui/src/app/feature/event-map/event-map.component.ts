@@ -177,7 +177,7 @@ class FilterControl implements IControl {
 
     const button = document.createElement('button');
     button.type = 'button';
-    button.title = 'Фильтр';
+    button.title = 'Search';
     button.innerHTML = '🔍';
     button.onclick = () => this.onClick();
 
