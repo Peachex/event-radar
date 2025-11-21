@@ -1,1 +1,22 @@
 <div id="map" class="map-container"></div>
+
+<!-- Modal Dialog -->
+<div class="dialog-backdrop" *ngIf="showFilterDialog">
+    <div class="dialog-box">
+        <h3>Фильтр по категориям</h3>
+
+        <div class="category-list">
+            <label *ngFor="let cat of categories" class="category-item">
+                <input type="checkbox" [checked]="selectedCategories.includes(cat)"
+                    (change)="toggleCategory(cat, $any($event.target).checked)" />
+                {{ cat }}
+            </label>
+        </div>
+
+        <div class="dialog-buttons">
+            <button class="btn-apply" (click)="applyFilters()">Применить</button>
+            <button class="btn-clear" (click)="clearFilters()">Сбросить</button>
+            <!-- <button class="btn-close" (click)="closeFilterDialog()">Закрыть</button> -->
+        </div>
+    </div>
+</div>
